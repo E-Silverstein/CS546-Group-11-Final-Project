@@ -92,11 +92,14 @@ const create = async (
     return 0;
 }
 
+
+
 /**
- * Gets a user by their ID
- * @param {string} id 
+ * Retrieves a user by their ID.
+ * @param {string} id - The ID of the user.
+ * @returns {number} - Returns 0 if the user is found, or 1 if not found.
  */
-const get = async (id) => {
+const getUser = async (id) => {
     if (isNull(id)) {
         return 1;
     }
@@ -117,9 +120,15 @@ const get = async (id) => {
         return 1;
     }
 
-    return user;
+    return 0;
 }
 
+
+/**
+ * Deletes a user from the database.
+ * @param {string} id - The ID of the user to be deleted.
+ * @returns {number} - Returns 0 if the user is successfully deleted, 1 otherwise.
+ */
 const deleteUser = async (id) => {
     if (isNull(id)) {
         return 1;
@@ -136,11 +145,14 @@ const deleteUser = async (id) => {
     }
 
     const userCollection = await users();
+    
+    // TODO delete user from all posts, comments, reports, followers and following lists, and delete their posts
+
     const deleteInfo = await userCollection.deleteOne({ _id: id });
+    
     if (deleteInfo.deletedCount === 0) {
         return 1;
     }
-    // TODO delete user from all posts, comments, reports, followers and following lists, and delete their posts
 
     return 0;
 }
