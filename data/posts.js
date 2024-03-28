@@ -13,14 +13,6 @@ import * as helper from "../helpers.js"
   "comments": ["ObjectId (Comments)"],
   "createdAt": "Date"
 }
----------------------------------------------
-* Schema for Comments Sub Collection
-{
-  "_id": "ObjectId",
-  "user": "ObjectId (Users)",
-  "text": "string",
-  "createdAt": "Date"
-}
  */
 
 /**
