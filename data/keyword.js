@@ -1,4 +1,4 @@
-import { keywords } from "../config/mongoCollections";
+import { keywords } from "../config/mongoCollections.js";
 import * as helper from "../helpers.js"
 
 /**
