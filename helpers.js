@@ -45,3 +45,17 @@ function areAllValuesOfType(list, type) {
     }
     return true;
 }
+
+/**
+ * Checks if a string is a valid URL
+ * @param {string} string 
+ * @returns {boolean}
+ */
+function isValidURL(string) {
+    try {
+        new URL(string);
+    } catch (e) {
+        return false;  
+    }
+    return true;
+}

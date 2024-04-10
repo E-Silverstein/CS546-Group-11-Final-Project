@@ -1,5 +1,6 @@
 import { keywords } from "../config/mongoCollections";
 import * as helper from "../helpers.js"
+import {ObjectId} from 'mongodb';
 
 /**
  * Schema for Keyword
@@ -53,6 +54,10 @@ const getKeywordById = async (id) => {
 
     id = id.trim();
 
+    if(!ObjectId.isValid(id)) {
+        return null;
+    }
+
     const keywordCollection = await keywords();
     const keywordObj = await keywordCollection.findOne({ _id: id });
     if (helper.isNull(keywordObj)) {
@@ -78,7 +83,18 @@ const deleteKeyword = async (keyword) => {
 
     keyword = keyword.trim();
 
-    // TODO make sure we delete the keyword from all posts before deleting the keyword
+    // Delete the keyword from all posts before deleting the keyword
+    const postCollection = await posts();
+    const postsWithKeyword = await postCollection.find({ keywords: keyword }).toArray();
+    for (let i = 0; i < postsWithKeyword.length; i++) {
+        const post = postsWithKeyword[i];
+        const updatedKeywords = post.keywords.filter(k => k !== keyword);
+        const updatedPost = {
+            ...post,
+            keywords: updatedKeywords
+        }
+        await postCollection.updateOne({ _id: post._id }, { $set: updatedPost });
+    }
 
     const keywordCollection = await keywords();
     const deletionInfo = await keywordCollection.deleteOne({ keyword });

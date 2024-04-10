@@ -70,7 +70,14 @@ const create = async (
         }
     }
 
-    // TODO Check that the image and clothing URLs are valid
+    // TODO Check that the image URLs are valid
+
+    // Check that clothing URL is valid using a regex
+    for (let i = 0; i < clothingLinks.length; i++) {
+        if (!helper.isValidURL(clothingLinks[i])) {
+            return 1;
+        }
+    }
 
     const postCollection = await posts();
     const newPost = {
@@ -107,6 +114,10 @@ const getPostById = async (id) => {
 
     id = id.trim();
 
+    if (!ObjectId.isValid(id)) {
+        return null;
+    }
+
     const postCollection = await posts();
     const post = await postCollection.findOne({ _id: id });
     if (helper.isNull(post)) {
@@ -114,4 +125,38 @@ const getPostById = async (id) => {
     }
 
     return post;
+}
+
+const deletePost = async (id) => {
+    if (helper.isNull(id)) {
+        return 1;
+    }
+
+    if (!helper.isOfType(id, 'string')) {
+        return 1;
+    }
+
+    id = id.trim();
+
+    if (!ObjectId.isValid(id)) {
+        return 1;
+    }
+
+    const postCollection = await posts();
+    const deleteInfo = await postCollection.deleteOne({ _id: id });
+    if (deleteInfo.deletedCount === 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+/**
+ * Retrieves all posts from the database.
+ * @returns {Array} - Returns a list of all posts.
+ */
+const getAllPosts = async () => {
+    const postCollection = await posts();
+    const postList = await postCollection.find({}).toArray();
+    return postList;
 }

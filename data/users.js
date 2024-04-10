@@ -99,7 +99,7 @@ const create = async (
  * @param {string} id - The ID of the user.
  * @returns {number} - Returns 0 if the user is found, or 1 if not found.
  */
-const getUser = async (id) => {
+const getUserById = async (id) => {
     if (isNull(id)) {
         return 1;
     }
