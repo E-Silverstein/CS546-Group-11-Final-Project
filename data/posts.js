@@ -15,6 +15,7 @@ import * as helper from "../helpers.js"
 }
  */
 
+
 /**
  * Creates a new post in the database.
  * @param {string} user - The user that created the post.
@@ -159,4 +160,137 @@ const getAllPosts = async () => {
     const postCollection = await posts();
     const postList = await postCollection.find({}).toArray();
     return postList;
+}
+
+/**
+ * Retrieves all posts by a user.
+ * @param {string} user - The user to retrieve posts for.
+ * @returns {Array} - Returns a list of all posts by the user.
+ */
+const getPostsByUser = async (user) => {
+    if (helper.isNull(user)) {
+        return null;
+    }
+
+    if (!helper.isOfType(user, 'string')) {
+        return null;
+    }
+
+    user = user.trim();
+
+    if (!ObjectId.isValid(user)) {
+        return null;
+    }
+
+    const postCollection = await posts();
+    const postList = await postCollection.find({ user }).toArray();
+    return postList;
+}
+
+/**
+ * Retrieves all posts by a keyword.
+ * @param {string} keyword - The keyword to retrieve posts for.
+ * @returns {Array} - Returns a list of all posts by the keyword.
+ */
+const getPostsByKeyword = async (keyword) => {
+    if (helper.isNull(keyword)) {
+        return null;
+    }
+
+    if (!helper.isOfType(keyword, 'string')) {
+        return null;
+    }
+
+    keyword = keyword.trim();
+
+    const postCollection = await posts();
+    const postList = await postCollection.find({ keywords: keyword }).toArray();
+    return postList;
+}
+
+/**
+ * Retrieves all posts that a user has liked.
+ * @param {string} user - The user to retrieve liked posts for.
+ * @returns {Array} - Returns a list of all posts that the user has liked.
+ */
+const getLikedPostsByUser = async (user) => {
+    if (helper.isNull(user)) {
+        return null;
+    }
+
+    if (!helper.isOfType(user, 'string')) {
+        return null;
+    }
+
+    user = user.trim();
+
+    if (!ObjectId.isValid(user)) {
+        return null;
+    }
+
+    const postCollection = await posts();
+    const postList = await postCollection.find({ likes: user }).toArray();
+    return postList;
+}
+
+/**
+ * Adds a like to a post.
+ * @param {string} user - The user that liked the post.
+ * @param {string} post - The post that was liked.
+ * @returns {number} - Returns 0 if the like is successfully added, otherwise returns 1.
+ */
+const addLike = async (user, post) => {
+    if (helper.areAllValuesNotNull([user, post])) {
+        return 1;
+    }
+
+    if (!helper.areAllValuesOfType([user, post], 'string')) {
+        return 1;
+    }
+
+    user = user.trim();
+    post = post.trim();
+
+    if (!ObjectId.isValid(user) || !ObjectId.isValid(post)) {
+        return 1;
+    }
+
+    const postCollection = await posts();
+    const updateInfo = await postCollection.updateOne({ _id: post }, { $push: { likes: user } });
+    if (updateInfo.modifiedCount === 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+/**
+ * Removes a like from a post.
+ * @param {string} user - The user that unliked the post.
+ * @param {string} post - The post that was unliked.
+ * @returns {number} - Returns 0 if the like is successfully removed, otherwise returns 1.
+ */
+const removeLike = async (user, post) => {
+    if (helper.areAllValuesNotNull([user, post])) {
+        return 1;
+    }
+
+    if (!helper.areAllValuesOfType([user, post], 'string')) {
+        return 1;
+    }
+
+    user = user.trim();
+    post = post.trim();
+
+    if (!ObjectId.isValid(user) || !ObjectId.isValid(post)) {
+        return 1;
+    }
+
+    const postCollection = await posts();
+    const updateInfo = await postCollection.updateOne({ _id: post }, { $pull: { likes: user } });
+    if (updateInfo.modifiedCount === 0) {
+        return 1;
+    }
+
+    return 0;
 }

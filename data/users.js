@@ -156,3 +156,13 @@ const deleteUser = async (id) => {
 
     return 0;
 }
+
+/**
+ * Retrieves all users from the database.
+ * @returns {Array} - Returns an array of user objects.
+ */
+const getAllUsers = async () => {
+    const userCollection = await users();
+    const userList = await userCollection.find({}).toArray();
+    return userList;
+}
