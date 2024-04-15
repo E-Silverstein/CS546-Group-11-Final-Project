@@ -3,15 +3,34 @@
 <head>
     <meta charset="utf-8">
     <title>iconique</title>
-    <link href="/public/css/tailwind.css" rel="stylesheet">
+    <link href="../../public/css/tailwind.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                icon100: "#E1E0DE", //light grey
+                icon200: "#A4AEA3", //light green
+                icon500: "#567765", //dark green
+                icon800: "#444849", //dark grey
+                icon900: "#33322E" //black
+              },
+            },
+          },
+        }
+    </script>
 </head>
 <body>
     <header>
-        <nav>
-            <ul class="list-none">
-                <li>
-                    <a class="text-red">iconique</a>
-                </li>
+        <nav class="flex justify-around">
+            <div>
+                <a class="text-icon900">iconique</a>
+            </div>
+            <div>
+                search bar goes here
+            </div>
+            <ul class="list-none flex space-x-4">
                 <li>
                     <a>create post</a>
                 </li>
@@ -24,6 +43,5 @@
             </ul>
         </nav>
     </header>
-    {{{body}}}
 </body>
 </html>
