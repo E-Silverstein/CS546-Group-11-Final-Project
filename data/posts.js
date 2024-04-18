@@ -95,6 +95,9 @@ export const create = async (
         return 'Could not create post';
     }
 
+    // TODO add post to user's posts
+    // TODO add keywords to keyword's posts
+
     return insertInfo.insertedId.toString();
 }
 
