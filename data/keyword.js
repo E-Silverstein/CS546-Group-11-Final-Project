@@ -1,4 +1,4 @@
-import { keywords } from "../config/mongoCollections";
+import { keywords } from "../config/mongoCollections.js";
 import * as helper from "../helpers.js"
 import {ObjectId} from 'mongodb';
 
@@ -16,7 +16,7 @@ import {ObjectId} from 'mongodb';
  * @param {string} keyword - The keyword to be created.
  * @returns {number} - Returns 0 if the keyword is successfully created, otherwise returns 1.
  */
-const create = async (
+export const create = async (
     keyword,
 ) => {
     if (helper.areAllValuesNotNull([keyword])) {
@@ -43,7 +43,7 @@ const create = async (
     return 0;
 }
 
-const getKeywordById = async (id) => {
+export const getKeywordById = async (id) => {
     if (helper.isNull(id)) {
         return null;
     }
@@ -72,7 +72,7 @@ const getKeywordById = async (id) => {
  * @param {string} keyword - The keyword to be deleted.
  * @returns {number} - Returns 0 if the keyword is successfully deleted, otherwise returns 1.
  */
-const deleteKeyword = async (keyword) => {
+export const deleteKeyword = async (keyword) => {
     if (helper.areAllValuesNotNull([keyword])) {
         return 1;
     }
