@@ -131,3 +131,5 @@ dist
 
 # IDE config files
 .idea
+
+views/layouts/test.html
