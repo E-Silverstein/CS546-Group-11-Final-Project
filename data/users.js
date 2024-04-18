@@ -211,3 +211,71 @@ export const setAdminStatus = async (id, isAdmin) => {
 
     return 0;
 }
+
+export const addFollower = async (userId, followerId) => {
+    if (isNull(userId) || isNull(followerId)) {
+        return 1;
+    }
+
+    if (!isOfType(userId, 'string') || !isOfType(followerId, 'string')) {
+        return 1;
+    }
+
+    userId = userId.trim();
+    followerId = followerId.trim();
+
+    if(!ObjectId.isValid(userId) || !ObjectId.isValid(followerId)) {
+        return 1;
+    }
+
+    const userCollection = await users();
+    const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+    if (isNull(user)) {
+        return 1;
+    }
+
+    if (user.followers.includes(new ObjectId(followerId))) {
+        return 1;
+    }
+
+    const updateInfo = await userCollection.updateOne({ _id: new ObjectId(userId) }, { $addToSet: { followers: new ObjectId(followerId) } });
+    if (updateInfo.modifiedCount === 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+export const removeFollower = async (userId, followerId) => {
+    if (isNull(userId) || isNull(followerId)) {
+        return 1;
+    }
+
+    if (!isOfType(userId, 'string') || !isOfType(followerId, 'string')) {
+        return 1;
+    }
+
+    userId = userId.trim();
+    followerId = followerId.trim();
+
+    if(!ObjectId.isValid(userId) || !ObjectId.isValid(followerId)) {
+        return 1;
+    }
+
+    const userCollection = await users();
+    const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+    if (isNull(user)) {
+        return 1;
+    }
+
+    if (!user.followers.includes(new ObjectId(followerId))) {
+        return 1;
+    }
+    
+    const updateInfo = await userCollection.updateOne({ _id: new ObjectId(userId) }, { $pull: { followers: new ObjectId(followerId) } });
+    if (updateInfo.modifiedCount === 0) {
+        return 1;
+    }
+
+    return 0;
+}

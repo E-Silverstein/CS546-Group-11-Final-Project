@@ -42,7 +42,7 @@ async function main() {
     const comment3 = await comments.create(post3, user3Id, 'comment3');
     const comment4 = await comments.create(post4, user4Id, 'comment4');
     const comment5 = await comments.create(post5, user5Id, 'comment5');
-    console.log(comment1);
+
     // Create keywords
     const keyword1 = await keywords.create('keyword1');
     const keyword2 = await keywords.create('keyword2');
