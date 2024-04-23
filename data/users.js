@@ -1,5 +1,6 @@
-import { users } from "../config/mongoCollections";
-import * as helper from "../helpers.js"
+import { users } from "../config/mongoCollections.js";
+import {areAllValuesNotNull, areAllValuesOfType, isNull, isOfType} from "../helpers.js";
+import { ObjectId } from 'mongodb';
 
 /* Schema for User
 {
@@ -29,7 +30,7 @@ import * as helper from "../helpers.js"
  * @param {number} age 
  * @param {Date} createdAt 
  */
-const create = async (
+export const create = async (
     username,
     passwordHash,
     profilePicURL,
@@ -43,7 +44,7 @@ const create = async (
         age,
         createdAt
     ])) {
-        return 1; // Placeholder value for failed function
+        return 'All values must be provided'; 
     }
 
     if (!areAllValuesOfType([
@@ -52,7 +53,7 @@ const create = async (
         profilePicURL
     ], 'string'
     )) {
-        return 1
+        return 'All values must be of type string';
     }
 
     username = username.trim();
@@ -60,11 +61,11 @@ const create = async (
     profilePicURL = profilePicURL.trim();
 
     if (!isOfType(age, 'number')) {
-        return 1;
+        return 'Age must be of type number';
     }
 
     if (!(createdAt instanceof Date)) {
-        return 1;
+        return 'createdAt must be of type Date';
     }
 
     // TODO check valid profilePicURL
@@ -86,46 +87,113 @@ const create = async (
     const userCollection = await users();
     const insertInfo = await userCollection.insertOne(newUser);
     if (insertInfo.insertedCount === 0) {
+        return 'Could not create user';
+    }
+
+    return 0;
+}
+
+
+
+/**
+ * Retrieves a user by their ID.
+ * @param {string} id - The ID of the user.
+ * @returns {number} - Returns 0 if the user is found, or 1 if not found.
+ */
+export const getUserById = async (id) => {
+    if (isNull(id)) {
+        return 1;
+    }
+
+    if (!isOfType(id, 'string')) {
+        return 1;
+    }
+
+    id = id.trim();
+
+    if(!ObjectId.isValid(id)) {
+        return 1;
+    }
+
+    const userCollection = await users();
+    const user = await userCollection.findOne({ _id: new ObjectId(id) });
+    if (isNull(user)) {
+        return 'User not found';
+    }
+
+    return 0;
+}
+
+
+/**
+ * Deletes a user from the database.
+ * @param {string} id - The ID of the user to be deleted.
+ * @returns {number} - Returns 0 if the user is successfully deleted, 1 otherwise.
+ */
+export const deleteUser = async (id) => {
+    if (isNull(id)) {
+        return 1;
+    }
+
+    if (!isOfType(id, 'string')) {
+        return 1;
+    }
+
+    id = id.trim();
+
+    if(!ObjectId.isValid(id)) {
+        return 1;
+    }
+
+    const userCollection = await users();
+    
+    // TODO delete user from all posts, comments, reports, followers and following lists, and delete their posts
+
+    const deleteInfo = await userCollection.deleteOne({ _id: new ObjectId(id) });
+    
+    if (deleteInfo.deletedCount === 0) {
         return 1;
     }
 
     return 0;
 }
 
-/**
- * Gets a user by their ID
- * @param {string} id 
- */
-const get = async (id) => {
-    if (isNull(id)) {
-        return 1;
+export const getUserByUsername = async (username) => {
+    if (isNull(username)) {
+        return null;
     }
 
-    if (!isOfType(id, 'string')) {
-        return 1;
+    if (!isOfType(username, 'string')) {
+        return null;
     }
 
-    id = id.trim();
-
-    if(!ObjectId.isValid(id)) {
-        return 1;
-    }
+    username = username.trim();
 
     const userCollection = await users();
-    const user = await userCollection.findOne({ _id: id });
+    const user = await userCollection.findOne({ username: username });
     if (isNull(user)) {
-        return 1;
+        return null;
     }
 
-    return user;
+    return user._id.toString();
 }
 
-const deleteUser = async (id) => {
-    if (isNull(id)) {
+/**
+ * Retrieves all users from the database.
+ * @returns {Array} - Returns an array of user objects.
+ */
+export const getAllUsers = async () => {
+    const userCollection = await users();
+    const userList = await userCollection.find({}).toArray();
+    return userList;
+}
+
+export const setAdminStatus = async (id, isAdmin) => {
+    if (isNull(id) || isNull(isAdmin)) {
         return 1;
     }
 
-    if (!isOfType(id, 'string')) {
+    if (!isOfType(id, 'string') || !isOfType(isAdmin, 'boolean')) {
         return 1;
     }
 
@@ -136,11 +204,10 @@ const deleteUser = async (id) => {
     }
 
     const userCollection = await users();
-    const deleteInfo = await userCollection.deleteOne({ _id: id });
-    if (deleteInfo.deletedCount === 0) {
+    const updateInfo = await userCollection.updateOne({ _id: new ObjectId(id) }, { $set: { isAdmin: isAdmin } });
+    if (updateInfo.modifiedCount === 0) {
         return 1;
     }
-    // TODO delete user from all posts, comments, reports, followers and following lists, and delete their posts
 
     return 0;
 }
