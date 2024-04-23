@@ -2,6 +2,7 @@ import { posts } from "../config/mongoCollections.js";
 import * as helper from "../helpers.js"
 import { users } from "../config/mongoCollections.js";
 import * as collection from "../config/mongoCollections.js";
+import { ObjectId } from 'mongodb';
 
 /**
 * Schema for Posts
@@ -104,6 +105,7 @@ export const create = async (
  * @returns {object} - Returns the post if it exists, otherwise returns null.
  */
 export const getPostById = async (id) => {
+
     if (helper.isNull(id)) {
         return null;
     }
@@ -119,7 +121,7 @@ export const getPostById = async (id) => {
     }
 
     const postCollection = await posts();
-    const post = await postCollection.findOne({ _id: id });
+    const post = await postCollection.findOne({ _id: new ObjectId(id) });
     if (helper.isNull(post)) {
         return null;
     }
@@ -143,7 +145,7 @@ export const deletePost = async (id) => {
     }
 
     const postCollection = await posts();
-    const deleteInfo = await postCollection.deleteOne({ _id: id });
+    const deleteInfo = await postCollection.deleteOne({ _id: new ObjectId(id) });
     if (deleteInfo.deletedCount === 0) {
         return 1;
     }

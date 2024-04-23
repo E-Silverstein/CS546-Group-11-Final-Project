@@ -7,7 +7,6 @@ import userRoutes from "./users.js";
 const constructorMethod = app => {
     
     //app.use("/keyword", keywordRoutes)
-
     app.use("/reports", reportRoutes);
     app.use("/posts", postRoutes);
     app.use("/users", userRoutes);
