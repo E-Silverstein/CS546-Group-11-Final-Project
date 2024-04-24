@@ -5,9 +5,7 @@
     <title>iconique</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
           theme: {
@@ -28,27 +26,8 @@
         }
     </script>
 </head>
-<body class="bg-icon100 font-inter">
-    <header class="pt-4">
-        <nav class="flex justify-around">
-            <div>
-                <a class="text-icon900 font-bold font-libreCas text-2xl">iconique</a>
-            </div>
-            <div>
-                search bar goes here
-            </div>
-            <ul class="list-none flex space-x-4">
-                <li>
-                    <a>create post</a>
-                </li>
-                <li>
-                    <a>liked</a>
-                </li>
-                <li>
-                    <a>{{{profilePicture}}}</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
+<body class="bg-icon100 text-icon900 h-screen font-inter">
+    {{{navbar}}}
+    {{{body}}}
 </body>
 </html>

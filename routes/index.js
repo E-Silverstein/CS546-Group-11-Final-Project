@@ -1,7 +1,7 @@
 /*
 import route files
 */
-import homeRoutes from './home';
+import homeRoutes from './home.js';
 
 const constructorMethod = app => {
     
