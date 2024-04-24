@@ -1,5 +1,7 @@
-import { posts } from "../config/mongoCollections";
+import { posts } from "../config/mongoCollections.js";
 import * as helper from "../helpers.js"
+import { users } from "../config/mongoCollections.js";
+import * as collection from "../config/mongoCollections.js";
 
 /**
 * Schema for Posts
@@ -22,51 +24,48 @@ import * as helper from "../helpers.js"
  * @param {string} image - The image URL of the post.
  * @param {Array<string>} clothingLinks - The links to the clothing items in the image.
  * @param {Array<string>} keywords - The keywords associated with the post.
- * @param {Array<string>} likes - The users that liked the post.
- * @param {Array<string>} comments - The comments associated with the post.
- * @param {Date} createdAt - The date the post was created.
  * @returns {number} - Returns 0 if the post is successfully created, otherwise returns 1.
  */
-const create = async (
+export const create = async (
     user,
     image,
     clothingLinks,
     keywords
 ) => {
     if (helper.areAllValuesNotNull([user, image, clothingLinks, keywords])) {
-        return 1;
+        return 'All values must be provided';
     }
 
     if (!helper.areAllValuesOfType([user, image], 'string')) {
-        return 1
+        return 'All values must be of type string';
     }
 
     user = user.trim();
     image = image.trim();
 
-    if (!helper.isArrayOfType(clothingLinks, 'string')) {
-        return 1;
+    if (!helper.areAllValuesOfType(clothingLinks, 'string')) {
+        return 'All values must be of type string';
     }
 
-    if (!helper.isArrayOfType(keywords, 'string')) {
-        return 1;
+    if (!helper.areAllValuesOfType(keywords, 'string')) {
+        return 'All values must be of type string';
     }
 
     // Check if the user exists
     const userCollection = await users();
-    const userObj = await userCollection.findOne({ _id: user });
+    const userObj = await userCollection.findOne({ username: user });
     if (helper.isNull(userObj)) {
-        return 1;
+        return 'User does not exist';
     }
 
     // Check if the keywords exist if they do not exist create them
-    const keywordCollection = await keywords();
+    const keywordCollection = await collection.keywords();
     for (let i = 0; i < keywords.length; i++) {
         const keywordObj = await keywordCollection.findOne({ keyword: keywords[i] });
         if (helper.isNull(keywordObj)) {
             const keyword = await create(keywords[i]);
             if (keyword === 1) {
-                return 1;
+                return 'Keyword could not be created';
             }
         }
     }
@@ -76,7 +75,7 @@ const create = async (
     // Check that clothing URL is valid using a regex
     for (let i = 0; i < clothingLinks.length; i++) {
         if (!helper.isValidURL(clothingLinks[i])) {
-            return 1;
+            return 'Clothing URL is not valid';
         }
     }
 
@@ -93,10 +92,23 @@ const create = async (
 
     const insertInfo = await postCollection.insertOne(newPost);
     if (insertInfo.insertedCount === 0) {
-        return 1;
+        throw 'Could not create post';
     }
 
-    return 0;
+    // Add post to user's posts
+    const userUpdate = await userCollection.updateOne({ username: user }, { $push: { posts: insertInfo.insertedId.toString() } });
+    if (userUpdate.modifiedCount === 0) {
+        throw 'Could not add post to user';
+    }
+    // Add keywords to keyword's posts
+    for (let i = 0; i < keywords.length; i++) {
+        const keywordUpdate = await keywordCollection.updateOne({ keyword: keywords[i] }, { $push: { posts: insertInfo.insertedId.toString() } });
+        if (keywordUpdate.modifiedCount === 0) {
+            throw 'Could not add post to keyword';
+        }
+    }
+
+    return insertInfo.insertedId.toString();
 }
 
 /**
@@ -104,7 +116,7 @@ const create = async (
  * @param {string} id - The ID of the post.
  * @returns {object} - Returns the post if it exists, otherwise returns null.
  */
-const getPostById = async (id) => {
+export const getPostById = async (id) => {
     if (helper.isNull(id)) {
         return null;
     }
@@ -128,7 +140,7 @@ const getPostById = async (id) => {
     return post;
 }
 
-const deletePost = async (id) => {
+export const deletePost = async (id) => {
     if (helper.isNull(id)) {
         return 1;
     }
@@ -156,7 +168,7 @@ const deletePost = async (id) => {
  * Retrieves all posts from the database.
  * @returns {Array} - Returns a list of all posts.
  */
-const getAllPosts = async () => {
+export const getAllPosts = async () => {
     const postCollection = await posts();
     const postList = await postCollection.find({}).toArray();
     return postList;
@@ -167,7 +179,7 @@ const getAllPosts = async () => {
  * @param {string} user - The user to retrieve posts for.
  * @returns {Array} - Returns a list of all posts by the user.
  */
-const getPostsByUser = async (user) => {
+export const getPostsByUser = async (user) => {
     if (helper.isNull(user)) {
         return null;
     }
@@ -192,7 +204,7 @@ const getPostsByUser = async (user) => {
  * @param {string} keyword - The keyword to retrieve posts for.
  * @returns {Array} - Returns a list of all posts by the keyword.
  */
-const getPostsByKeyword = async (keyword) => {
+export const getPostsByKeyword = async (keyword) => {
     if (helper.isNull(keyword)) {
         return null;
     }
@@ -213,7 +225,7 @@ const getPostsByKeyword = async (keyword) => {
  * @param {string} user - The user to retrieve liked posts for.
  * @returns {Array} - Returns a list of all posts that the user has liked.
  */
-const getLikedPostsByUser = async (user) => {
+export const getLikedPostsByUser = async (user) => {
     if (helper.isNull(user)) {
         return null;
     }
@@ -239,7 +251,7 @@ const getLikedPostsByUser = async (user) => {
  * @param {string} post - The post that was liked.
  * @returns {number} - Returns 0 if the like is successfully added, otherwise returns 1.
  */
-const addLike = async (user, post) => {
+export const addLike = async (user, post) => {
     if (helper.areAllValuesNotNull([user, post])) {
         return 1;
     }
@@ -270,7 +282,7 @@ const addLike = async (user, post) => {
  * @param {string} post - The post that was unliked.
  * @returns {number} - Returns 0 if the like is successfully removed, otherwise returns 1.
  */
-const removeLike = async (user, post) => {
+export const removeLike = async (user, post) => {
     if (helper.areAllValuesNotNull([user, post])) {
         return 1;
     }
@@ -288,6 +300,81 @@ const removeLike = async (user, post) => {
 
     const postCollection = await posts();
     const updateInfo = await postCollection.updateOne({ _id: post }, { $pull: { likes: user } });
+    if (updateInfo.modifiedCount === 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+export const addKeyword = async (post, keyword) => {
+    if (helper.areAllValuesNotNull([post, keyword])) {
+        return 1;
+    }
+
+    if (!helper.areAllValuesOfType([post, keyword], 'string')) {
+        return 1;
+    }
+
+    post = post.trim();
+    keyword = keyword.trim();
+
+    if (!ObjectId.isValid(post)) {
+        return 1;
+    }
+
+    const postCollection = await posts();
+    const updateInfo = await postCollection.updateOne({ _id: post }, { $push: { keywords: keyword } });
+    if (updateInfo.modifiedCount === 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+/**
+ * Updates a post in the database.
+ * @param {string} id - The ID of the post to update.
+ * @param {string} image - The updated image URL for the post.
+ * @param {string[]} clothingLinks - An array of updated clothing URLs for the post.
+ * @param {string[]} keywords - An array of updated keywords for the post.
+ * @returns {number} - Returns 0 if the post was successfully updated, 1 otherwise.
+ */
+export const updatePost = async (id, image, clothingLinks, keywords) => {
+    if (helper.areAllValuesNotNull([id, image, clothingLinks, keywords])) {
+        return 1;
+    }
+
+    if (!helper.areAllValuesOfType([id, image], 'string')) {
+        return 1;
+    }
+
+    id = id.trim();
+    image = image.trim();
+
+    if (!helper.areAllValuesOfType(clothingLinks, 'string')) {
+        return 1;
+    }
+
+    if (!helper.areAllValuesOfType(keywords, 'string')) {
+        return 1;
+    }
+
+    if (!ObjectId.isValid(id)) {
+        return 1;
+    }
+
+    // TODO Check that the image URLs are valid
+
+    // Check that clothing URL is valid using a regex
+    for (let i = 0; i < clothingLinks.length; i++) {
+        if (!helper.isValidURL(clothingLinks[i])) {
+            return 1;
+        }
+    }
+
+    const postCollection = await posts();
+    const updateInfo = await postCollection.updateOne({ _id: id }, { $set: { image, clothingLinks, keywords } });
     if (updateInfo.modifiedCount === 0) {
         return 1;
     }

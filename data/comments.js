@@ -1,7 +1,7 @@
-import { comments } from "../config/mongoCollections";
+import { comments } from "../config/mongoCollections.js";
 import * as helper from "../helpers.js"
-import { users } from "../config/mongoCollections";
-
+import { users } from "../config/mongoCollections.js";
+import { ObjectId } from "mongodb";
 /**
 * Schema for Comments Sub Collection
 {
@@ -19,17 +19,17 @@ import { users } from "../config/mongoCollections";
  * @param {string} text - The text of the comment.
  * @returns {number} - Returns 0 if the comment is successfully created, otherwise returns 1.
  */
-const create = async (
+export const create = async (
     post,
     user,
     text,
 ) => {
     if (helper.areAllValuesNotNull([post, user, text])) {
-        return 1;
+        return 'All values must be provided';
     }
 
     if (!helper.areAllValuesOfType([post, user, text], 'string')) {
-        return 1
+        return 'All values must be of type string';
     }
 
     post = post.trim();
@@ -37,14 +37,14 @@ const create = async (
     text = text.trim();
 
     if(!ObjectId.isValid(post) || !ObjectId.isValid(user)) {
-        return 1;
+        return 'Invalid ObjectID';
     }
 
     // Check if the user exists
     const userCollection = await users();
-    const userObj = await userCollection.findOne({ _id: user });
+    const userObj = await userCollection.findOne({ _id: new ObjectId(user) });
     if (helper.isNull(userObj)) {
-        return 1;
+        return 'User does not exist';
     }
 
     const commentCollection = await comments();
@@ -57,7 +57,7 @@ const create = async (
 
     const insertInfo = await commentCollection.insertOne(newComment);
     if (insertInfo.insertedCount === 0) {
-        return 1;
+        return 'Could not create comment';
     }
 
     return 0;
@@ -68,7 +68,7 @@ const create = async (
  * @param {string} id - The id of the comment.
  * @returns {Object} - Returns the comment object if it exists, otherwise returns null.
  */
-const getCommentById = async (id) => {
+export const getCommentById = async (id) => {
     if (helper.isNull(id)) {
         return null;
     }
@@ -97,7 +97,7 @@ const getCommentById = async (id) => {
  * @param {string} id - The id of the comment to be deleted.
  * @returns {number} - Returns 0 if the comment is successfully deleted, otherwise returns 1.
  */
-const deleteComment = async (id) => {
+export const deleteComment = async (id) => {
     if (helper.isNull(id)) {
         return 1;
     }

@@ -3,7 +3,7 @@
  * @param {*} value 
  * @returns {boolean}
  */
-function isNull(value) {
+export function isNull(value) {
     return value === null;
 }
 
@@ -12,13 +12,13 @@ function isNull(value) {
  * @param {Array} list 
  * @returns {boolean}
  */
-function areAllValuesNotNull(list) {
+export function areAllValuesNotNull(list) {
     for(let i = 0; i < list.length; i++) {
         if(isNull(list[i])) {
-            return false;
+            return true;
         }
     }
-    return true;
+    return false;
 }
 
 /**
@@ -27,7 +27,7 @@ function areAllValuesNotNull(list) {
  * @param {string} type 
  * @returns 
  */
-function isOfType(value, type) {
+export function isOfType(value, type) {
     return typeof value === type;
 }
 
@@ -37,7 +37,7 @@ function isOfType(value, type) {
  * @param {string} type 
  * @returns {boolean}
  */
-function areAllValuesOfType(list, type) {
+export function areAllValuesOfType(list, type) {
     for(let i = 0; i < list.length; i++) {
         if(!isOfType(list[i], type)) {
             return false;
@@ -51,7 +51,7 @@ function areAllValuesOfType(list, type) {
  * @param {string} string 
  * @returns {boolean}
  */
-function isValidURL(string) {
+export function isValidURL(string) {
     try {
         new URL(string);
     } catch (e) {
