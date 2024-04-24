@@ -1,6 +1,11 @@
 import { users } from "../config/mongoCollections.js";
-import {areAllValuesNotNull, areAllValuesOfType, isNull, isOfType} from "../helpers.js";
-import { ObjectId } from 'mongodb';
+import {
+	areAllValuesNotNull,
+	areAllValuesOfType,
+	isNull,
+	isOfType,
+} from "../helpers.js";
+import { ObjectId } from "mongodb";
 
 /* Schema for User
 {
@@ -24,258 +29,341 @@ import { ObjectId } from 'mongodb';
 
 /**
  * Creates a user in the users collection
- * @param {string} username 
+ * @param {string} username
  * @param {string} passwordHash
- * @param {string} profilePicURL 
- * @param {number} age 
- * @param {Date} createdAt 
+ * @param {string} profilePicURL
+ * @param {number} age
+ * @param {Date} createdAt
  */
-export const create = async (
-    username,
-    passwordHash,
-    profilePicURL,
-    age,
-    createdAt
-) => {
-    if (areAllValuesNotNull([
-        username,
-        passwordHash,
-        profilePicURL,
-        age,
-        createdAt
-    ])) {
-        return 'All values must be provided'; 
-    }
+export const create = async (username, passwordHash, profilePicURL, age) => {
+	if (areAllValuesNotNull([username, passwordHash, profilePicURL, age])) {
+		throw "All values must be provided";
+	}
 
-    if (!areAllValuesOfType([
-        username,
-        passwordHash,
-        profilePicURL
-    ], 'string'
-    )) {
-        return 'All values must be of type string';
-    }
+	if (!areAllValuesOfType([username, passwordHash, profilePicURL], "string")) {
+		throw "All values must be of type string";
+	}
 
-    username = username.trim();
-    passwordHash = passwordHash.trim();
-    profilePicURL = profilePicURL.trim();
+	username = username.trim();
+	passwordHash = passwordHash.trim();
+	profilePicURL = profilePicURL.trim();
 
-    if (!isOfType(age, 'number')) {
-        return 'Age must be of type number';
-    }
+	if (!isOfType(age, "number")) {
+		throw "Age must be of type number";
+	}
 
-    if (!(createdAt instanceof Date)) {
-        return 'createdAt must be of type Date';
-    }
+	const createdAt = new Date();
 
-    // TODO check valid profilePicURL
+	// TODO check valid profilePicURL
 
-    // TODO make sure password type is correct
+	// TODO make sure password type is correct
 
-    const newUser = {
-        username: username,
-        passwordHash: passwordHash,
-        profilePicture: profilePicURL,
-        age: age,
-        createdAt: createdAt,
-        followers: [],
-        following: [],
-        posts: [],
-        likedKeywords: []
-    };   
-    
-    const userCollection = await users();
-    const insertInfo = await userCollection.insertOne(newUser);
-    if (insertInfo.insertedCount === 0) {
-        return 'Could not create user';
-    }
+	const newUser = {
+		username: username,
+		passwordHash: passwordHash,
+		profilePicture: profilePicURL,
+		age: age,
+		createdAt: createdAt,
+		followers: [],
+		following: [],
+		posts: [],
+		likedKeywords: [],
+	};
 
-    return 0;
-}
+	const userCollection = await users();
+	const insertInfo = await userCollection.insertOne(newUser);
+	if (insertInfo.insertedCount === 0) {
+		throw "Could not create user";
+	}
 
-
+	const insertedUser = await userCollection.findOne({
+		_id: insertInfo.insertedId,
+	});
+	return insertedUser;
+};
 
 /**
  * Retrieves a user by their ID.
  * @param {string} id - The ID of the user.
- * @returns {number} - Returns 0 if the user is found, or 1 if not found.
+ * @returns {Object} - Returns the user object.
  */
 export const getUserById = async (id) => {
-    if (isNull(id)) {
-        return 1;
-    }
+	if (isNull(id)) {
+		throw "ID must be provided";
+	}
 
-    if (!isOfType(id, 'string')) {
-        return 1;
-    }
+	if (!isOfType(id, "string")) {
+		throw "ID must be of type string";
+	}
 
-    id = id.trim();
+	id = id.trim();
 
-    if(!ObjectId.isValid(id)) {
-        return 1;
-    }
+	if (!ObjectId.isValid(id)) {
+		throw "Invalid ObjectID";
+	}
 
-    const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(id) });
-    if (isNull(user)) {
-        return 'User not found';
-    }
+	const userCollection = await users();
+	const user = await userCollection.findOne({ _id: new ObjectId(id) });
+	if (isNull(user)) {
+		throw "User not found";
+	}
 
-    return 0;
-}
-
+	return user;
+};
 
 /**
  * Deletes a user from the database.
  * @param {string} id - The ID of the user to be deleted.
- * @returns {number} - Returns 0 if the user is successfully deleted, 1 otherwise.
+ * @returns {boolean} - Returns true if the user is successfully deleted.
  */
 export const deleteUser = async (id) => {
-    if (isNull(id)) {
-        return 1;
-    }
+	if (isNull(id)) {
+		throw "ID must be provided";
+	}
 
-    if (!isOfType(id, 'string')) {
-        return 1;
-    }
+	if (!isOfType(id, "string")) {
+		throw "ID must be of type string";
+	}
 
-    id = id.trim();
+	id = id.trim();
 
-    if(!ObjectId.isValid(id)) {
-        return 1;
-    }
+	if (!ObjectId.isValid(id)) {
+		throw "Invalid ObjectID";
+	}
 
-    const userCollection = await users();
-    
-    // TODO delete user from all posts, comments, reports, followers and following lists, and delete their posts
+	const userCollection = await users();
 
-    const deleteInfo = await userCollection.deleteOne({ _id: new ObjectId(id) });
-    
-    if (deleteInfo.deletedCount === 0) {
-        return 1;
-    }
+	// TODO delete user from all posts, comments, reports, followers and following lists, and delete their posts
 
-    return 0;
-}
+	const deleteInfo = await userCollection.deleteOne({ _id: new ObjectId(id) });
 
+	if (deleteInfo.deletedCount === 0) {
+		throw "Could not delete user";
+	}
+
+	return true;
+};
+
+/**
+ * Retrieves a user's ID by their username.
+ * @param {string} username - The username of the user.
+ * @returns {string} The ID of the user.
+ */
 export const getUserByUsername = async (username) => {
-    if (isNull(username)) {
-        return null;
-    }
+	if (isNull(username)) {
+		throw "Username must be provided";
+	}
 
-    if (!isOfType(username, 'string')) {
-        return null;
-    }
+	if (!isOfType(username, "string")) {
+		throw "Username must be of type string";
+	}
 
-    username = username.trim();
+	username = username.trim();
 
-    const userCollection = await users();
-    const user = await userCollection.findOne({ username: username });
-    if (isNull(user)) {
-        return null;
-    }
+	const userCollection = await users();
+	const user = await userCollection.findOne({ username: username });
+	if (isNull(user)) {
+		throw "User not found";
+	}
 
-    return user._id.toString();
-}
+	return user._id.toString();
+};
 
 /**
  * Retrieves all users from the database.
  * @returns {Array} - Returns an array of user objects.
  */
 export const getAllUsers = async () => {
-    const userCollection = await users();
-    const userList = await userCollection.find({}).toArray();
-    return userList;
-}
+	const userCollection = await users();
+	const userList = await userCollection.find({}).toArray();
+	return userList;
+};
 
+/**
+ * Sets the admin status of a user.
+ *
+ * @param {string} id - The ID of the user.
+ * @param {boolean} isAdmin - The admin status to set.
+ * @returns {Object} The updated user object.
+ */
 export const setAdminStatus = async (id, isAdmin) => {
-    if (isNull(id) || isNull(isAdmin)) {
-        return 1;
-    }
+	if (isNull(id) || isNull(isAdmin)) {
+		throw "All values must be provided";
+	}
 
-    if (!isOfType(id, 'string') || !isOfType(isAdmin, 'boolean')) {
-        return 1;
-    }
+	if (!isOfType(id, "string") || !isOfType(isAdmin, "boolean")) {
+		throw "All values must be of correct type";
+	}
 
-    id = id.trim();
+	id = id.trim();
 
-    if(!ObjectId.isValid(id)) {
-        return 1;
-    }
+	if (!ObjectId.isValid(id)) {
+		throw "Invalid ObjectID";
+	}
 
-    const userCollection = await users();
-    const updateInfo = await userCollection.updateOne({ _id: new ObjectId(id) }, { $set: { isAdmin: isAdmin } });
-    if (updateInfo.modifiedCount === 0) {
-        return 1;
-    }
+	const userCollection = await users();
+	const updateInfo = await userCollection.updateOne(
+		{ _id: new ObjectId(id) },
+		{ $set: { isAdmin: isAdmin } }
+	);
+	if (updateInfo.modifiedCount === 0) {
+		throw "Could not update user";
+	}
 
-    return 0;
-}
+	const updatedUser = await userCollection.findOne({ _id: new ObjectId(id) });
+	return updatedUser;
+};
 
+/**
+ * Adds a follower to a user's followers list.
+ *
+ * @param {string} userId - The ID of the user.
+ * @param {string} followerId - The ID of the follower.
+ * @returns {Object} The updated user object.
+ */
 export const addFollower = async (userId, followerId) => {
-    if (isNull(userId) || isNull(followerId)) {
-        return 1;
-    }
+	if (isNull(userId) || isNull(followerId)) {
+		throw "All values must be provided";
+	}
 
-    if (!isOfType(userId, 'string') || !isOfType(followerId, 'string')) {
-        return 1;
-    }
+	if (!isOfType(userId, "string") || !isOfType(followerId, "string")) {
+		throw "All values must be of type string";
+	}
 
-    userId = userId.trim();
-    followerId = followerId.trim();
+	userId = userId.trim();
+	followerId = followerId.trim();
 
-    if(!ObjectId.isValid(userId) || !ObjectId.isValid(followerId)) {
-        return 1;
-    }
+	if (!ObjectId.isValid(userId) || !ObjectId.isValid(followerId)) {
+		throw "Invalid ObjectID";
+	}
 
-    const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(userId) });
-    if (isNull(user)) {
-        return 1;
-    }
+	const userCollection = await users();
+	const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+	if (isNull(user)) {
+		throw "User not found";
+	}
 
-    if (user.followers.includes(new ObjectId(followerId))) {
-        return 1;
-    }
+	if (user.followers.includes(new ObjectId(followerId))) {
+		throw "User is already following this user";
+	}
 
-    const updateInfo = await userCollection.updateOne({ _id: new ObjectId(userId) }, { $addToSet: { followers: new ObjectId(followerId) } });
-    if (updateInfo.modifiedCount === 0) {
-        return 1;
-    }
+	const updateInfo = await userCollection.updateOne(
+		{ _id: new ObjectId(userId) },
+		{ $addToSet: { followers: new ObjectId(followerId) } }
+	);
+	if (updateInfo.modifiedCount === 0) {
+		throw "Could not update user";
+	}
 
-    return 0;
-}
+	const updatedUser = await userCollection.findOne({
+		_id: new ObjectId(userId),
+	});
+	return updatedUser;
+};
 
+/**
+ * Removes a follower from a user's followers list.
+ *
+ * @param {string} userId - The ID of the user.
+ * @param {string} followerId - The ID of the follower to be removed.
+ * @returns {Object} - The updated user object.
+ */
 export const removeFollower = async (userId, followerId) => {
-    if (isNull(userId) || isNull(followerId)) {
-        return 1;
-    }
+	if (isNull(userId) || isNull(followerId)) {
+		throw "All values must be provided";
+	}
 
-    if (!isOfType(userId, 'string') || !isOfType(followerId, 'string')) {
-        return 1;
-    }
+	if (!isOfType(userId, "string") || !isOfType(followerId, "string")) {
+		throw "All values must be of type string";
+	}
 
-    userId = userId.trim();
-    followerId = followerId.trim();
+	userId = userId.trim();
+	followerId = followerId.trim();
 
-    if(!ObjectId.isValid(userId) || !ObjectId.isValid(followerId)) {
-        return 1;
-    }
+	if (!ObjectId.isValid(userId) || !ObjectId.isValid(followerId)) {
+		throw "Invalid ObjectID";
+	}
 
-    const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(userId) });
-    if (isNull(user)) {
-        return 1;
-    }
+	const userCollection = await users();
+	const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+	if (isNull(user)) {
+		throw "User not found";
+	}
 
-    if (!user.followers.includes(new ObjectId(followerId))) {
-        return 1;
-    }
-    
-    const updateInfo = await userCollection.updateOne({ _id: new ObjectId(userId) }, { $pull: { followers: new ObjectId(followerId) } });
-    if (updateInfo.modifiedCount === 0) {
-        return 1;
-    }
+	if (!user.followers.includes(new ObjectId(followerId))) {
+		throw "User is not following this user";
+	}
 
-    return 0;
-}
+	const updateInfo = await userCollection.updateOne(
+		{ _id: new ObjectId(userId) },
+		{ $pull: { followers: new ObjectId(followerId) } }
+	);
+	if (updateInfo.modifiedCount === 0) {
+		throw "Could not update user";
+	}
+
+	const updatedUser = await userCollection.findOne({
+		_id: new ObjectId(userId),
+	});
+	return updatedUser;
+};
+
+export const updateUser = async (
+	id,
+	username,
+	passwordHash,
+	profilePicURL,
+	age
+) => {
+	if (
+		isNull(id) ||
+		isNull(username) ||
+		isNull(passwordHash) ||
+		isNull(profilePicURL) ||
+		isNull(age)
+	) {
+		throw "All values must be provided";
+	}
+
+	if (
+		!isOfType(id, "string") ||
+		!isOfType(username, "string") ||
+		!isOfType(passwordHash, "string") ||
+		!isOfType(profilePicURL, "string") ||
+		!isOfType(age, "number")
+	) {
+		throw "All values must be of correct type";
+	}
+
+	id = id.trim();
+	username = username.trim();
+	passwordHash = passwordHash.trim();
+	profilePicURL = profilePicURL.trim();
+
+	if (!ObjectId.isValid(id)) {
+		throw "Invalid ObjectID";
+	}
+
+	const userCollection = await users();
+	const user = await userCollection.findOne({ _id: new ObjectId(id) });
+	if (isNull(user)) {
+		throw "User not found";
+	}
+
+	const updateInfo = await userCollection.updateOne(
+		{ _id: new ObjectId(id) },
+		{
+			$set: {
+				username: username,
+				passwordHash: passwordHash,
+				profilePicture: profilePicURL,
+				age: age,
+			},
+		}
+	);
+	if (updateInfo.modifiedCount === 0) {
+		throw "Could not update user";
+	}
+	const updatedUser = await userCollection.findOne({ _id: new ObjectId(id) });
+	return updatedUser;
+};
