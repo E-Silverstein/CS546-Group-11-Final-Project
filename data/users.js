@@ -35,13 +35,13 @@ export const create = async (
     passwordHash,
     profilePicURL,
     age,
-    createdAt
+    createdAt   
 ) => {
     if (areAllValuesNotNull([
         username,
         passwordHash,
         profilePicURL,
-        age,
+        age,    
         createdAt
     ])) {
         return 'All values must be provided'; 

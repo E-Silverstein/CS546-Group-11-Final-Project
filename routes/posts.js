@@ -1,11 +1,10 @@
 /*
     ROUTES ARE NOT TESTED YET
 */
-
 import {deletePost, getAllPosts, getPostById, updatePost} from "./../data/posts.js";
 import {posts} from "./../config/mongoCollections.js";
 import express from 'express';
-import { ObjectId } from 'mongodb';
+import {ObjectId} from 'mongodb';
 import {upload} from './../middleware.js';
 
 const router = express.Router();
@@ -16,7 +15,7 @@ router
     // Route Will get all posts and create a queue for main feed
     try {
         let posts = await getAllPosts();
-        if (!posts) throw "Error: No Posts found"
+        if (!posts) throw "Error: Could not get posts";
         //TO-DO: change returns to render when frontend complete
         return res.status(200).json(posts);
     } catch (e) {
@@ -30,8 +29,8 @@ router
     try {
         //VALIDATION: user -> should later be validated using the session state
         if (!req.body.user) throw "Error: Requires a 'user' input";
-        if (typeof req.body.user != 'string') throw "Error: user input must be a string";
-        if (req.body.user.trim() =='') throw "Error: user cannot be empty string";
+        if (typeof req.body.user != 'string') throw "Error: 'user' input must be a string";
+        if (req.body.user.trim() =='') throw "Error: 'user' cannot be empty string";
         req.body.user = req.body.user.trim();
 
     } catch(e) {
@@ -46,7 +45,7 @@ router
             - mimetype: type of file
         */
         if (!req.file) throw "Error: Requires a 'image' input";
-        if (!req.file.mimetype.includes('image/')) throw "Error incorrect file type";
+        if (!req.file.mimetype.includes('image/')) throw "Error 'image' input is incorrect file type";
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(400).send(e);
@@ -57,8 +56,8 @@ router
         //may be unnecessary: if (req.body.clothingLinks.length == 0) throw "Error: List of clothing links is empty"
         for (let i = 0; i < req.body.clothingLinks.length ; i++) {
             let link = req.body.clothingLinks[i];
-            if (typeof link != 'string') throw "Error: clothing link must be a string";
-            if (link.trim() =='') throw "Error: clothing link cannot be empty string";
+            if (typeof link != 'string') throw "Error: 'clothing link' must be a string";
+            if (link.trim() =='') throw "Error: 'clothing link' cannot be empty string";
             req.body.clothingLinks[i] = link.trim();
             
             let split_link = link.split('.');
@@ -74,8 +73,8 @@ router
         //may be unnecessary: if (req.body.keywords.length == 0) throw "Error: List of keywords is empty"
         for (let i = 0; i < req.body.keywords.length ; i++) {
             let keyword = req.body.keywords[i];
-            if (typeof keyword != 'string') throw "Error: keyword must be a string";
-            if (keyword.trim() =='') throw "Error: keyword cannot be empty string";
+            if (typeof keyword != 'string') throw "Error: 'keyword' must be a string";
+            if (keyword.trim() =='') throw "Error: 'keyword' cannot be empty string";
             req.body.keywords[i] = link.trim();
         }
     } catch(e) {
@@ -105,9 +104,9 @@ router
     try {
         //VALIDATION: postid
         if (req.params.postid == null) throw "Error: Requires a 'postid' input";
-        if (typeof req.params.postid != 'string') throw "Error: postid must be a string";
-        if (req.params.postid.trim() == '') throw "Error: postid cannot be an empty string";
-        if(!ObjectId.isValid(req.params.postid)) throw "Error: postid is not a valid ObjectId";
+        if (typeof req.params.postid != 'string') throw "Error: 'postid' must be a string";
+        if (req.params.postid.trim() == '') throw "Error: 'postid' cannot be an empty string";
+        if(!ObjectId.isValid(req.params.postid)) throw "Error: 'postid' is not a valid ObjectId";
         req.params.postid = req.params.postid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
@@ -129,9 +128,9 @@ router
     try {
         //VALIDATION: postid
         if (req.params.postid == null) throw "Error: Requires a 'postid' input";
-        if (typeof req.params.postid != 'string') throw "Error: postid must be a string";
-        if (req.params.postid.trim() == '') throw "Error: postid cannot be an empty string";
-        if(!ObjectId.isValid(req.params.postid)) throw "Error: postid is not a valid ObjectId";
+        if (typeof req.params.postid != 'string') throw "Error: 'postid' must be a string";
+        if (req.params.postid.trim() == '') throw "Error: 'postid' cannot be an empty string";
+        if(!ObjectId.isValid(req.params.postid)) throw "Error: 'postid' is not a valid ObjectId";
         req.params.postid = req.params.postid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
@@ -141,7 +140,7 @@ router
         //VALIDATION: if post exists
         const postCollection = await posts();
         let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
-        if (!post) throw "Error: Post with id: "+req.params.postid+" does not exist"
+        if (!post) throw "Error: Post with postid: "+req.params.postid+" does not exist"
     } catch(e) {
         res.status(404).send(e);
     }
@@ -157,7 +156,7 @@ router
     try {
         //VALIDATION: image 
         if (!req.file) throw "Error: Requires a 'image' input";
-        if (!req.file.mimetype.includes('image/')) throw "Error incorrect file type";
+        if (!req.file.mimetype.includes('image/')) throw "Error: 'image' input is incorrect file type";
         
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
@@ -169,12 +168,12 @@ router
         //may be unnecessary: if (req.body.clothingLinks.length == 0) throw "Error: List of clothing links is empty"
         for (let i = 0; i < req.body.clothingLinks.length ; i++) {
             let link = req.body.clothingLinks[i];
-            if (typeof link != 'string') throw "Error: clothing link must be a string";
-            if (link.trim() =='') throw "Error: clothing link cannot be empty string";
+            if (typeof link != 'string') throw "Error: 'clothing link' must be a string";
+            if (link.trim() =='') throw "Error: 'clothing link' cannot be empty string";
             req.body.clothingLinks[i] = link.trim();
             
             let split_link = link.split('.');
-            if (split_link[0] != 'https://' || split_link[split_link.length-1] != '.com') throw "Error: Invalid clothing link: "+link;
+            if (split_link[0] != 'https://' || split_link[split_link.length-1] != '.com') throw "Error: Invalid 'clothing link': "+link;
         }
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
@@ -186,8 +185,8 @@ router
         //may be unnecessary: if (req.body.keywords.length == 0) throw "Error: List of keywords is empty"
         for (let i = 0; i < req.body.keywords.length ; i++) {
             let keyword = req.body.keywords[i];
-            if (typeof keyword != 'string') throw "Error: keyword must be a string";
-            if (keyword.trim() =='') throw "Error: keyword cannot be empty string";
+            if (typeof keyword != 'string') throw "Error: 'keyword' must be a string";
+            if (keyword.trim() =='') throw "Error: 'keyword' cannot be empty string";
             req.body.keywords[i] = link.trim();
         }
     } catch(e) {
@@ -211,9 +210,9 @@ router
     try {
         //VALIDATION: postid
         if (req.params.postid == null) throw "Error: Requires a 'postid' input";
-        if (typeof req.params.postid != 'string') throw "Error: postid must be a string";
-        if (req.params.postid.trim() == '') throw "Error: postid cannot be an empty string";
-        if(!ObjectId.isValid(req.params.postid)) throw "Error: postid is not a valid ObjectId";
+        if (typeof req.params.postid != 'string') throw "Error: 'postid' must be a string";
+        if (req.params.postid.trim() == '') throw "Error: 'postid' cannot be an empty string";
+        if(!ObjectId.isValid(req.params.postid)) throw "Error: 'postid' is not a valid ObjectId";
         req.params.postid = req.params.postid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
@@ -238,7 +237,7 @@ router
     }
     try {
         let deleteRes = await deletePost(req.params.postid);
-        if (deleteRes==0) throw "Error: Post could not be deleted";
+        if (deleteRes==1) throw "Error: Post could not be deleted";
 
 
         return res.status(200).send("Delete Successful");
