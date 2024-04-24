@@ -92,11 +92,21 @@ export const create = async (
 
     const insertInfo = await postCollection.insertOne(newPost);
     if (insertInfo.insertedCount === 0) {
-        return 'Could not create post';
+        throw 'Could not create post';
     }
 
-    // TODO add post to user's posts
-    // TODO add keywords to keyword's posts
+    // Add post to user's posts
+    const userUpdate = await userCollection.updateOne({ username: user }, { $push: { posts: insertInfo.insertedId.toString() } });
+    if (userUpdate.modifiedCount === 0) {
+        throw 'Could not add post to user';
+    }
+    // Add keywords to keyword's posts
+    for (let i = 0; i < keywords.length; i++) {
+        const keywordUpdate = await keywordCollection.updateOne({ keyword: keywords[i] }, { $push: { posts: insertInfo.insertedId.toString() } });
+        if (keywordUpdate.modifiedCount === 0) {
+            throw 'Could not add post to keyword';
+        }
+    }
 
     return insertInfo.insertedId.toString();
 }
@@ -315,6 +325,56 @@ export const addKeyword = async (post, keyword) => {
 
     const postCollection = await posts();
     const updateInfo = await postCollection.updateOne({ _id: post }, { $push: { keywords: keyword } });
+    if (updateInfo.modifiedCount === 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+/**
+ * Updates a post in the database.
+ * @param {string} id - The ID of the post to update.
+ * @param {string} image - The updated image URL for the post.
+ * @param {string[]} clothingLinks - An array of updated clothing URLs for the post.
+ * @param {string[]} keywords - An array of updated keywords for the post.
+ * @returns {number} - Returns 0 if the post was successfully updated, 1 otherwise.
+ */
+export const updatePost = async (id, image, clothingLinks, keywords) => {
+    if (helper.areAllValuesNotNull([id, image, clothingLinks, keywords])) {
+        return 1;
+    }
+
+    if (!helper.areAllValuesOfType([id, image], 'string')) {
+        return 1;
+    }
+
+    id = id.trim();
+    image = image.trim();
+
+    if (!helper.areAllValuesOfType(clothingLinks, 'string')) {
+        return 1;
+    }
+
+    if (!helper.areAllValuesOfType(keywords, 'string')) {
+        return 1;
+    }
+
+    if (!ObjectId.isValid(id)) {
+        return 1;
+    }
+
+    // TODO Check that the image URLs are valid
+
+    // Check that clothing URL is valid using a regex
+    for (let i = 0; i < clothingLinks.length; i++) {
+        if (!helper.isValidURL(clothingLinks[i])) {
+            return 1;
+        }
+    }
+
+    const postCollection = await posts();
+    const updateInfo = await postCollection.updateOne({ _id: id }, { $set: { image, clothingLinks, keywords } });
     if (updateInfo.modifiedCount === 0) {
         return 1;
     }
