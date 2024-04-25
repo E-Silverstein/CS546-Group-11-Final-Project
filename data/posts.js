@@ -15,7 +15,14 @@ import * as keywordData from "./keyword.js";
   "keywords": ["string"],
   "likes": ["ObjectId (Users)"],
   "comments": ["ObjectId (Comments)"],
-  "createdAt": "Date"
+  "createdAt": "Date", 
+  "interactions": [
+	{
+	  "user": "ObjectId (Users)",
+	  "score": "number"
+	}
+  
+  ]
 }
  */
 
@@ -92,6 +99,7 @@ export const create = async (userId, image, clothingLinks, keywords) => {
 		likes: [],
 		comments: [],
 		createdAt: new Date(),
+		interactions: []
 	};
 
 	const insertInfo = await postCollection.insertOne(newPost);
@@ -442,6 +450,66 @@ export const addComment = async (post, comment) => {
 	);
 	if (updateInfo.modifiedCount === 0) {
 		throw "Could not add comment";
+	}
+	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
+	return postObj;
+}
+
+export const removeComment = async (post, comment) => {
+	if (helper.areAllValuesNotNull([post, comment])) {
+		throw "All values must be provided";
+	}
+
+	if (!helper.areAllValuesOfType([post, comment], "string")) {
+		throw "All values must be of type string";
+	}
+
+	post = post.trim();
+	comment = comment.trim();
+
+	if (!ObjectId.isValid(post) || !ObjectId.isValid(comment)) {
+		throw "Invalid ObjectID";
+	}
+
+	const postCollection = await posts();
+	const updateInfo = await postCollection.updateOne(
+		{ _id: new ObjectId(post) },
+		{ $pull: { comments: new ObjectId(comment) } }
+	);
+	if (updateInfo.modifiedCount === 0) {
+		throw "Could not remove comment";
+	}
+	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
+	return postObj;
+}
+
+export const addInteraction = async (post, user, score) => {
+	if (helper.areAllValuesNotNull([post, user, score])) {
+		throw "All values must be provided";
+	}
+
+	if (!helper.areAllValuesOfType([post, user], "string")) {
+		throw "All values must be of type string";
+	}
+
+	if (!helper.isOfType(score, "number")) {
+		throw "Score must be of type number";
+	}
+
+	post = post.trim();
+	user = user.trim();
+
+	if (!ObjectId.isValid(post) || !ObjectId.isValid(user)) {
+		throw "Invalid ObjectID";
+	}
+
+	const postCollection = await posts();
+	const updateInfo = await postCollection.updateOne(
+		{ _id: new ObjectId(post) },
+		{ $push: { interactions: { user: new ObjectId(user), score } } }
+	);
+	if (updateInfo.modifiedCount === 0) {
+		throw "Could not add interaction";
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
 	return postObj;
