@@ -22,7 +22,7 @@ router
         return res.status(500).send(e)
     }
 })
-.post(upload.single('profile-picture'),async (req, res) => {
+.post('/signup',upload.single('profile-picture'),async (req, res) => {
     /* Will get data from creation form and create a user if valid arguments */
     try {
         //VALIDATION: username

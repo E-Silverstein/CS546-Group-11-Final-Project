@@ -6,12 +6,13 @@ import {
 	isOfType,
 } from "../helpers.js";
 import { ObjectId } from "mongodb";
+import bcrypt from 'bcrypt';
 
 /* Schema for User
 {
   "_id": "ObjectId",
   "username": "string",
-  "passwordHash": "string",
+  "password: "string",
   "profilePicture": "string (URL)",
   "age": "number",
   "createdAt": "Date",
@@ -30,22 +31,22 @@ import { ObjectId } from "mongodb";
 /**
  * Creates a user in the users collection
  * @param {string} username
- * @param {string} passwordHash
+ * @param {string} password
  * @param {string} profilePicURL
  * @param {number} age
  * @param {Date} createdAt
  */
-export const create = async (username, passwordHash, profilePicURL, age) => {
-	if (areAllValuesNotNull([username, passwordHash, profilePicURL, age])) {
+export const createUser = async (username, password, profilePicURL, age) => {
+	if (areAllValuesNotNull([username, password, profilePicURL, age])) {
 		throw "All values must be provided";
 	}
 
-	if (!areAllValuesOfType([username, passwordHash, profilePicURL], "string")) {
+	if (!areAllValuesOfType([username, password, profilePicURL], "string")) {
 		throw "All values must be of type string";
 	}
 
 	username = username.trim();
-	passwordHash = passwordHash.trim();
+	password = password.trim();
 	profilePicURL = profilePicURL.trim();
 
 	if (!isOfType(age, "number")) {
@@ -69,9 +70,11 @@ export const create = async (username, passwordHash, profilePicURL, age) => {
 
 	// TODO make sure password type is correct
 
+	let hash = await bcrypt.hash(password, 12);
+
 	const newUser = {
 		username: username,
-		passwordHash: passwordHash,
+		password: hash,
 		profilePicture: profilePicURL,
 		age: age,
 		createdAt: createdAt,
@@ -322,14 +325,14 @@ export const removeFollower = async (userId, followerId) => {
 export const updateUser = async (
 	id,
 	username,
-	passwordHash,
+	password,
 	profilePicURL,
 	age
 ) => {
 	if (
 		isNull(id) ||
 		isNull(username) ||
-		isNull(passwordHash) ||
+		isNull(password) ||
 		isNull(profilePicURL) ||
 		isNull(age)
 	) {
@@ -339,7 +342,7 @@ export const updateUser = async (
 	if (
 		!isOfType(id, "string") ||
 		!isOfType(username, "string") ||
-		!isOfType(passwordHash, "string") ||
+		!isOfType(password, "string") ||
 		!isOfType(profilePicURL, "string") ||
 		!isOfType(age, "number")
 	) {
@@ -348,7 +351,7 @@ export const updateUser = async (
 
 	id = id.trim();
 	username = username.trim();
-	passwordHash = passwordHash.trim();
+	password = password.trim();
 	profilePicURL = profilePicURL.trim();
 
 	if (!ObjectId.isValid(id)) {
@@ -366,7 +369,7 @@ export const updateUser = async (
 		{
 			$set: {
 				username: username,
-				passwordHash: passwordHash,
+				password: password,
 				profilePicture: profilePicURL,
 				age: age,
 			},
