@@ -1,7 +1,7 @@
 import postRoutes from "./posts.js";
+import userRoutes from "./posts.js";
 import loginRoutes from './login.js';
 import signupRoutes from './signup.js';
-import editUserRoutes from './editUser.js'
 import { getAllPosts } from '../data/posts.js';
 
 const constructorMethod = app => {    
@@ -13,11 +13,8 @@ const constructorMethod = app => {
   app.use('/login', loginRoutes);
   app.use('/signup',  signupRoutes);
 
-  //TO-DO
-  //app.use("/posts", postRoutes);
-  //app.use('/editPost', editPostRoutes);
-  //app.use("/users", userRoutes);
-  //app.use('/editUser', editUserRoutes);
+  app.use("/posts", postRoutes);
+  app.use("/users", userRoutes);
   
   //app.use("/reports", reportRoutes);
 
