@@ -5,6 +5,8 @@ import { getAllUsers, create, getUserById } from '../data/users.js';
 import { upload } from '../middleware.js';
 import { users } from '../config/mongoCollections.js';
 import express from 'express';
+import { ObjectId } from 'mongodb';
+
 const router = express.Router();
 
 router
@@ -34,7 +36,7 @@ router
         req.body.username =  req.body.username.trim().toLowercase();
 
         if (req.body.username.length < 5 || req.body.username.length > 20) throw "Error: 'username' does not meet length constraints (5-20 characters)";
-        if (req.body.password.match(' ') != null) throw "Error: 'username' cannot contain spaces";
+        if (req.body.username.match(' ') != null) throw "Error: 'username' cannot contain spaces";
 
         let userCollection = await users();
         let user = await userCollection.findOne({username : {$eq: req.body.username}});
@@ -125,7 +127,66 @@ router
 })
 .patch(upload.single('profile-picture'), async (req, res) => {
     /*will update a pre-existing user with new data provided from an edit form*/
-    //TO-DO
+    try {
+        //VALIDATION: userid
+        if (req.params.userid == null) throw "Error: Requires a 'userid' input";
+        if (typeof req.params.userid != 'string') throw "Error: 'userid' must be a string";
+        if (req.params.userid.trim() == '') throw "Error: 'userid' cannot be an empty string";
+        if(!ObjectId.isValid(req.params.userid)) throw "Error: 'userid' is not a valid ObjectId";
+        req.params.userid = req.params.userid.trim();
+    } catch (e) {
+        //TO-DO: change returns to render when frontend complete
+        return res.status(400).send(e);
+    }
+    try {
+        //VALIDATION: if user exists
+        const userCollection = await users();
+        let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
+        if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
+    } catch(e) {
+        return res.status(404).send(e);
+    }
+    try {
+        //VALIDATION: if user is current user
+        const userCollection = await users();
+        let post = await userCollection.find({ _id: new ObjectId(req.params.userid)});
+
+        //TO-DO: initialize session state and compare users
+        //if (req.session.user.name != user.username) throw "Error: You do not own this post"
+    } catch(e) {
+        return res.status(403).send(e);
+    }
+    try {
+        if (!req.body.username) throw "Error: 'username' input is required";
+        if (typeof req.body.username != 'string') throw "Error: 'username' must be a string";
+        if (req.body.username.trim() == "") throw "Error: 'username' is an empty string";
+        if (req.body.username.length < 5 || req.body.username.length > 20) throw "Error: 'username' does not meet length constraints (5-20 characters)";
+        if (req.body.username.match(' ') != null) throw "Error: 'username' cannot contain spaces";
+
+    } catch(e) {
+        return res.status(400).send(e);
+    }
+    try {
+        //VALIDATION: image 
+        if (!req.file) throw "Error: Requires a 'image' input";
+        if (!req.file.mimetype.includes('image/')) throw "Error: 'image' input is incorrect file type";
+        
+    } catch(e) {
+        //TO-DO: change returns to render when frontend complete
+        return res.status(400).send(e);
+    } 
+
+    try {
+        let updateRes = await updateUser(
+                            req.body.userid,
+                            req.body.username,
+                            req.file.path
+                        );
+
+        if (!updateRes) throw "Error: could not update user";
+    } catch(e) {
+        return res.status(500).send(e); 
+    }
 })
 .delete(async (req, res) => {
      /* will delete pre-existing user */

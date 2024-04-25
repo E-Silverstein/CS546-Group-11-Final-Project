@@ -124,7 +124,6 @@ router
 })
 .patch(upload.single('image'), async (req, res) => {
     /*will update a pre-existing post with new data provided from an edit form*/
-    
     try {
         //VALIDATION: postid
         if (req.params.postid == null) throw "Error: Requires a 'postid' input";
