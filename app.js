@@ -1,6 +1,7 @@
 import express from 'express';
 import configRoutes from './routes/index.js';
 import exphbs from 'express-handlebars';
+import session from 'express-session';
 //import {} from './middleware.js';
 
 const app = express();
@@ -12,6 +13,25 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   }
   next();
 };
+
+/*call req.session.authenticated to see if user is logged in*/
+app.use(session({
+  name: 'AuthenticationState',
+  secret: 'Our secret string',
+  resave: false,
+  saveUninitialized: false,
+  authenticated: false /*logged in or not logged in */
+}))
+
+/*admin page to be added eventually to review all the reports made by the users*/
+app.get('/admin', function(req,res,next) {
+  if(req.session.user) {
+    if(req.session.user.role !== 'admin'){
+      res.send("you don't have access to this page") /* to look at the reports page */
+    }
+  }
+  next();
+});
 
 app.use('/public', express.static('public'));
 app.use(express.json());

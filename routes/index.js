@@ -3,6 +3,7 @@ import keywordRoutes from "./keyword.js";
 import postRoutes from "./posts.js";
 import reportRoutes from "./reports.js";
 import userRoutes from "./users.js";
+import adminRoutes from "./admin.js";
 
 const constructorMethod = app => {
     
@@ -10,6 +11,7 @@ const constructorMethod = app => {
     app.use("/reports", reportRoutes);
     app.use("/posts", postRoutes);
     app.use("/users", userRoutes);
+    app.use('/admin', adminRoutes);
 
     app.use("/", (req, res) => { 
       res.send("main page");
