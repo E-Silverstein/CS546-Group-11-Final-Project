@@ -1,6 +1,7 @@
 import { comments } from "../config/mongoCollections.js";
 import * as helper from "../helpers.js";
 import { users } from "../config/mongoCollections.js";
+import * as postData from "./posts.js";
 import { ObjectId } from "mongodb";
 /**
 * Schema for Comments Sub Collection
@@ -24,12 +25,10 @@ export const create = async (post, user, text) => {
 		throw "All values must be provided";
 	}
 
-	if (!helper.areAllValuesOfType([post, user, text], "string")) {
+	if (!helper.areAllValuesOfType([text], "string")) {
 		throw "All values must be of type string";
 	}
 
-	post = post.trim();
-	user = user.trim();
 	text = text.trim();
 
 	if (!ObjectId.isValid(post) || !ObjectId.isValid(user)) {
@@ -59,6 +58,10 @@ export const create = async (post, user, text) => {
 	const insertedObject = await commentCollection.findOne({
 		_id: insertInfo.insertedId,
 	});
+
+    // Add the comment to the post
+    await postData.addComment(post.toString(), insertedObject._id.toString());
+
 	return insertedObject;
 };
 

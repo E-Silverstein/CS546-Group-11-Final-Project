@@ -14,7 +14,7 @@ import { ObjectId } from "mongodb";
 /**
  * Creates a new keyword in the database.
  * @param {string} keyword - The keyword to be created.
- * @returns {string} id - Returns the id of the created object
+ * @returns {Object} keyword - Returns the created object
  */
 export const create = async (keyword) => {
 	if (helper.areAllValuesNotNull([keyword])) {
@@ -27,7 +27,13 @@ export const create = async (keyword) => {
 
 	keyword = keyword.trim();
 
-	const keywordCollection = await keywords();
+    // Check if the keyword already exists and if it does return that keyword
+    const keywordCollection = await keywords();
+    const searchKeyword = await keywordCollection.findOne({ keyword: keyword });
+    if(!helper.isNull(searchKeyword)) {
+       return searchKeyword;
+    }
+
 	const newKeyword = {
 		keyword,
 		posts: [],
@@ -37,8 +43,10 @@ export const create = async (keyword) => {
 	if (insertInfo.insertedCount === 0) {
 		throw "Could not create keyword";
 	}
-
-	return insertInfo.insertedId.toString();
+    const insertedObject = await keywordCollection.findOne({
+        _id: insertInfo.insertedId,
+    });
+    return insertedObject;
 };
 
 /**
@@ -62,7 +70,7 @@ export const getKeywordById = async (id) => {
 	}
 
 	const keywordCollection = await keywords();
-	const keywordObj = await keywordCollection.findOne({ _id: id });
+	const keywordObj = await keywordCollection.findOne({ _id: new ObjectId(id) });
 	if (helper.isNull(keywordObj)) {
 		throw "Keyword does not exist";
 	}
