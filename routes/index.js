@@ -1,25 +1,30 @@
-
-import keywordRoutes from "./keyword.js";
 import postRoutes from "./posts.js";
-import reportRoutes from "./reports.js";
-import userRoutes from "./users.js";
-import adminRoutes from "./admin.js";
+import userRoutes from "./posts.js";
+import loginRoutes from './login.js';
+import signupRoutes from './signup.js';
+import { getAllPosts } from '../data/posts.js';
 
-const constructorMethod = app => {
-    
-    //app.use("/keyword", keywordRoutes)
-    app.use("/reports", reportRoutes);
-    app.use("/posts", postRoutes);
-    app.use("/users", userRoutes);
-    app.use('/admin', adminRoutes);
+const constructorMethod = app => {    
+  app.get('/home', async(req, res) => {
+    //TO=DO need to display posts
+    //let allposts = await getAllPosts();
+    res.status(200).render('test_home');
+  });
+  app.use('/login', loginRoutes);
+  app.use('/signup',  signupRoutes);
 
-    app.use("/", (req, res) => { 
-      res.send("main page");
-    });
-
-    app.use("*", (req, res) => {
-      res.status(404).json({ error: "Not found" });
-    });
-  };
+  app.use("/posts", postRoutes);
+  app.use("/users", userRoutes);
   
-  export default constructorMethod;
+  //app.use("/reports", reportRoutes);
+
+  app.use("/", (req, res) => { 
+    return res.redirect('home');
+  });
+
+  app.use("*", (req, res) => {
+    res.status(404).json({ error: "Not found" });
+  });
+};
+  
+export default constructorMethod;

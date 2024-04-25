@@ -3,10 +3,14 @@
         <form method="post" id="signupForm" class="grid grid-cols-1 gap-1 w-full">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" class="h-10 w-full rounded-md">
+
+            <label for="birthdate">Birth Date</label>
+            <input type="date" id="birthdate" name="birthdate" class="h-10 w-full rounded-md" min="1">
+
             <label for="password">Password</label>
-            <input type="text" id="password" name="password" class="h-10 w-full rounded-md">
+            <input type="password" id="password" name="password" class="h-10 w-full rounded-md">
             <label for="confirmPassword">Confirm Password</label>
-            <input type="text" id="confirmPassword" name="confirmPassword" class="h-10 w-full rounded-md">
+            <input type="password" id="confirmPassword" name="confirmPassword" class="h-10 w-full rounded-md">
             <button type="submit" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2">Sign Up</button>
         </form>
         <a href="/login" class="inline-block">Already have an account? Click here to log in</a>
