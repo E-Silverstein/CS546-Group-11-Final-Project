@@ -5,6 +5,7 @@ import * as helper from "../helpers.js"
  * Schema for Reports Collection
 {
   "_id": "ObjectId",
+  "postId": "postId",
   "reportedBy": "ObjectId (Users)",
   "reportedUser": "ObjectId (Users)",
   "reason": "string",
@@ -13,81 +14,65 @@ import * as helper from "../helpers.js"
 }
  */
 
+//for reports, we need to create report, and have ability to get all reports for the 
+//admin dashboard. We should also be able to delete report when it is resolved?
+
+//Q: when a report is resolved, should it be deleted or should it be "resolved" and still
+//be data to see somewhere?
+
 /**
- * Creates a new report in the database.
- * @param {string} reportedBy - The ObjectID of the user that created the report.
- * @param {string} reportedPost - The ObjectID of the post that is being reported.
- * @param {string} reason - The reason for the report.
- * @returns {Object} - Returns the created object.
+ * creates a report with these necessary fields
+ * @param {postId} postId
+ * @param {User} reportedBy 
+ * @param {User} reportedUser 
+ * @param {string} reason 
+ * @param {Date} createdAt 
+ * @param {string} status 
+ * @return {Object} - returns created report
  */
-export const create = async (reportedBy, reportedUser, reason) => {
-  if (helper.areAllValuesNotNull([reportedBy, reportedUser, reason])) {
-    throw "All values must be provided";
+export const createReport = async(postId,reportedBy,reportedUser,reason,createdAt,status) => {
+  //check if postId is a valid post id
+  //check if reportedBy is a valid user
+  //check if reportedUser is a valid user
+
+  if(helper.areAllValuesNotNull([postId,reportedBy,reportedUser,reason,createdAt,status])){
+    throw "Error: All values are not provided";
   }
 
-  if (!helper.areAllValuesOfType([reason], "string")) {
-    throw "All values must be of type string";
+  if(!helper.areAllValuesOfType([reason,status],'string')){
+    throw "Error: Values are not of correct type";
   }
 
-  reason = reason.trim();
+  //check date is valid(it will just be from req anyways so it should always be correct)
 
-  if (!ObjectId.isValid(reportedBy) || !ObjectId.isValid(reportedUser)) {
-    throw "Invalid ObjectID";
-  }
-
-  const reportCollection = await reports();
   const newReport = {
-    reportedBy,
-    reportedUser,
-    reason,
-    createdAt: new Date(),
-    status: "Pending",
+    postId:postId,
+    reportedBy: reportedBy,
+    reportedUser: reportedUser,
+    reason:reason,
+    createdAt:createdAt,
+    status:status
   };
 
-  const insertInfo = await reportCollection.insertOne(newReport);
-  if (insertInfo.insertedCount === 0) {
-    throw "Could not create report";
-  }
-
-  const insertedObject = await reportCollection.findOne({
-    _id: insertInfo.insertedId,
-  });
-  return insertedObject;
-};
-
-/**
- * Retrieves a report object by its ID.
- * @param {string} id - The ID of the report.
- * @returns {object} The report object.
- */
-export const getReportById = async (id) => {
-  if (helper.isNull(id)) {
-    throw "ID must be provided";
-  }
-
-  if (!helper.isOfType(id, "string")) {
-    throw "ID must be of type string";
-  }
-
-  id = id.trim();
-
-  if (!ObjectId.isValid(id)) {
-    throw "Invalid ObjectID";
-  }
-
   const reportCollection = await reports();
-  const report = await reportCollection.findOne({ _id: new ObjectId(id) });
-  if (helper.isNull(report)) {
-    throw "Report not found";
-  }
-  return report;
+  const insertReport = await reportCollection.insertOne(newReport);
+  if (insertReport.insertedCount === 0) {
+		throw "Could not create report";
+	}
+  //return the created report by looking for report in collection and returning it?
+  const insertedReport = await reportCollection.findOne({
+		_id: insertReport.insertedId,
+	});
+	return insertedReport;
 }
 
 /**
- * Retrieves all reports in the database.
- * @returns {Array} - Returns an array of all reports.
+ * get all reports from collection
+ * @returns {Array} list of reports 
  */
 export const getAllReports = async () => {
-  const reportCollection = await reports();
-  return await reportCollection.find({}).toArray();
-}
+	const reportCollection = await reports();
+	const reportList = await reportCollection.find({}).toArray();
+	return reportList;
+};
+
