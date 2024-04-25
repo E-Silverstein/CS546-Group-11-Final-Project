@@ -42,6 +42,8 @@ export const createReport = async(postId,reportedBy,reportedUser,reason,createdA
   if(!helper.areAllValuesOfType([reason,status],'string')){
     throw "Error: Values are not of correct type";
   }
+  reason = reason.trim();
+  status = status.trim();
 
   //check date is valid(it will just be from req anyways so it should always be correct)
 
@@ -76,3 +78,52 @@ export const getAllReports = async () => {
 	return reportList;
 };
 
+/**
+ * Grabs the report by the id of report
+ * @param {reportId} id 
+ * @returns the report
+ */
+export const getReportById = async(id) => {
+  if (isNull(id)) {
+		throw "ID must be provided";
+	}
+	if (!isOfType(id, "string")) {
+		throw "ID must be of type string";
+	}
+	id = id.trim();
+	if (!ObjectId.isValid(id)) {
+		throw "Invalid ObjectID";
+	}
+  const reportsCollection = await reports();
+	const report = await reportsCollection.findOne({ _id: new ObjectId(id) });
+	if (isNull(report)) {
+		throw "User not found";
+	}
+
+	return report;
+}
+
+/**
+ * Deletes the report (used after admin makes choice of (approve/remove post/ban user))
+ * @param {report Id} id 
+ * @returns {boolean} true 
+ */
+export const deleteReport = async(id) => {
+  if (isNull(id)) {
+		throw "ID must be provided";
+	}
+	if (!isOfType(id, "string")) {
+		throw "ID must be of type string";
+	}
+	id = id.trim();
+	if (!ObjectId.isValid(id)) {
+		throw "Invalid ObjectID";
+	}
+  const reportsCollection = await reports();
+  const deleteInfo = await reportsCollection.deleteOne({ _id: new ObjectId(id) });
+	if (deleteInfo.deletedCount === 0) {
+		throw "Could not delete report";
+	}
+
+	return true;
+};

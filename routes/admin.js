@@ -1,9 +1,9 @@
 import express from 'express';
 import {ObjectId} from 'mongodb';
 import {deletePost} from "./../data/posts.js";
-import { getAllReports } from '../data/reports.js';
+import { getAllReports, deleteReport } from '../data/reports.js';
 import { deleteUser } from '../data/users.js';
-import {posts,users} from "./../config/mongoCollections.js";
+import {posts,users,reports} from "./../config/mongoCollections.js";
 const router = express.Router();
 
 //if admin you can see admin page that shows all reports (done in middleware)
@@ -86,6 +86,27 @@ router
         //deletes the user
         let deleteRes = await deleteUser(req.params.userid);
         if (deleteRes==1) throw "Error: Post could not be deleted";
+        return res.status(200).send("Delete Successful");
+    }catch(e){
+        return res.status(500).send(e);
+    }
+});
+
+router
+.route('/approve')
+.delete(async (req,res) => {
+    try {
+        //VALIDATION: if report exists
+        const reportsCollection = await reports();
+        let report = await reportsCollection.find({ _id: new ObjectId(req.params.reportid)});
+        if (!report) throw "Error: user with id: "+req.params.reportid+" does not exist";
+    } catch(e) {
+        res.status(404).send(e);
+    }
+    try{
+        //deletes the report
+        let deleteReport = await deleteReport(req.params.reportid);
+        if (deleteReport==1) throw "Error: Post could not be deleted";
         return res.status(200).send("Delete Successful");
     }catch(e){
         return res.status(500).send(e);
