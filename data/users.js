@@ -52,6 +52,17 @@ export const create = async (username, passwordHash, profilePicURL, age) => {
 		throw "Age must be of type number";
 	}
 
+	if (age < 13) {
+		throw "User must be at least 13 years old in order to use this application";
+	}
+
+	// Check if a user wit a matching user name already exists
+	const searchUserCollection = await users();
+	const searchUser = await searchUserCollection.findOne({ username: username });
+	if (!isNull(searchUser)) {
+		throw "User with that username already exists";
+	}
+
 	const createdAt = new Date();
 
 	// TODO check valid profilePicURL

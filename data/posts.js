@@ -3,6 +3,7 @@ import * as helper from "../helpers.js";
 import { users, keywords } from "../config/mongoCollections.js";
 import * as collection from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
+import * as keywordData from "./keyword.js";
 
 /**
 * Schema for Posts
@@ -20,35 +21,39 @@ import { ObjectId } from "mongodb";
 
 /**
  * Creates a new post in the database.
- * @param {string} user - The user that created the post.
+ * @param {string} userID - The user id that created the post.
  * @param {string} image - The image URL of the post.
  * @param {Array<string>} clothingLinks - The links to the clothing items in the image.
  * @param {Array<string>} keywords - The keywords associated with the post.
  * @returns {Object} - Returns the created object.
  */
-export const create = async (user, image, clothingLinks, keywords) => {
-	if (helper.areAllValuesNotNull([user, image, clothingLinks, keywords])) {
+export const create = async (userId, image, clothingLinks, keywords) => {
+	
+	if (helper.areAllValuesNotNull([userId, image, clothingLinks, keywords])) {
 		throw "All values must be provided";
 	}
-
-	if (!helper.areAllValuesOfType([user, image], "string")) {
-		throw "All values must be of type string";
+	
+	if (!helper.isOfType(image, "string")) {
+		throw "Image must be of type string";
 	}
 
-	user = user.trim();
 	image = image.trim();
 
+	if(!ObjectId.isValid(userId)) {
+		throw "Invalid ObjectID";
+	}
+	console.log(userId);
 	if (!helper.areAllValuesOfType(clothingLinks, "string")) {
-		throw "All values must be of type string";
+		throw "All clothing links must be of type string";
 	}
 
 	if (!helper.areAllValuesOfType(keywords, "string")) {
-		throw "All values must be of type string";
+		throw "All keywords must be of type string";
 	}
-
+	
 	// Check if the user exists
 	const userCollection = await users();
-	const userObj = await userCollection.findOne({ username: user });
+	const userObj = await userCollection.findOne({ _id: userId });
 	if (helper.isNull(userObj)) {
 		throw "User does not exist";
 	}
@@ -60,7 +65,7 @@ export const create = async (user, image, clothingLinks, keywords) => {
 			keyword: keywords[i],
 		});
 		if (helper.isNull(keywordObj)) {
-			const keyword = await create(keywords[i]);
+			const keyword = await keywordData.create(keywords[i]);
 			if (keyword === 1) {
 				throw "Keyword could not be created";
 			}
@@ -74,11 +79,13 @@ export const create = async (user, image, clothingLinks, keywords) => {
 		if (!helper.isValidURL(clothingLinks[i])) {
 			throw "Clothing URL is not valid";
 		}
+	
 	}
+	const username = userObj.username;
 
 	const postCollection = await posts();
 	const newPost = {
-		user,
+		username,
 		image,
 		clothingLinks,
 		keywords,
@@ -92,19 +99,23 @@ export const create = async (user, image, clothingLinks, keywords) => {
 		throw "Could not create post";
 	}
 
-	// Add post to user's posts
+	const postObj = await postCollection.findOne({_id: insertInfo.insertedId});
+	console.log(postObj);
+	// Add post to user's post
 	const userUpdate = await userCollection.updateOne(
-		{ username: user },
-		{ $push: { posts: insertInfo.insertedId.toString() } }
+		{ _id: userId },
+		{ $addToSet: { posts: postObj } }
 	);
+
 	if (userUpdate.modifiedCount === 0) {
 		throw "Could not add post to user";
 	}
-	// Add keywords to keyword's posts
+
+	// Add post to keyword's posts and vice versa
 	for (let i = 0; i < keywords.length; i++) {
 		const keywordUpdate = await keywordCollection.updateOne(
 			{ keyword: keywords[i] },
-			{ $push: { posts: insertInfo.insertedId.toString() } }
+			{ $addToSet: { posts: postObj._id} }
 		);
 		if (keywordUpdate.modifiedCount === 0) {
 			throw "Could not add post to keyword";
@@ -268,13 +279,13 @@ export const addLike = async (user, post) => {
 	const postCollection = await posts();
 	const updateInfo = await postCollection.updateOne(
 		{ _id: new ObjectId(post) },
-		{ $push: { likes: new ObjectId(user) } }
+		{ $addToSet: { likes: new ObjectId(user) } }
 	);
 	if (updateInfo.modifiedCount === 0) {
 		throw "Could not add like";
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
-	return postObj.likes.length;
+	return postObj;
 };
 
 /**
@@ -314,7 +325,7 @@ export const removeLike = async (user, post) => {
 /**
  * Adds a keyword to a post.
  * @param {string} post - The ID of the post.
- * @param {string} keyword - The ID of the keyword.
+ * @param {string} keyword - The keyword ID.
  * @returns {Object} The newly added keyword.
  */
 export const addKeyword = async (post, keyword) => {
@@ -333,15 +344,24 @@ export const addKeyword = async (post, keyword) => {
 		throw "Invalid ObjectID";
 	}
 
+	if (!ObjectId.isValid(keyword)) {
+		throw "Invalid ObjectID";
+	}
+
+	// Check if the keyword exists
+	const keywordCollection = await keywords();
+	const keywordObj = await keywordCollection.findOne({ _id: new ObjectId(keyword) });
+	if (helper.isNull(keywordObj)) {
+		throw "Keyword does not exist";
+	}
+	console.log(keywordObj);
 	const postCollection = await posts();
 	const updateInfo = await postCollection.updateOne(
 		{ _id: new ObjectId(post) },
-		{ $push: { keywords: new ObjectId(keyword) } }
+		{ $addToSet: { keywords: keywordObj.keyword } }
 	);
-	if (updateInfo.modifiedCount === 0) {
-		throw "Could not add keyword";
-	}
-	const newKeyword = await keywords.getKeywordById(keyword);
+	
+	const newKeyword = await keywordData.getKeywordById(keyword);
 	return newKeyword;
 };
 
@@ -398,3 +418,31 @@ export const updatePost = async (id, image, clothingLinks, keywords) => {
 	const newPost = await postCollection.findOne({ _id: new ObjectId(id) });
 	return newPost;
 };
+
+export const addComment = async (post, comment) => {
+	if (helper.areAllValuesNotNull([post, comment])) {
+		throw "All values must be provided";
+	}
+	console.log(post, comment);
+	if (!helper.areAllValuesOfType([post, comment], "string")) {
+		throw "All values must be of type string";
+	}
+
+	post = post.trim();
+	comment = comment.trim();
+
+	if (!ObjectId.isValid(post) || !ObjectId.isValid(comment)) {
+		throw "Invalid ObjectID";
+	}
+
+	const postCollection = await posts();
+	const updateInfo = await postCollection.updateOne(
+		{ _id: new ObjectId(post) },
+		{ $push: { comments: new ObjectId(comment) } }
+	);
+	if (updateInfo.modifiedCount === 0) {
+		throw "Could not add comment";
+	}
+	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
+	return postObj;
+}
