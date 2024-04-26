@@ -8,7 +8,7 @@ const constructorMethod = app => {
   app.get('/home', async(req, res) => {
     //TO=DO need to display posts
     //let allposts = await getAllPosts();
-    res.status(200).render('test_home');
+    return res.status(200).render('test_home');
   });
   app.use('/login', loginRoutes);
   app.use('/signup',  signupRoutes);
@@ -23,7 +23,7 @@ const constructorMethod = app => {
   });
 
   app.use("*", (req, res) => {
-    res.status(404).json({ error: "Not found" });
+    return res.status(404).json({ error: "Not found" });
   });
 };
   
