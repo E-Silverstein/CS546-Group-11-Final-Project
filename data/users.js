@@ -19,6 +19,7 @@ import bcrypt from 'bcrypt';
   "followers": ["ObjectId (Users)"],
   "following": ["ObjectId (Users)"],
   "posts": ["ObjectId (Posts)"],
+  "bio": "string",
   "likedKeywords": [
     {
       "keyword": “ObjectID (Keyword)”,
@@ -36,18 +37,19 @@ import bcrypt from 'bcrypt';
  * @param {number} age
  * @param {Date} createdAt
  */
-export const createUser = async (username, password, profilePicURL, age) => {
-	if (areAllValuesNotNull([username, password, profilePicURL, age])) {
+export const createUser = async (username, password, profilePicURL, age, bio) => {
+	if (areAllValuesNotNull([username, password, profilePicURL, age, bio])) {
 		throw "All values must be provided";
 	}
-
-	if (!areAllValuesOfType([username, password, profilePicURL], "string")) {
+	
+	if (!areAllValuesOfType([username, password, profilePicURL, bio], "string")) {
 		throw "All values must be of type string";
 	}
 
 	username = username.trim();
 	password = password.trim();
 	profilePicURL = profilePicURL.trim();
+	bio = bio.trim();
 
 	if (!isOfType(age, "number")) {
 		throw "Age must be of type number";
@@ -57,7 +59,7 @@ export const createUser = async (username, password, profilePicURL, age) => {
 		throw "User must be at least 13 years old in order to use this application";
 	}
 
-	// Check if a user wit a matching user name already exists
+	// Check if a user with a matching username already exists
 	const searchUserCollection = await users();
 	const searchUser = await searchUserCollection.findOne({ username: username });
 	if (!isNull(searchUser)) {
@@ -82,6 +84,7 @@ export const createUser = async (username, password, profilePicURL, age) => {
 		following: [],
 		posts: [],
 		likedKeywords: [],
+		bio: bio,
 	};
 
 	const userCollection = await users();
@@ -325,16 +328,14 @@ export const removeFollower = async (userId, followerId) => {
 export const updateUser = async (
 	id,
 	username,
-	password,
 	profilePicURL,
-	age
+	bio
 ) => {
 	if (
 		isNull(id) ||
 		isNull(username) ||
-		isNull(password) ||
-		isNull(profilePicURL) ||
-		isNull(age)
+		isNull(profilePicURL) || 
+		isNull(bio)
 	) {
 		throw "All values must be provided";
 	}
@@ -342,16 +343,14 @@ export const updateUser = async (
 	if (
 		!isOfType(id, "string") ||
 		!isOfType(username, "string") ||
-		!isOfType(password, "string") ||
-		!isOfType(profilePicURL, "string") ||
-		!isOfType(age, "number")
+		!isOfType(profilePicURL, "string") || 
+		!isOfType(bio, "string")
 	) {
 		throw "All values must be of correct type";
 	}
-
+	bio = bio.trim();
 	id = id.trim();
 	username = username.trim();
-	password = password.trim();
 	profilePicURL = profilePicURL.trim();
 
 	if (!ObjectId.isValid(id)) {
@@ -369,9 +368,8 @@ export const updateUser = async (
 		{
 			$set: {
 				username: username,
-				password: password,
 				profilePicture: profilePicURL,
-				age: age,
+				bio: bio,
 			},
 		}
 	);
