@@ -35,113 +35,113 @@ async function main() {
 	for (let i = 0; i < passwords.length; i++) {
 		hashedPasswords.push(await bycrypt.hash(passwords[i], 8));
 	}
-	console.log(hashedPasswords);
+	// console.log(hashedPasswords);
 	// Create users
-	const user1 = await users.create(
-		"user1",
-		hashedPasswords[0],
-		"profile1",
-		20,
-		new Date()
-	);
-	const user2 = await users.create(
-		"user2",
-		hashedPasswords[1],
-		"profile2",
-		21,
-		new Date()
-	);
-	const user3 = await users.create(
-		"user3",
-		hashedPasswords[2],
-		"profile3",
-		22,
-		new Date()
-	);
-	const user4 = await users.create(
-		"user4",
-		hashedPasswords[3],
-		"profile4",
-		23,
-		new Date()
-	);
-	const user5 = await users.create(
-		"user5",
-		hashedPasswords[4],
-		"profile5",
-		24,
-		new Date()
-	);
-	const user6 = await users.create(
-		"user6",
-		hashedPasswords[5],
-		"profile6",
-		25,
-		new Date()
-	);
-	const user7 = await users.create(
-		"user7",
-		hashedPasswords[6],
-		"profile7",
-		26,
-		new Date()
-	);
-	const user8 = await users.create(
-		"user8",
-		hashedPasswords[7],
-		"profile8",
-		27,
-		new Date()
-	);
-	const user9 = await users.create(
-		"user9",
-		hashedPasswords[8],
-		"profile9",
-		28,
-		new Date()
-	);
-	const user10 = await users.create(
-		"user10",
-		hashedPasswords[9],
-		"profile10",
-		29,
-		new Date()
-	);
-	const user11 = await users.create(
-		"user11",
-		hashedPasswords[10],
-		"profile11",
-		30,
-		new Date()
-	);
-	const user12 = await users.create(
-		"user12",
-		hashedPasswords[11],
-		"profile12",
-		31,
-		new Date()
-	);
-	const user13 = await users.create(
-		"user13",
-		hashedPasswords[12],
-		"profile13",
-		32,
-		new Date()
-	);
-	const user14 = await users.create(
-		"user14",
-		hashedPasswords[13],
-		"profile14",
-		33,
-		new Date()
-	);
-	const user15 = await users.create(
-		"user15",
-		hashedPasswords[14],
-		"profile15",
-		34,
-		new Date()
-	);
+    const user1 = await users.createUser(
+        "user1",
+        hashedPasswords[0],
+        "profile1",
+        20,
+        "This is user 1's bio."
+    );
+    const user2 = await users.createUser(
+        "user2",
+        hashedPasswords[1],
+        "profile2",
+        21,
+        "This is user 2's bio."
+    );
+    const user3 = await users.createUser(
+        "user3",
+        hashedPasswords[2],
+        "profile3",
+        22,
+        "This is user 3's bio."
+    );
+    const user4 = await users.createUser(
+        "user4",
+        hashedPasswords[3],
+        "profile4",
+        23,
+        "This is user 4's bio."
+    );
+    const user5 = await users.createUser(
+        "user5",
+        hashedPasswords[4],
+        "profile5",
+        24,
+        "This is user 5's bio."
+    );
+    const user6 = await users.createUser(
+        "user6",
+        hashedPasswords[5],
+        "profile6",
+        25,
+        "This is user 6's bio."
+    );
+    const user7 = await users.createUser(
+        "user7",
+        hashedPasswords[6],
+        "profile7",
+        26,
+        "This is user 7's bio."
+    );
+    const user8 = await users.createUser(
+        "user8",
+        hashedPasswords[7],
+        "profile8",
+        27,
+        "This is user 8's bio."
+    );
+    const user9 = await users.createUser(
+        "user9",
+        hashedPasswords[8],
+        "profile9",
+        28,
+        "This is user 9's bio."
+    );
+    const user10 = await users.createUser(
+        "user10",
+        hashedPasswords[9],
+        "profile10",
+        29,
+        "This is user 10's bio."
+    );
+    const user11 = await users.createUser(
+        "user11",
+        hashedPasswords[10],
+        "profile11",
+        30,
+        "This is user 11's bio."
+    );
+    const user12 = await users.createUser(
+        "user12",
+        hashedPasswords[11],
+        "profile12",
+        31,
+        "This is user 12's bio."
+    );
+    const user13 = await users.createUser(
+        "user13",
+        hashedPasswords[12],
+        "profile13",
+        32,
+        "This is user 13's bio."
+    );
+    const user14 = await users.createUser(
+        "user14",
+        hashedPasswords[13],
+        "profile14",
+        33,
+        "This is user 14's bio."
+    );
+    const user15 = await users.createUser(
+        "user15",
+        hashedPasswords[14],
+        "profile15",
+        34,
+        "This is user 15's bio."
+    );
 	console.log(user1);
 
 	// Create posts
