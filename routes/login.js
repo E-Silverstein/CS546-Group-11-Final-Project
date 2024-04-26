@@ -18,17 +18,16 @@ router
             constraints:
             - 5-20 characters long
         */
+       
+        console.log(req.body.username);
         if (!req.body.username) throw "Error: Requires a 'username' input";
         if (typeof req.body.username != 'string') throw "Error: 'username' must be a string";
         if (req.body.username.trim() == "") throw "Error: 'username' is an empty string";
 
-        req.body.username =  req.body.username.trim().toLowercase();
-
-        // if (req.body.username.length < 5 || req.body.username.length > 20) throw "Error: 'username' does not meet length constraints (5-20 characters)";
-        // if (req.body.username.match(' ') != null) throw "Error: 'username' cannot contain spaces";
+        req.body.username = req.body.username.trim().toLowerCase();
 
     } catch(e) {
-        res.status(400).send(e);
+        return res.status(400).send(e);
     }
     try {
         /*VALIDATION: password
@@ -41,20 +40,19 @@ router
         if (!req.body.password) throw "Error: Requires a 'password' input";
         if (typeof req.body.password != 'string') throw "Error: 'password' must be a string";
         if (req.body.password.trim() == "") throw "Error: 'password' is an empty string";
-        if (input.match(' ') != null) throw "Error: Password cannot contain spaces";
-        
-        // if (input.match(/[0-9]/g) == null) throw "Error: Password must contain at least one number";
-        // if (input.match(/[A-Z]/g) == null) throw "Error: Password must contain at least one uppercase character";
-        // if (input.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) == null) throw "Error: Password must contain at least one special character";
+
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(400).send(e);
     }
     try {
+        
         const userCollection = await users();
-        let user = await userCollection.findOne({username: {$eq: req.body.username}});
-        if (!user) throw "Username  is invalid.";
-        let compare = await bcrypt.compare(password, user.password)
+        let user = await userCollection.findOne({username: req.body.username});
+        console.log(user.password);
+        console.log(req.body.password);
+        if (!user) throw "Username is invalid.";
+        let compare = await bcrypt.compare(req.body.password, user.password);
         if (!compare) throw "password is invalid."; 
 
         req.session.user = user;
@@ -63,7 +61,8 @@ router
         return res.status(200).send("login succesful");
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
-         return res.status(400).send(e);
+         console.log('valdiation')
+        return res.status(400).send(e);
     }
 
 });

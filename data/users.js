@@ -72,11 +72,9 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 
 	// TODO make sure password type is correct
 
-	let hash = await bcrypt.hash(password, 12);
-
 	const newUser = {
 		username: username,
-		password: hash,
+		password: password,
 		profilePicture: profilePicURL,
 		age: age,
 		createdAt: createdAt,
