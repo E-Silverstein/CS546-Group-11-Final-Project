@@ -19,7 +19,7 @@ router
         //TODO will change to render admin page when html is ready
         //page should display reports for admin to review, with a button to delete
         //and a button to ban user
-        return res.status(200).json("admin html");
+        return res.status(200).render('profiles/admin');
     }catch(e)
     {
         return res.status(500).send(e);
