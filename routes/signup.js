@@ -1,12 +1,13 @@
 /*
     ROUTES ARE NOT TESTED YET
 */
-import { createUser } from '../data/users.js';
+import { userData } from '../data/index.js';
 import { users } from '../config/mongoCollections.js';
 import express from 'express';
 import bcrypt from 'bcrypt';
 const router = express.Router();
 const salt = 12;
+
 router
 .route('/')
 .get(async (req, res) => {
@@ -38,7 +39,7 @@ router
     try {
         /*VALIDATION: password
             constriants:
-            - at least 8 characters long
+            - at least 8 characters long and shorter than 20 characters
             - at least one captial letter
             - at least one number
             - at least one special character
@@ -48,6 +49,7 @@ router
         if (req.body.password.trim() == "") throw "Error: 'password' is an empty string";
         if (req.body.password.match(' ') != null) throw "Error: Password cannot contain spaces";
         
+        if (req.body.password.length < 8 || req.body.password.length > 20) throw "Error: Password must be at least 8 characters long or less than 20 characters long";
         if (req.body.password.match(/[0-9]/g) == null) throw "Error: Password must contain at least one number";
         if (req.body.password.match(/[A-Z]/g) == null) throw "Error: Password must contain at least one uppercase character";
         if (req.body.password.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) == null) throw "Error: Password must contain at least one special character";
@@ -74,7 +76,7 @@ router
         let age = currYear - birthYear;
         let hashedPassword = await bcrypt.hash(req.body.password, salt);
         
-        let user = await createUser(
+        let user = await userData.createUser(
                                 req.body.username,
                                 hashedPassword,
                                 "default-pfp-png",

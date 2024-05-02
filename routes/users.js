@@ -1,7 +1,7 @@
 /*
     ROUTES ARE NOT TESTED YET
 */
-import { getAllUsers, create, getUserById } from '../data/users.js';
+import { userData } from "../data/index.js";
 import { upload } from '../middleware.js';
 import { users } from '../config/mongoCollections.js';
 import express from 'express';
@@ -14,7 +14,7 @@ router
 .get(async (req, res) => {
     try {
         // Route Will get all users 
-        let users = await getAllUsers();
+        let users = await userData.getAllUsers();
         if (!users) throw "Error: Could not get users";
 
         //TO-DO: change returns to render when frontend complete
@@ -41,7 +41,7 @@ router
         return res.status(400).send(e);
     }
     try {
-        let user = await getUserById(req.params.userid);
+        let user = await userData.getUserById(req.params.userid);
         if (user == null) throw "Error: No users found with id: "+req.params.userid;;
         //TO-DO: change returns to render when frontend complete
         return res.status(200).json(post);

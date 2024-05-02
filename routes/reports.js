@@ -1,5 +1,5 @@
 // IDK IF NEEDED
-import * as reportData from "../data/keyword.js";
+import { reportData } from "../data/index.js";
 import express, { Router } from 'express';
 const router = express.Router();
 
