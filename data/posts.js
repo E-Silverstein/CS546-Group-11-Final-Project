@@ -21,8 +21,8 @@ import * as keywordData from "./keyword.js";
 	  "user": "ObjectId (Users)",
 	  "score": "number"
 	}
-  
-  ]
+  ], 
+  "description": "string"
 }
  */
 
@@ -34,9 +34,9 @@ import * as keywordData from "./keyword.js";
  * @param {Array<string>} keywords - The keywords associated with the post.
  * @returns {Object} - Returns the created object.
  */
-export const create = async (userId, image, clothingLinks, keywords) => {
+export const create = async (userId, image, clothingLinks, keywords, description) => {
 	
-	if (helper.areAllValuesNotNull([userId, image, clothingLinks, keywords])) {
+	if (helper.areAllValuesNotNull([userId, image, clothingLinks, keywords, description])) {
 		throw "All values must be provided";
 	}
 	
@@ -44,12 +44,29 @@ export const create = async (userId, image, clothingLinks, keywords) => {
 		throw "Image must be of type string";
 	}
 
+	if (!helper.isOfType(description, "string")) {
+		throw "Description must be of type string";
+	}
+
 	image = image.trim();
+	description = description.trim();
+
+	if(description === "") {
+		throw "Description cannot be empty";
+	}
+
+	if(description.length > 256 || description.length < 5) {
+		throw "Description is too long";
+	}
+
+	if(!description.match(/^[a-zA-Z0-9 ]+$/)) {
+		throw "Description can only contain alphanumeric characters and spaces";
+	}
 
 	if(!ObjectId.isValid(userId)) {
 		throw "Invalid ObjectID";
 	}
-	console.log(userId);
+
 	if (!helper.areAllValuesOfType(clothingLinks, "string")) {
 		throw "All clothing links must be of type string";
 	}
@@ -57,6 +74,7 @@ export const create = async (userId, image, clothingLinks, keywords) => {
 	if (!helper.areAllValuesOfType(keywords, "string")) {
 		throw "All keywords must be of type string";
 	}
+
 	
 	// Check if the user exists
 	const userCollection = await users();
@@ -103,7 +121,8 @@ export const create = async (userId, image, clothingLinks, keywords) => {
 		likes: [],
 		comments: [],
 		createdAt: new Date(),
-		interactions: []
+		interactions: [], 
+		description: description
 	};
 
 	const insertInfo = await postCollection.insertOne(newPost);
@@ -385,17 +404,30 @@ export const addKeyword = async (post, keyword) => {
  * @param {string[]} keywords - An array of updated keywords for the post.
  * @returns {ObjectId} - Returns upsdated post object.
  */
-export const updatePost = async (id, image, clothingLinks, keywords) => {
-	if (helper.areAllValuesNotNull([id, image, clothingLinks, keywords])) {
+export const updatePost = async (id, image, clothingLinks, keywords, description) => {
+	if (helper.areAllValuesNotNull([id, image, clothingLinks, keywords, description])) {
 		throw "All values must be provided";
 	}
 
-	if (!helper.areAllValuesOfType([id, image], "string")) {
+	if (!helper.areAllValuesOfType([id, image, description], "string")) {
 		throw "All values must be of type string";
 	}
 
 	id = id.trim();
 	image = image.trim();
+	description = description.trim();
+
+	if(description === "") {
+		throw "Description cannot be empty";
+	}
+
+	if(description.length > 256 || description.length < 5) {
+		throw "Description is too long";
+	}
+
+	if(!description.match(/^[a-zA-Z0-9 ]+$/)) {
+		throw "Description can only contain alphanumeric characters and spaces";
+	}
 
 	if (!helper.areAllValuesOfType(clothingLinks, "string")) {
 		throw "All values must be of type string";
@@ -421,7 +453,7 @@ export const updatePost = async (id, image, clothingLinks, keywords) => {
 	const postCollection = await posts();
 	const updateInfo = await postCollection.updateOne(
 		{ _id: new ObjectId(id) },
-		{ $set: { image, clothingLinks, keywords } }
+		{ $set: { image, clothingLinks, keywords, description} }
 	);
 	if (updateInfo.modifiedCount === 0) {
 		throw "Could not update post";

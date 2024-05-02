@@ -454,4 +454,3 @@ export const updateUser = async (
 	const updatedUser = await userCollection.findOne({ _id: new ObjectId(id) });
 	return updatedUser;
 };
-``
