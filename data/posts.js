@@ -68,8 +68,12 @@ export const create = async (userId, image, clothingLinks, keywords) => {
 	// Check if the keywords exist if they do not exist create them
 	const keywordCollection = await collection.keywords();
 	for (let i = 0; i < keywords.length; i++) {
+		let tempKeyword = keywords[i].trim();
+		if(tempKeyword === "") {
+			throw "Keyword cannot be empty";
+		}
 		const keywordObj = await keywordCollection.findOne({
-			keyword: keywords[i],
+			keyword: tempKeyword,
 		});
 		if (helper.isNull(keywordObj)) {
 			const keyword = await keywordData.create(keywords[i]);
