@@ -1,4 +1,4 @@
-import { users } from "../config/mongoCollections.js";
+import { users, comments, posts } from "../config/mongoCollections.js";
 import {
 	areAllValuesNotNull,
 	areAllValuesOfType,
@@ -19,12 +19,7 @@ import bcrypt from 'bcrypt';
   "followers": ["ObjectId (Users)"],
   "following": ["ObjectId (Users)"],
   "posts": ["ObjectId (Posts)"],
-  "bio": "string",
-  "likedKeywords": [
-    {
-      "keyword": “ObjectID (Keyword)”,
-      "count": "number"
-    }
+  "bio": "string"
   ]
 }
 */
@@ -35,7 +30,7 @@ import bcrypt from 'bcrypt';
  * @param {string} password
  * @param {string} profilePicURL
  * @param {number} age
- * @param {Date} createdAt
+ * @param {string} bio
  */
 export const createUser = async (username, password, profilePicURL, age, bio) => {
 	if (areAllValuesNotNull([username, password, profilePicURL, age, bio])) {
@@ -59,6 +54,51 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 		throw "User must be at least 13 years old in order to use this application";
 	}
 
+	// Validate the username constraints
+	if (username.length < 5 || username.length > 20) {
+		throw "Username must be between 5 and 20 characters long";
+	}
+
+	// Check if the username contains spaces
+	if (username.match(" ") !== null) {
+		throw "Username cannot contain spaces";
+	}
+
+	// Make sure the username is only contains alphanumeric characters
+	if (!username.match(/^[0-9a-zA-Z]+$/)) {
+		throw "Username can only contain alphanumeric characters";
+	}
+
+	// Validate the password constraints
+	if (password.length < 8 || password.length > 20) {
+		throw "Password must be at least 8 characters long";
+	}
+
+	if (password.match(/[0-9]/g) === null) {
+		throw "Password must contain at least one number";
+	}
+
+	if (password.match(/[A-Z]/g) === null) {
+		throw "Password must contain at least one uppercase character";
+	}
+
+	if (password.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) === null) {
+		throw "Password must contain at least one special character";
+	}
+
+	// Check if the password contains spaces
+	if (password.match(" ") !== null) {
+		throw "Password cannot contain spaces";
+	}
+
+	// Make sure the password is only contains alphanumeric characters
+	if (!password.match(/^[0-9a-zA-Z]+$/)) {
+		throw "Password can only contain alphanumeric characters";
+	}
+
+	// Hash the password
+	password = await bcrypt.hash(password, 12);
+
 	// Check if a user with a matching username already exists
 	const searchUserCollection = await users();
 	const searchUser = await searchUserCollection.findOne({ username: username });
@@ -81,7 +121,6 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 		followers: [],
 		following: [],
 		posts: [],
-		likedKeywords: [],
 		bio: bio,
 	};
 
@@ -149,7 +188,45 @@ export const deleteUser = async (id) => {
 	const userCollection = await users();
 
 	// TODO delete user from all posts, comments, reports, followers and following lists, and delete their posts
+	const user = await userCollection.findOne({ _id: new ObjectId(id) });
+	if (isNull(user)) {
+		throw "User not found";
+	}
 
+	// Delete user from all followers' following lists
+	const updateFollowers = await userCollection.updateMany(
+		{ _id: { $in: user.followers } },
+		{ $pull: { following: new ObjectId(id) } }
+	);
+
+	// Delete user from all following users' followers lists
+	const updateFollowing = await userCollection.updateMany(
+		{ _id: { $in: user.following } },
+		{ $pull: { followers: new ObjectId(id) } }
+	);
+
+	// Delete user from all posts
+	const postCollection = await posts();
+	const updatePosts = await postCollection.updateMany(
+		{ _id: { $in: user.posts } },
+		{ $pull: { author: new ObjectId(id) } }
+	);
+
+	// Delete user from all comments
+	const commentCollection = await comments();
+	const updateComments = await commentCollection.updateMany(
+		{ _id: { $in: user.comments } },
+		{ $pull: { author: new ObjectId(id) } }
+	);
+
+	// Delete user from all reports
+	const reportCollection = await reports();
+	const updateReports = await reportCollection.updateMany(
+		{ _id: { $in: user.reports } },
+		{ $pull: { author: new ObjectId(id) } }
+	);
+
+	// Delete user
 	const deleteInfo = await userCollection.deleteOne({ _id: new ObjectId(id) });
 
 	if (deleteInfo.deletedCount === 0) {

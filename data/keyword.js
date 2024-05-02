@@ -27,6 +27,31 @@ export const create = async (keyword) => {
 
 	keyword = keyword.trim();
 
+	// Make sure the keyword is not an empty string
+	if (keyword === "") {
+		throw "Keyword cannot be an empty string";
+	}
+
+	// Make sure the keyword is only alphanumeric
+	if (!/^[a-zA-Z0-9]+$/.test(keyword)) {
+		throw "Keyword must be alphanumeric";
+	}
+
+	// Make sure the keyword is not too long
+	if (keyword.length > 20) {
+		throw "Keyword must be less than 20 characters";
+	}
+
+	// Make sure the keyword is not too short
+	if (keyword.length < 3) {
+		throw "Keyword must be at least 3 characters";
+	}
+	
+	// Make sure the keyword doesn't contain any spaces
+	if (keyword.includes(" ")) {
+		throw "Keyword cannot contain spaces";
+	}
+
     // Check if the keyword already exists and if it does return that keyword
     const keywordCollection = await keywords();
     const searchKeyword = await keywordCollection.findOne({ keyword: keyword });
