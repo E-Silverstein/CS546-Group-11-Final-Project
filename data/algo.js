@@ -100,6 +100,7 @@ const getTopMatches = async (userId, userSimilarities, matrix) => {
  * @returns {Array} The recommended posts for the user.
  */
 export const getRecommendedPosts = async (userId) => {
+
 	const matrix = await createInteractionMatrix();
 	// console.log('matrix', matrix);
 	const similarities = await createSimilarityMatrix(matrix);
@@ -130,3 +131,4 @@ export const calculateEngagementScore = async (
 		comments_posted * 2
 	);
 };
+export default { getRecommendedPosts, calculateEngagementScore }
