@@ -35,7 +35,7 @@ import bcrypt from 'bcrypt';
  * @param {string} password
  * @param {string} profilePicURL
  * @param {number} age
- * @param {Date} createdAt
+ * @param {string} bio
  */
 export const createUser = async (username, password, profilePicURL, age, bio) => {
 	if (areAllValuesNotNull([username, password, profilePicURL, age, bio])) {
@@ -58,6 +58,51 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 	if (age < 13) {
 		throw "User must be at least 13 years old in order to use this application";
 	}
+
+	// Validate the username constraints
+	if (username.length < 5 || username.length > 20) {
+		throw "Username must be between 5 and 20 characters long";
+	}
+
+	// Check if the username contains spaces
+	if (username.match(" ") !== null) {
+		throw "Username cannot contain spaces";
+	}
+
+	// Make sure the username is only contains alphanumeric characters
+	if (!username.match(/^[0-9a-zA-Z]+$/)) {
+		throw "Username can only contain alphanumeric characters";
+	}
+
+	// Validate the password constraints
+	if (password.length < 8 || password.length > 20) {
+		throw "Password must be at least 8 characters long";
+	}
+
+	if (password.match(/[0-9]/g) === null) {
+		throw "Password must contain at least one number";
+	}
+
+	if (password.match(/[A-Z]/g) === null) {
+		throw "Password must contain at least one uppercase character";
+	}
+
+	if (password.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) === null) {
+		throw "Password must contain at least one special character";
+	}
+
+	// Check if the password contains spaces
+	if (password.match(" ") !== null) {
+		throw "Password cannot contain spaces";
+	}
+
+	// Make sure the password is only contains alphanumeric characters
+	if (!password.match(/^[0-9a-zA-Z]+$/)) {
+		throw "Password can only contain alphanumeric characters";
+	}
+
+	// Hash the password
+	password = await bcrypt.hash(password, 12);
 
 	// Check if a user with a matching username already exists
 	const searchUserCollection = await users();
@@ -377,3 +422,4 @@ export const updateUser = async (
 	const updatedUser = await userCollection.findOne({ _id: new ObjectId(id) });
 	return updatedUser;
 };
+``
