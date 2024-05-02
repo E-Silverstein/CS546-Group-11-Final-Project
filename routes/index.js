@@ -2,6 +2,7 @@ import postRoutes from "./posts.js";
 import userRoutes from "./posts.js";
 import loginRoutes from './login.js';
 import signupRoutes from './signup.js';
+import searchRoutes from './search.js';
 import { postData } from "../data/index.js";
 
 const constructorMethod = app => {    
@@ -15,6 +16,7 @@ const constructorMethod = app => {
 
   app.use("/posts", postRoutes);
   app.use("/users", userRoutes);
+  app.use("/search", searchRoutes);
   
   //app.use("/reports", reportRoutes);
 
