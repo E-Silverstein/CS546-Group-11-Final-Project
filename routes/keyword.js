@@ -1,5 +1,5 @@
 // IDK IF NEEDED
-import * as keywordData from "../data/keyword.js";
+import { keywordData } from "../data/index.js";
 import express, { Router } from 'express';
 const router = express.Router();
 

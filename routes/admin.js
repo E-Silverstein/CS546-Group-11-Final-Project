@@ -1,9 +1,7 @@
 import express from 'express';
 import {ObjectId} from 'mongodb';
-import {deletePost} from "./../data/posts.js";
-import { getAllReports, deleteReport } from '../data/reports.js';
-import { deleteUser } from '../data/users.js';
-import {posts,users,reports} from "./../config/mongoCollections.js";
+import { postData, reportData, userData } from "../data/index.js";
+import {posts,users,reports} from "../config/mongoCollections.js";
 const router = express.Router();
 
 //if admin you can see admin page that shows all reports (done in middleware)
@@ -14,7 +12,7 @@ router
 .route('/')
 .get(async (req,res)=>{
     try{
-        let reports = await getAllReports(); //create get reports function in reports data
+        let reports = await reportData.getAllReports(); //create get reports function in reports data
         if(!reports) throw "Error: Could not retrieve reports";
         //TODO will change to render admin page when html is ready
         //page should display reports for admin to review, with a button to delete
@@ -51,7 +49,7 @@ router
     }
     try {
         //deleting the post
-        let deleteRes = await deletePost(req.params.postid);
+        let deleteRes = await postData.deletePost(req.params.postid);
         if (deleteRes==1) throw "Error: Post could not be deleted";
         return res.status(200).send("Delete Successful");
     } catch (e) {
@@ -84,7 +82,7 @@ router
     }
     try{
         //deletes the user
-        let deleteRes = await deleteUser(req.params.userid);
+        let deleteRes = await userData.deleteUser(req.params.userid);
         if (deleteRes==1) throw "Error: Post could not be deleted";
         return res.status(200).send("Delete Successful");
     }catch(e){
@@ -105,7 +103,7 @@ router
     }
     try{
         //deletes the report
-        let deleteReport = await deleteReport(req.params.reportid);
+        let deleteReport = await reportData.deleteReport(req.params.reportid);
         if (deleteReport==1) throw "Error: Post could not be deleted";
         return res.status(200).send("Delete Successful");
     }catch(e){

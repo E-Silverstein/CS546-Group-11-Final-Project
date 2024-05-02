@@ -1,11 +1,11 @@
 /*
     ROUTES ARE NOT TESTED YET
 */
-import {deletePost, getAllPosts, getPostById, updatePost} from "./../data/posts.js";
-import {posts} from "./../config/mongoCollections.js";
+import { postData } from "../data/index.js";
+import {posts} from "../config/mongoCollections.js";
 import express from 'express';
 import {ObjectId} from 'mongodb';
-import {upload} from './../middleware.js';
+import {upload} from '../middleware.js';
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ router
 .get(async (req, res) => {
     // Route Will get all posts and create a queue for main feed
     try {
-        let posts = await getAllPosts();
+        let posts = await postData.getAllPosts();
         if (!posts) throw "Error: Could not get posts";
         //TO-DO: change returns to render when frontend complete
         return res.status(200).json(posts);
@@ -113,7 +113,7 @@ router
         return res.status(400).send(e);
     }
     try {
-        let post = await getPostById(req.params.postid);
+        let post = await postData.getPostById(req.params.postid);
         if (post==null) throw "Error: No Posts found with id: "+req.params.postid;;
         //TO-DO: change returns to render when frontend complete
         return res.status(200).json(post);
@@ -194,7 +194,7 @@ router
         return res.status(400).send(e);
     } 
     try {
-       let updateRes = await updatePost(req.params.postid, req.file.path, req.body.clothingLinks, req.body.keywords);
+       let updateRes = await postData.updatePost(req.params.postid, req.file.path, req.body.clothingLinks, req.body.keywords);
        if (updateRes == 0) throw "Error: Post could not be updated"
        
        //TO-DO: change returns to render when frontend complete
@@ -236,7 +236,7 @@ router
         res.status(403).send(e);
     }
     try {
-        let deleteRes = await deletePost(req.params.postid);
+        let deleteRes = await postData.deletePost(req.params.postid);
         if (deleteRes==1) throw "Error: Post could not be deleted";
 
 
