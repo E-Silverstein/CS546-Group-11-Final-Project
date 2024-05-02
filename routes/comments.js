@@ -1,5 +1,5 @@
 // IDK IF NEEDED
-import * as commentsData from "../data/comments.js";
+import { commentData } from "../data/index.js";
 import express, { Router } from 'express';
 const router = express.Router();
 

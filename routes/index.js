@@ -2,7 +2,7 @@ import postRoutes from "./posts.js";
 import userRoutes from "./posts.js";
 import loginRoutes from './login.js';
 import signupRoutes from './signup.js';
-import { getAllPosts } from '../data/posts.js';
+import { postData } from "../data/index.js";
 
 const constructorMethod = app => {    
   app.get('/home', async(req, res) => {

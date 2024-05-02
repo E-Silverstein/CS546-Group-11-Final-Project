@@ -1,12 +1,13 @@
 /*
     ROUTES ARE NOT TESTED YET
 */
-import { createUser } from '../data/users.js';
+import { userData } from '../data/index.js';
 import { users } from '../config/mongoCollections.js';
 import express from 'express';
 import bcrypt from 'bcrypt';
 const router = express.Router();
 const salt = 12;
+
 router
 .route('/')
 .get(async (req, res) => {
@@ -74,7 +75,7 @@ router
         let age = currYear - birthYear;
         let hashedPassword = await bcrypt.hash(req.body.password, salt);
         
-        let user = await createUser(
+        let user = await userData.createUser(
                                 req.body.username,
                                 hashedPassword,
                                 "default-pfp-png",
