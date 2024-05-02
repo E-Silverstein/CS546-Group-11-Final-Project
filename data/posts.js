@@ -514,3 +514,7 @@ export const addInteraction = async (post, user, score) => {
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
 	return postObj;
 }
+
+export default { create, getPostById, deletePost, getAllPosts, getPostsByUser, 
+	getPostsByKeyword, getLikedPostsByUser, addLike, removeLike, addKeyword, 
+	updatePost, addComment, removeComment, addInteraction };

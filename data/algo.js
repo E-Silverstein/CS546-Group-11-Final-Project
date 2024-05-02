@@ -117,3 +117,5 @@ export const calculateEngagementScore = async (userObj, postObj, links_clicked, 
     const isFollowingUser = userObj.following.includes(postObj.user._id);
     return matchingKeywords.length + isFollowingUser * 5 + links_clicked + comments_posted * 2; 
 }
+
+export default { getRecommendedPosts, calculateEngagementScore}

@@ -377,3 +377,5 @@ export const updateUser = async (
 	const updatedUser = await userCollection.findOne({ _id: new ObjectId(id) });
 	return updatedUser;
 };
+
+export default { createUser, getUserById, deleteUser, getUserByUsername, getAllUsers, setAdminStatus, addFollower, removeFollower, updateUser };
