@@ -242,6 +242,38 @@ export const getPostsByKeyword = async (keyword) => {
 };
 
 /**
+ * 
+ * @param {Object} keywords Array of string keywords
+ * @param {string} username The username of the user
+ * @returns A list of posts from the user that contain any of the keywords.
+ */
+export const getPostsByKeywordsAndUser = async (keywords, username) => {
+	if (helper.isNull(username)) {
+		throw "User must be provided";
+	}
+
+	if (!helper.isOfType(username, "string")) {
+		throw "User must be of type string";
+	}
+	
+	if (helper.isNull(keywords)) {
+		throw "Keywords must be provided";
+	}
+	if (!helper.isOfType(keywords, "string")) {
+		throw "Keywords must be of type string";
+	}
+	
+	username = username.trim();
+	keywords = keywords.trim();
+	const postCollection = await posts();
+	const postList = await postCollection.find({ "username": username, "keywords": {$in: keywords}}).toArray();
+	if(helper.isNull(postList)) {
+		throw "Posts not found";
+	}
+	return postList;
+};
+
+/**
  * Retrieves all posts that a user has liked.
  * @param {string} user - The username to retrieve liked posts for.
  * @returns {Array} - Returns a list of all posts that the user has liked.
@@ -453,7 +485,7 @@ export const addComment = async (post, comment) => {
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
 	return postObj;
-}
+};
 
 export const removeComment = async (post, comment) => {
 	if (helper.areAllValuesNotNull([post, comment])) {
@@ -481,7 +513,7 @@ export const removeComment = async (post, comment) => {
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
 	return postObj;
-}
+};
 
 export const addInteraction = async (post, user, score) => {
 	if (helper.areAllValuesNotNull([post, user, score])) {
@@ -513,4 +545,4 @@ export const addInteraction = async (post, user, score) => {
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
 	return postObj;
-}
+};

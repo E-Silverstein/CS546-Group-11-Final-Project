@@ -94,6 +94,9 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 	const insertedUser = await userCollection.findOne({
 		_id: insertInfo.insertedId,
 	});
+
+	await userCollection.createIndex({ username: "text" });
+
 	return insertedUser;
 };
 
@@ -176,13 +179,38 @@ export const getUserByUsername = async (username) => {
 	username = username.trim();
 
 	const userCollection = await users();
-	const user = await userCollection.findOne({ username: username });
+	const user = await userCollection.findOne({ "username": username });
 	if (isNull(user)) {
 		throw "User not found";
 	}
 
 	return user._id.toString();
 };
+
+/**
+ * Searches the users collection for users with a matching username.
+ * @param {string} username 
+ * @returns {Object} - Returns the list of user objects.
+ */
+export const searchUserByUsername = async (username) => {
+	if (isNull(username)) {
+		throw "Username must be provided";
+	}
+
+	if (!isOfType(username, "string")) {
+		throw "Username must be of type string";
+	}
+
+	username = username.trim();
+
+	const userCollection = await users();
+	const users = await userCollection.find({ $text: { $search: username } }).toArray();
+	if (isNull(users)) {
+		throw "Users not found";
+	}
+
+	return users;
+}
 
 /**
  * Retrieves all users from the database.
