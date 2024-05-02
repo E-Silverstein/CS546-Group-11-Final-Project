@@ -1,4 +1,4 @@
-import { users } from "../config/mongoCollections.js";
+import { users, comments, posts } from "../config/mongoCollections.js";
 import {
 	areAllValuesNotNull,
 	areAllValuesOfType,
@@ -19,12 +19,7 @@ import bcrypt from 'bcrypt';
   "followers": ["ObjectId (Users)"],
   "following": ["ObjectId (Users)"],
   "posts": ["ObjectId (Posts)"],
-  "bio": "string",
-  "likedKeywords": [
-    {
-      "keyword": “ObjectID (Keyword)”,
-      "count": "number"
-    }
+  "bio": "string"
   ]
 }
 */
@@ -126,7 +121,6 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 		followers: [],
 		following: [],
 		posts: [],
-		likedKeywords: [],
 		bio: bio,
 	};
 
@@ -194,7 +188,45 @@ export const deleteUser = async (id) => {
 	const userCollection = await users();
 
 	// TODO delete user from all posts, comments, reports, followers and following lists, and delete their posts
+	const user = await userCollection.findOne({ _id: new ObjectId(id) });
+	if (isNull(user)) {
+		throw "User not found";
+	}
 
+	// Delete user from all followers' following lists
+	const updateFollowers = await userCollection.updateMany(
+		{ _id: { $in: user.followers } },
+		{ $pull: { following: new ObjectId(id) } }
+	);
+
+	// Delete user from all following users' followers lists
+	const updateFollowing = await userCollection.updateMany(
+		{ _id: { $in: user.following } },
+		{ $pull: { followers: new ObjectId(id) } }
+	);
+
+	// Delete user from all posts
+	const postCollection = await posts();
+	const updatePosts = await postCollection.updateMany(
+		{ _id: { $in: user.posts } },
+		{ $pull: { author: new ObjectId(id) } }
+	);
+
+	// Delete user from all comments
+	const commentCollection = await comments();
+	const updateComments = await commentCollection.updateMany(
+		{ _id: { $in: user.comments } },
+		{ $pull: { author: new ObjectId(id) } }
+	);
+
+	// Delete user from all reports
+	const reportCollection = await reports();
+	const updateReports = await reportCollection.updateMany(
+		{ _id: { $in: user.reports } },
+		{ $pull: { author: new ObjectId(id) } }
+	);
+
+	// Delete user
 	const deleteInfo = await userCollection.deleteOne({ _id: new ObjectId(id) });
 
 	if (deleteInfo.deletedCount === 0) {
