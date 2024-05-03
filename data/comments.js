@@ -3,6 +3,7 @@ import * as helper from "../helpers.js";
 import { users } from "../config/mongoCollections.js";
 import * as postData from "./posts.js";
 import { ObjectId } from "mongodb";
+import { algoData } from "./index.js";
 /**
 * Schema for Comments Sub Collection
 {
@@ -62,6 +63,11 @@ export const create = async (post, user, text) => {
     // Add the comment to the post
     await postData.addComment(post.toString(), insertedObject._id.toString());
 
+	const postObj = await postData.getPostById(post.toString());
+	
+	// Recalculate the engagement score of the post
+	await postData.incrementEngagementScore(post.toString(),user.toString(), 2);
+
 	return insertedObject;
 };
 
@@ -119,6 +125,13 @@ export const deleteComment = async (id) => {
 	if (deleteInfo.deletedCount === 0) {
 		throw "Could not delete comment";
 	}
+
+	// Remove the comment from the post
+	const commentObj = await getCommentById(id);
+	await postData.removeComment(commentObj.post.toString(), id);
+
+	// Recalculate the engagement score of the post
+	await postData.incrementEngagementScore(commentObj.post.toString(),commentObj.user.toString(), -2);
 
 	return true;
 };

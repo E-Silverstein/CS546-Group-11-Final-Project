@@ -19,7 +19,8 @@ import bcrypt from 'bcrypt';
   "followers": ["ObjectId (Users)"],
   "following": ["ObjectId (Users)"],
   "posts": ["ObjectId (Posts)"],
-  "bio": "string"
+  "bio": "string", 
+  "likedKeywords": ["ObjectId (Keywords)"],
   ]
 }
 */
@@ -121,6 +122,7 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 		following: [],
 		posts: [],
 		bio: bio,
+		likedKeywords: [],
 	};
 
 	const userCollection = await users();

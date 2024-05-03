@@ -194,7 +194,7 @@ export const getPostById = async (id) => {
 	}
 
 	const postCollection = await posts();
-	const post = await postCollection.findOne({ _id: id });
+	const post = await postCollection.findOne({ _id: new ObjectId(id)});
 	if (helper.isNull(post)) {
 		throw "Post does not exist";
 	}
@@ -362,6 +362,26 @@ export const addLike = async (user, post) => {
 		throw "Could not add like";
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
+
+	// Add the liked keywords to the user's liked keywords
+	const userCollection = await users();
+	const userObj = await userCollection.findOne({ _id: new ObjectId(user) });
+	if (helper.isNull(userObj)) {
+		throw "User does not exist";
+	}
+
+	const likedKeywords = postObj.keywords;
+	const userUpdate = await userCollection.updateOne(
+		{ _id: new ObjectId(user) },
+		{ $addToSet: { likedKeywords: likedKeywords } }
+	);
+	if (userUpdate.modifiedCount === 0) {
+		throw "Could not add liked keywords to user";
+	}
+
+	// Recalculate the engagement score of the post
+	await incrementEngagementScore(post, user, 3);
+
 	return postObj;
 };
 
@@ -396,6 +416,7 @@ export const removeLike = async (user, post) => {
 		throw "Could not remove like";
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
+	await incrementEngagementScore(post, user, -3);
 	return postObj.likes.length;
 };
 
@@ -580,6 +601,76 @@ export const removeComment = async (post, comment) => {
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
 	return postObj;
 };
+
+export const createEmptyInteraction = async (post, user) => {
+	if (helper.areAllValuesNotNull([post, user])) {
+		throw "All values must be provided";
+	}
+
+	if (!helper.areAllValuesOfType([post, user], "string")) {
+		throw "All values must be of type string";
+	}
+
+	post = post.trim();
+	user = user.trim();
+
+	if (!ObjectId.isValid(post) || !ObjectId.isValid(user)) {
+		throw "Invalid ObjectID";
+	}
+
+	const postCollection = await posts();
+	const updateInfo = await postCollection.updateOne(
+		{ _id: new ObjectId(post) },
+		{ $push: { interactions: { user: new ObjectId(user), score: 0 } } }
+	);
+	if (updateInfo.modifiedCount === 0) {
+		throw "Could not add interaction";
+	}
+	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
+	return postObj;
+};
+
+
+export const incrementEngagementScore = async (post, user, num) => {
+	if (helper.areAllValuesNotNull([post, user, num])) {
+		throw "All values must be provided";
+	}
+
+	if (!helper.areAllValuesOfType([post, user], "string")) {
+		throw "All values must be of type string";
+	}
+
+	if (!helper.isOfType(num, "number")) {
+		throw "Score must be of type number";
+	}
+
+	post = post.trim();
+	user = user.trim();
+
+	if (!ObjectId.isValid(post) || !ObjectId.isValid(user)) {
+		throw "Invalid ObjectID";
+	}
+
+	// check if the interaction exists
+	const postCollection = await posts();
+	const interaction = await postCollection.findOne(
+		{ _id: new ObjectId(post), "interactions.user": new ObjectId(user) },
+	);
+
+	if(helper.isNull(interaction)) {
+		await createEmptyInteraction(post, user);
+	}
+
+	const updateInfo = await postCollection.updateOne(
+		{ _id: new ObjectId(post), "interactions.user": new ObjectId(user) },
+		{ $inc: { "interactions.$.score": num } }
+	);
+	if (updateInfo.modifiedCount === 0) {
+		throw "Could not increment interaction";
+	}
+	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
+	return postObj;
+}
 
 export const addInteraction = async (post, user, score) => {
 	if (helper.areAllValuesNotNull([post, user, score])) {
