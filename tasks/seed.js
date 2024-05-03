@@ -180,14 +180,14 @@ async function main() {
 		"Keeping it comfy and casual with my everyday outfits."
 	);
     const user19 = await userData.createUser(
-		"ChicAndSophisticated",
+		"ChicAndSophistic",
 		generatePassword(),
 		"fillerimage.url",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Aiming for chic and sophisticated style in all my looks."
 	);
     const user20 = await userData.createUser(
-		"TrendsetterExtraordinaire",
+		"TrendsetExtr0",
 		generatePassword(),
 		"fillerimage.url",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
@@ -201,14 +201,14 @@ async function main() {
 		"Mixing vintage finds with modern pieces for a unique and stylish look."
 	);
     const user22 = await userData.createUser(
-		"StreetStyleSavvy",
+		"StreetStylSav",
 		generatePassword(),
 		"fillerimage.url",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Mastering the art of street style with effortless cool."
 	);
     const user23 = await userData.createUser(
-		"MinimalistMaster",
+		"MinimalistM8",
 		generatePassword(),
 		"fillerimage.url",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
@@ -250,7 +250,7 @@ async function main() {
 		"Channeling old Hollywood glamour with elegant and sophisticated looks."
 	);
     const user29 = await userData.createUser(
-		"PreppyPerfection",
+		"PreppyPerfect",
 		generatePassword(),
 		"fillerimage.url",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
@@ -299,7 +299,7 @@ async function main() {
 		"Keeping it casual and cool with my everyday style."
 	);
     const user36 = await userData.createUser(
-		"SophisticatedStyle",
+		"SophistStyl",
 		generatePassword(),
 		"fillerimage.url",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
@@ -348,14 +348,14 @@ async function main() {
 		"Investing in timeless pieces that will last for years to come."
 	);
     const user43 = await userData.createUser(
-		"ActiveAndStylish",
+		"ActivaterBobby",
 		generatePassword(),
 		"fillerimage.url",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Staying active and stylish with my athleisure-inspired looks."
 	);
     const user44 = await userData.createUser(
-		"ConsciousConsumer",
+		"Lilyann",
 		generatePassword(),
 		"fillerimage.url",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
@@ -369,7 +369,7 @@ async function main() {
 		"Adding a touch of glam to my everyday outfits."
 	);
     const user46 = await userData.createUser(
-		"PolishedAndPreppy",
+		"GeorgeHarr",
 		generatePassword(),
 		"fillerimage.url",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
@@ -410,69 +410,69 @@ async function main() {
 		"image.png",
 		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
 		["classic", "minimalist"],
-		"A classic style with great minimalist qualities!"
+		"A classic style with great minimalist qualities"
 	);
 	const post2 = await postData.create(
 		user1._id,
 		"image.png",
 		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
 		["Trendy", "Urban", "Chic"],
-		"Rocking the latest trends on the city streets! #TrendyTrekker"
+		"Rocking the latest trends on the city streets"
 	);
 	const post3 = await postData.create(
 		user1._id,
 		"image.png",
 		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
 		["Classic", "Elegant", "Timeless"],
-		"Classic elegance never goes out of style. #Fashionista123"
+		"Classic elegance never goes out of style"
 	);
 	const post4 = await postData.create(
-		user1._id,
+		user2._id,
 		"image.png",
 		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
 		["Sporty", "Athleisure", "Comfortable"],
-		"Staying comfy and stylish in my athleisure wear. #StyleGuru24"
+		"Staying comfy and stylish in my athleisure wear Yasss"
 	);
 	const post5 = await postData.create(
 		user2._id,
 		"image.png",
 		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
 		["Vintage", "Retro", "Unique"],
-		"Found the perfect vintage piece to add to my collection! #retrovibes"
+		"Found the perfect vintage piece to add to my collection"
 	);
 	const post6 = await postData.create(
 		user2._id,
 		"image.png",
 		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
 		["Minimalist", "Simple", "Chic"],
-		"Less is more. Embracing the beauty of minimalism in fashion. #minimalistfashion"
+		"Less is more Embracing the beauty of minimalism in fashion"
 	);
 	const post7 = await postData.create(
 		user3._id,
 		"image.png",
 		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html",],
-		["Bohemian", "Vintage", "Free-spirited"],
-		"Flowy fabrics and earthy tones for the bohemian soul. #bohostyle"
+		["Bohemian", "Vintage", "Earthy"],
+		"Flowy fabrics and earthy tones for the bohemian soul"
 	);
 	const post8 = await postData.create(
 		user3._id,
 		"image.png",
 		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
 		["Classic", "Elegant", "Timeless"],
-		"Timeless elegance and sophistication are my style staples. #classicchic"
+		"Timeless elegance and sophistication are my style staples"
 	);
 	const post9 = await postData.create(
 		user4._id,
 		"image.png",
 		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
 		["Athleisure", "Sporty", "Comfortable"],
-		"Living in athleisure and loving it! Comfort and style combined. #athleisurestyle"
+		"Living in athleisure and loving it Comfort and style combined"
 	);
 	const post10 = await postData.create(
 		user4._id,
 		"image.png",
 		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
-		["Sustainable", "Ethical", "Eco-friendly"],
+		["Sustainable", "Ethical", "Casual"],
 		"Promoting sustainable and ethical fashion choices. #sustainablefashion"
 	);
 	const post11 = await postData.create(
@@ -542,7 +542,7 @@ async function main() {
 		user10._id,
 		"image.png",
 		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
-		["Trendy", "Bold", "Fashion-forward"],
+		["Trendy", "Bold", "Vintage"],
 		"Setting trends and inspiring others with my bold fashion choices. #trendsetter"
 	);
 	const post21 = await postData.create(
@@ -661,7 +661,7 @@ async function main() {
 		user20._id,
 		"image.png",
 		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
-		["Trendy", "Bold", "Fashion-forward"],
+		["Trendy", "Bold", "Vintage"],
 		"Setting trends and inspiring others with my bold fashion choices. #trendsetter"
 	);
 	const post38 = await postData.create(
@@ -717,7 +717,7 @@ async function main() {
 		user27._id,
 		"image.png", 
 		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
-		["Sustainable", "Ethical", "Eco-friendly"], 
+		["Sustainable", "Ethical", "Vintage"], 
 		"Making sustainable fashion choices that are good for the planet and my wardrobe. #sustainablefashionista"
 	);
 	const post46 = await postData.create( 
@@ -759,7 +759,7 @@ async function main() {
 		user30._id,
 		"image.png",
 		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
-		["Band Tees", "Music", "Casual"], 
+		["Vintage", "Music", "Casual"], 
 		"Expressing my love for music through band tees and casual style. #bandteestyle" 
 	);
 	const post52 = await postData.create( 
@@ -794,7 +794,7 @@ async function main() {
 		user34._id, 
 		"image.png", 
 		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
-		["Avant-garde", "Unique", "Fashion-forward"], 
+		["Vintage", "Unique", "Retro"], 
 		"Pushing the boundaries of fashion with avant-garde and unique pieces. #avantgardestyle"
 	);
 	const post57 = await postData.create( 
@@ -822,7 +822,7 @@ async function main() {
 		user37._id, 
 		"image.png",
 		["https://www.fairharborclothing.com/collections/mens-swim-1"],
-		["Fashion-forward", "Trendy", "Unique"],
+		["Retro", "Trendy", "Unique"],
 		"Staying ahead of the trends and embracing fashion-forward looks. #fashionforward"
 	);
 	const post61 = await postData.create( 
@@ -864,7 +864,7 @@ async function main() {
 		user39._id, 
 		"image.png",
 		["https://www.fairharborclothing.com/collections/mens-swim-1"],
-		["Graphic Tees", "Statement", "Casual"],
+		["Urban", "Statement", "Casual"],
 		"Making a statement with graphic tees and casual style. #graphicteestyle"
 	); 
 	const post67 = await postData.create(
@@ -885,7 +885,7 @@ async function main() {
 		user41._id, 
 		"image.png",
 		["https://www.fairharborclothing.com/collections/mens-swim-1"], 
-		["Maxi Dresses", "Summery", "Comfortable"],
+		["Athletic", "Summery", "Comfortable"],
 		"Loving the comfort and style of maxi dresses for summer. #maxidresslover" 
 	);
 	const post70 = await postData.create(

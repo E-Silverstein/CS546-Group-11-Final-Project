@@ -73,9 +73,10 @@ export const create = async (
 		throw "Description is too long";
 	}
 
-	if (!description.match(/^[a-zA-Z0-9 ]+$/)) {
-		throw "Description can only contain alphanumeric characters and spaces";
-	}
+	//TODO: Allow the post to have punctuation, but no naughty strings, so check for it
+	// if (!description.match(/^[a-zA-Z0-9 ]+$/)) {
+	// 	throw "Description can only contain alphanumeric characters and spaces";
+	// }
 
 	if (!ObjectId.isValid(userId)) {
 		throw "Invalid ObjectID";
@@ -99,7 +100,7 @@ export const create = async (
 	// Check if the keywords exist if they do not exist create them
 	const keywordCollection = await collection.keywords();
 	for (let i = 0; i < keywords.length; i++) {
-		let tempKeyword = keywords[i].trim();
+		let tempKeyword = keywords[i].trim().toLowerCase();
 		if (tempKeyword === "") {
 			throw "Keyword cannot be empty";
 		}
