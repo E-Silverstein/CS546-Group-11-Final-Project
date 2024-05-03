@@ -35,12 +35,25 @@ import * as keywordData from "./keyword.js";
  * @param {string} description - Description of the post
  * @returns {Object} - Returns the created object.
  */
-export const create = async (userId, image, clothingLinks, keywords, description) => {
-	
-	if (helper.areAllValuesNotNull([userId, image, clothingLinks, keywords, description])) {
+export const create = async (
+	userId,
+	image,
+	clothingLinks,
+	keywords,
+	description
+) => {
+	if (
+		helper.areAllValuesNotNull([
+			userId,
+			image,
+			clothingLinks,
+			keywords,
+			description,
+		])
+	) {
 		throw "All values must be provided";
 	}
-	
+
 	if (!helper.isOfType(image, "string")) {
 		throw "Image must be of type string";
 	}
@@ -52,19 +65,19 @@ export const create = async (userId, image, clothingLinks, keywords, description
 	image = image.trim();
 	description = description.trim();
 
-	if(description === "") {
+	if (description === "") {
 		throw "Description cannot be empty";
 	}
 
-	if(description.length > 256 || description.length < 5) {
+	if (description.length > 256 || description.length < 5) {
 		throw "Description is too long";
 	}
 
-	if(!description.match(/^[a-zA-Z0-9 ]+$/)) {
+	if (!description.match(/^[a-zA-Z0-9 ]+$/)) {
 		throw "Description can only contain alphanumeric characters and spaces";
 	}
 
-	if(!ObjectId.isValid(userId)) {
+	if (!ObjectId.isValid(userId)) {
 		throw "Invalid ObjectID";
 	}
 
@@ -76,7 +89,6 @@ export const create = async (userId, image, clothingLinks, keywords, description
 		throw "All keywords must be of type string";
 	}
 
-	
 	// Check if the user exists
 	const userCollection = await users();
 	const userObj = await userCollection.findOne({ _id: userId });
@@ -87,8 +99,8 @@ export const create = async (userId, image, clothingLinks, keywords, description
 	// Check if the keywords exist if they do not exist create them
 	const keywordCollection = await collection.keywords();
 	for (let i = 0; i < keywords.length; i++) {
-		let tempKeyword = keywords[i].trim().toLowerCase();
-		if(tempKeyword === "") {
+		let tempKeyword = keywords[i].trim();
+		if (tempKeyword === "") {
 			throw "Keyword cannot be empty";
 		}
 		const keywordObj = await keywordCollection.findOne({
@@ -109,7 +121,6 @@ export const create = async (userId, image, clothingLinks, keywords, description
 		if (!helper.isValidURL(clothingLinks[i])) {
 			throw "Clothing URL is not valid";
 		}
-	
 	}
 	const username = userObj.username;
 
@@ -122,8 +133,8 @@ export const create = async (userId, image, clothingLinks, keywords, description
 		likes: [],
 		comments: [],
 		createdAt: new Date(),
-		interactions: [], 
-		description: description
+		interactions: [],
+		description: description,
 	};
 
 	const insertInfo = await postCollection.insertOne(newPost);
@@ -131,7 +142,7 @@ export const create = async (userId, image, clothingLinks, keywords, description
 		throw "Could not create post";
 	}
 
-	const postObj = await postCollection.findOne({_id: insertInfo.insertedId});
+	const postObj = await postCollection.findOne({ _id: insertInfo.insertedId });
 	console.log(postObj);
 	// Add post to user's post
 	const userUpdate = await userCollection.updateOne(
@@ -147,7 +158,7 @@ export const create = async (userId, image, clothingLinks, keywords, description
 	for (let i = 0; i < keywords.length; i++) {
 		const keywordUpdate = await keywordCollection.updateOne(
 			{ keyword: keywords[i] },
-			{ $addToSet: { posts: postObj._id} }
+			{ $addToSet: { posts: postObj._id } }
 		);
 		if (keywordUpdate.modifiedCount === 0) {
 			throw "Could not add post to keyword";
@@ -262,6 +273,38 @@ export const getPostsByKeyword = async (keyword) => {
 
 	const postCollection = await posts();
 	const postList = await postCollection.find({ keywords: keyword }).toArray();
+	return postList;
+};
+
+/**
+ * 
+ * @param {Object} keywords Array of string keywords
+ * @param {string} username The username of the user
+ * @returns A list of posts from the user that contain any of the keywords.
+ */
+export const getPostsByKeywordsAndUser = async (keywords, username) => {
+	if (helper.isNull(username)) {
+		throw "User must be provided";
+	}
+
+	if (!helper.isOfType(username, "string")) {
+		throw "User must be of type string";
+	}
+	
+	if (helper.isNull(keywords)) {
+		throw "Keywords must be provided";
+	}
+	if (!helper.isOfType(keywords, "string")) {
+		throw "Keywords must be of type string";
+	}
+	
+	username = username.trim();
+	keywords = keywords.trim();
+	const postCollection = await posts();
+	const postList = await postCollection.find({ "username": username, "keywords": {$in: keywords}}).toArray();
+	if(helper.isNull(postList)) {
+		throw "Posts not found";
+	}
 	return postList;
 };
 
@@ -382,7 +425,9 @@ export const addKeyword = async (post, keyword) => {
 
 	// Check if the keyword exists
 	const keywordCollection = await keywords();
-	const keywordObj = await keywordCollection.findOne({ _id: new ObjectId(keyword) });
+	const keywordObj = await keywordCollection.findOne({
+		_id: new ObjectId(keyword),
+	});
 	if (helper.isNull(keywordObj)) {
 		throw "Keyword does not exist";
 	}
@@ -392,7 +437,7 @@ export const addKeyword = async (post, keyword) => {
 		{ _id: new ObjectId(post) },
 		{ $addToSet: { keywords: keywordObj.keyword } }
 	);
-	
+
 	const newKeyword = await keywordData.getKeywordById(keyword);
 	return newKeyword;
 };
@@ -405,8 +450,22 @@ export const addKeyword = async (post, keyword) => {
  * @param {string[]} keywords - An array of updated keywords for the post.
  * @returns {ObjectId} - Returns upsdated post object.
  */
-export const updatePost = async (id, image, clothingLinks, keywords, description) => {
-	if (helper.areAllValuesNotNull([id, image, clothingLinks, keywords, description])) {
+export const updatePost = async (
+	id,
+	image,
+	clothingLinks,
+	keywords,
+	description
+) => {
+	if (
+		helper.areAllValuesNotNull([
+			id,
+			image,
+			clothingLinks,
+			keywords,
+			description,
+		])
+	) {
 		throw "All values must be provided";
 	}
 
@@ -418,15 +477,15 @@ export const updatePost = async (id, image, clothingLinks, keywords, description
 	image = image.trim();
 	description = description.trim();
 
-	if(description === "") {
+	if (description === "") {
 		throw "Description cannot be empty";
 	}
 
-	if(description.length > 256 || description.length < 5) {
+	if (description.length > 256 || description.length < 5) {
 		throw "Description is too long";
 	}
 
-	if(!description.match(/^[a-zA-Z0-9 ]+$/)) {
+	if (!description.match(/^[a-zA-Z0-9 ]+$/)) {
 		throw "Description can only contain alphanumeric characters and spaces";
 	}
 
@@ -454,7 +513,7 @@ export const updatePost = async (id, image, clothingLinks, keywords, description
 	const postCollection = await posts();
 	const updateInfo = await postCollection.updateOne(
 		{ _id: new ObjectId(id) },
-		{ $set: { image, clothingLinks, keywords, description} }
+		{ $set: { image, clothingLinks, keywords, description } }
 	);
 	if (updateInfo.modifiedCount === 0) {
 		throw "Could not update post";
@@ -490,7 +549,7 @@ export const addComment = async (post, comment) => {
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
 	return postObj;
-}
+};
 
 export const removeComment = async (post, comment) => {
 	if (helper.areAllValuesNotNull([post, comment])) {
@@ -518,7 +577,7 @@ export const removeComment = async (post, comment) => {
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
 	return postObj;
-}
+};
 
 export const addInteraction = async (post, user, score) => {
 	if (helper.areAllValuesNotNull([post, user, score])) {
@@ -550,4 +609,8 @@ export const addInteraction = async (post, user, score) => {
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
 	return postObj;
-}
+};
+
+export default { create, getPostById, deletePost, getAllPosts, getPostsByUser, 
+	getPostsByKeyword, getLikedPostsByUser, addLike, removeLike, addKeyword, 
+	updatePost, addComment, removeComment, addInteraction };

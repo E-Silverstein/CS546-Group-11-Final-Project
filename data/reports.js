@@ -127,3 +127,5 @@ export const deleteReport = async(id) => {
 
 	return true;
 };
+
+export default { createReport, getAllReports, getReportById, deleteReport };

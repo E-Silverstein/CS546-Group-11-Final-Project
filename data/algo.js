@@ -2,7 +2,7 @@ import { getAllPosts } from "./posts.js";
 
 const createInteractionMatrix = async () => {
 	const posts = await getAllPosts();
-    console.log('posts', posts);
+	console.log("posts", posts);
 	const userPostMatrix = {};
 	posts.forEach((post) => {
 		const postId = post._id;
@@ -22,37 +22,36 @@ const createInteractionMatrix = async () => {
 };
 
 const cosineSimilarity = (user1, user2) => {
-    const commonKeys = Object.keys(user1).filter(function (key) {
-      return user2.hasOwnProperty(key);
-    });
-  
-    if (commonKeys.length === 0) {
-      return 0; // No common interactions
-    }
-  
-    const dotProduct = commonKeys.reduce(function (acc, key) {
-      return acc + user1[key] * user2[key];
-    }, 0);
-  
-    const magnitude1 = Math.sqrt(
-      Object.values(user1).reduce(function (acc, value) {
-        return acc + value * value;
-      }, 0)
-    );
-  
-    const magnitude2 = Math.sqrt(
-      Object.values(user2).reduce(function (acc, value) {
-        return acc + value * value;
-      }, 0)
-    );
-  
-    if (magnitude1 === 0 || magnitude2 === 0) {
-      return 0;
-    }
-  
-    return dotProduct / (magnitude1 * magnitude2); // Cosine similarity formula
-  };
-  
+	const commonKeys = Object.keys(user1).filter(function (key) {
+		return user2.hasOwnProperty(key);
+	});
+
+	if (commonKeys.length === 0) {
+		return 0; // No common interactions
+	}
+
+	const dotProduct = commonKeys.reduce(function (acc, key) {
+		return acc + user1[key] * user2[key];
+	}, 0);
+
+	const magnitude1 = Math.sqrt(
+		Object.values(user1).reduce(function (acc, value) {
+			return acc + value * value;
+		}, 0)
+	);
+
+	const magnitude2 = Math.sqrt(
+		Object.values(user2).reduce(function (acc, value) {
+			return acc + value * value;
+		}, 0)
+	);
+
+	if (magnitude1 === 0 || magnitude2 === 0) {
+		return 0;
+	}
+
+	return dotProduct / (magnitude1 * magnitude2); // Cosine similarity formula
+};
 
 const createSimilarityMatrix = async (matrix) => {
 	const userIds = Object.keys(matrix);
@@ -79,15 +78,15 @@ const getTopMatches = async (userId, userSimilarities, matrix) => {
 			return b[1] - a[1];
 		})
 		.slice(0, 5); // Top 5 similar users
-    console.log('similarUsers', similarUsers);
+	console.log("similarUsers", similarUsers);
 	const recommendedPosts = new Set();
 
 	similarUsers.forEach(function ([similarUserId]) {
 		const posts = matrix[similarUserId];
 		for (const postId in posts) {
 			if (!matrix[userId].hasOwnProperty(postId)) {
-                // Add unique posts not interacted with by the target user
-				recommendedPosts.add(postId); 
+				// Add unique posts not interacted with by the target user
+				recommendedPosts.add(postId);
 			}
 		}
 	});
@@ -101,19 +100,35 @@ const getTopMatches = async (userId, userSimilarities, matrix) => {
  * @returns {Array} The recommended posts for the user.
  */
 export const getRecommendedPosts = async (userId) => {
-    const matrix = await createInteractionMatrix();
-    // console.log('matrix', matrix);
-    const similarities = await createSimilarityMatrix(matrix);
-    // console.log('similarities', similarities);
-    const recommendedPosts = await getTopMatches(userId, similarities, matrix);
 
-    return recommendedPosts;
-}
+	const matrix = await createInteractionMatrix();
+	// console.log('matrix', matrix);
+	const similarities = await createSimilarityMatrix(matrix);
+	// console.log('similarities', similarities);
+	const recommendedPosts = await getTopMatches(userId, similarities, matrix);
 
-export const calculateEngagementScore = async (userObj, postObj, links_clicked, comments_posted) => {
-    const postKeys = postObj.keywords;
-    const userLikedKeywords = userObj.likedKeywords;
-    const matchingKeywords = postKeys.filter((key) => userLikedKeywords.includes(key));
-    const isFollowingUser = userObj.following.includes(postObj.user._id);
-    return matchingKeywords.length + isFollowingUser * 5 + links_clicked + comments_posted * 2; 
-}
+	return recommendedPosts;
+};
+
+export const calculateEngagementScore = async (
+	userObj,
+	postObj,
+	links_clicked
+) => {
+	const postKeys = postObj.keywords;
+	const userLikedKeywords = userObj.likedKeywords;
+	const comments_posted = postObj.comments.filter(
+		(comment) => comment.user === userObj._id
+	).length;
+	const matchingKeywords = postKeys.filter((key) =>
+		userLikedKeywords.includes(key)
+	);
+	const isFollowingUser = userObj.following.includes(postObj.user._id);
+	return (
+		matchingKeywords.length +
+		isFollowingUser * 5 +
+		links_clicked +
+		comments_posted * 2
+	);
+};
+export default { getRecommendedPosts, calculateEngagementScore }

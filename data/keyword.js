@@ -142,3 +142,5 @@ export const deleteKeyword = async (keyword) => {
 
 	return true;
 };
+
+export default { create, getKeywordById, deleteKeyword };

@@ -122,3 +122,5 @@ export const deleteComment = async (id) => {
 
 	return true;
 };
+
+export default { create, getCommentById, deleteComment };
