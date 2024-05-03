@@ -6,6 +6,7 @@ const router = express.Router();
 router
 .route('/') 
     .get(async (req, res) => {
+        // TODO: Change this when we figure out what's what (Do we need get here?)
         res.send("reports");
     });
 
