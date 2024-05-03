@@ -3,7 +3,7 @@ Populate data and test
 */
 
 import { dbConnection, closeConnection } from ".././config/mongoConnections.js";
-import { userData, postData, commentData, keywordData } from "../data/index.js";
+import { userData, postData, commentData, reportData, keywordData } from "../data/index.js";
 import { getRecommendedPosts } from "../data/algo.js";
 
 function generatePassword() {
@@ -1076,6 +1076,9 @@ async function main() {
 	const like48 = await postData.addLike(user29._id.toString(), post75._id.toString());
 	const like49 = await postData.addLike(user1._id.toString(), post50._id.toString());
 	const like50 = await postData.addLike(user27._id.toString(), post20._id.toString());
+
+	//reports
+	const report = await reportData.createReport(post1._id,"Fashionista123","This outfit is ugly");
 	await closeConnection();
 }
 

@@ -194,7 +194,7 @@ export const getPostById = async (id) => {
 	}
 
 	const postCollection = await posts();
-	const post = await postCollection.findOne({ _id: id });
+	const post = await postCollection.findOne({ _id: new ObjectId(id) });
 	if (helper.isNull(post)) {
 		throw "Post does not exist";
 	}
