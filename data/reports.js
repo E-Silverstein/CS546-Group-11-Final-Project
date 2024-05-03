@@ -1,4 +1,4 @@
-import { reports } from "../config/mongoCollections";
+import { reports } from "../config/mongoCollections.js";
 import * as helper from "../helpers.js"
 
 /**
@@ -127,3 +127,5 @@ export const deleteReport = async(id) => {
 
 	return true;
 };
+
+export default { createReport, getAllReports, getReportById, deleteReport };
