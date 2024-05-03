@@ -1,5 +1,5 @@
 import postRoutes from "./posts.js";
-import userRoutes from "./posts.js";
+import userRoutes from "./users.js";
 import loginRoutes from './login.js';
 import signupRoutes from './signup.js';
 import searchRoutes from './search.js';
@@ -19,11 +19,6 @@ const constructorMethod = app => {
   app.use("/search", searchRoutes);
   
   //app.use("/reports", reportRoutes);
-
-  // TODO: Make this a middleware
-  /*app.use("/", (req, res) => { 
-    return res.redirect('/home');
-  });*/
 
   app.use("/newpost", async(req, res) => {
     return res.status(200).render('posts/newpost');

@@ -6,311 +6,1076 @@ import { dbConnection, closeConnection } from ".././config/mongoConnections.js";
 import { userData, postData, commentData, keywordData } from "../data/index.js";
 import { getRecommendedPosts } from "../data/algo.js";
 
-import bycrypt from "bcrypt";
+function generatePassword() {
+    const length = Math.floor(Math.random() * (20 - 8 + 1)) + 8;
+    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+    const specialChars = '!@#$%^&*()-_=+';
+    const numbers = '0123456789';
+
+    let password = '';
+    let hasUppercase = false;
+    let hasLowercase = false;
+    let hasSpecialChar = false;
+    let hasNumber = false;
+
+    while (password.length < length) {
+        const charType = Math.floor(Math.random() * 4);
+
+        switch (charType) {
+            case 0:
+                password += uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)];
+                hasUppercase = true;
+                break;
+            case 1:
+                password += lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)];
+                hasLowercase = true;
+                break;
+            case 2:
+                password += specialChars[Math.floor(Math.random() * specialChars.length)];
+                hasSpecialChar = true;
+                break;
+            case 3:
+                password += numbers[Math.floor(Math.random() * numbers.length)];
+                hasNumber = true;
+                break;
+        }
+    }
+
+    if (!hasUppercase || !hasLowercase || !hasSpecialChar || !hasNumber) {
+        return generatePassword();
+    }
+
+    return password;
+}
 
 async function main() {
 	const db = await dbConnection();
 	await db.dropDatabase();
-	let passwords = [
-		"password1",
-		"password2",
-		"password3",
-		"password4",
-		"password5",
-		"password6",
-		"password7",
-		"password8",
-		"password9",
-		"password10",
-		"password11",
-		"password12",
-		"password13",
-		"password14",
-		"password15",
-	];
-	let hashedPasswords = [];
-	for (let i = 0; i < passwords.length; i++) {
-		hashedPasswords.push(await bycrypt.hash(passwords[i], 8));
-	}
-	// console.log(hashedPasswords);
 	// Create users
     const user1 = await userData.createUser(
-        "user1",
-        hashedPasswords[0],
-        "profile1",
-        20,
-        "This is user 1's bio."
+        "EthanSilv",
+        "Password1!",
+        "fillerimage.url",
+        Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+        "Hi, I love fashion and posting my outfits!"
     );
     const user2 = await userData.createUser(
-        "user2",
-        hashedPasswords[1],
-        "profile2",
-        21,
-        "This is user 2's bio."
-    );
-    const user3 = await userData.createUser(
-        "user3",
-        hashedPasswords[2],
-        "profile3",
-        22,
-        "This is user 3's bio."
-    );
-    const user4 = await userData.createUser(
-        "user4",
-        hashedPasswords[3],
-        "profile4",
-        23,
-        "This is user 4's bio."
-    );
-    const user5 = await userData.createUser(
-        "user5",
-        hashedPasswords[4],
-        "profile5",
-        24,
-        "This is user 5's bio."
-    );
-    const user6 = await userData.createUser(
-        "user6",
-        hashedPasswords[5],
-        "profile6",
-        25,
-        "This is user 6's bio."
-    );
-    const user7 = await userData.createUser(
-        "user7",
-        hashedPasswords[6],
-        "profile7",
-        26,
-        "This is user 7's bio."
-    );
-    const user8 = await userData.createUser(
-        "user8",
-        hashedPasswords[7],
-        "profile8",
-        27,
-        "This is user 8's bio."
-    );
-    const user9 = await userData.createUser(
-        "user9",
-        hashedPasswords[8],
-        "profile9",
-        28,
-        "This is user 9's bio."
-    );
-    const user10 = await userData.createUser(
-        "user10",
-        hashedPasswords[9],
-        "profile10",
-        29,
-        "This is user 10's bio."
-    );
+		"Fashionista123",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Fashion enthusiast with a passion for style and trends!"
+	);
+	const user3 = await userData.createUser(
+		"StyleGuru24",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Sharing my love for fashion and inspiring others to find their own unique style."
+	);
+	const user4 = await userData.createUser(
+		"VintageVibes77",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Obsessed with all things vintage and retro!"
+	);
+	const user5 = await userData.createUser(
+		"StreetwearStar",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Bringing streetwear to the forefront of fashion."
+	);
+	const user6 = await userData.createUser(
+		"MinimalistMaven",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Less is more. Embracing the beauty of minimalism in fashion and life."
+	);
+	const user7 = await userData.createUser(
+		"BohemianBeauty",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Free-spirited and eclectic, with a love for bohemian fashion."
+	);
+	const user8 = await userData.createUser(
+		"ClassicChic",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Timeless elegance and sophistication are my style staples."
+	);
+	const user9 = await userData.createUser(
+		"AthleisureAddict",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Living in athleisure and loving it! Comfort and style combined."
+	);
+	const user10 = await userData.createUser(
+		"SustainableStyle",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Promoting sustainable and ethical fashion choices."
+	);
     const user11 = await userData.createUser(
-        "user11",
-        hashedPasswords[10],
-        "profile11",
-        30,
-        "This is user 11's bio."
-    );
+		"GlamourGirl",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Adding a touch of glamour to every outfit."
+	);
     const user12 = await userData.createUser(
-        "user12",
-        hashedPasswords[11],
-        "profile12",
-        31,
-        "This is user 12's bio."
-    );
+		"PreppyPrincess",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Embracing the preppy aesthetic with classic and polished looks."
+	);
     const user13 = await userData.createUser(
-        "user13",
-        hashedPasswords[12],
-        "profile13",
-        32,
-        "This is user 13's bio."
-    );
+		"RockerEdge",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Adding a rocker edge to my wardrobe with leather jackets and band tees."
+	);
     const user14 = await userData.createUser(
-        "user14",
-        hashedPasswords[13],
-        "profile14",
-        33,
-        "This is user 14's bio."
-    );
+		"GirlyGlam",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"All about girly and glamorous fashion choices."
+	);
     const user15 = await userData.createUser(
-        "user15",
-        hashedPasswords[14],
-        "profile15",
-        34,
-        "This is user 15's bio."
-    );
-	console.log(user1);
+		"TomboyTrend",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Mixing tomboy style with trendy pieces for a unique look."
+	);
+    const user16 = await userData.createUser(
+		"ArtsyAttire",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Expressing myself through my artsy and creative fashion choices."
+	);
+    const user17 = await userData.createUser(
+		"EdgyEnsembles",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Pushing the boundaries with edgy and daring ensembles."
+	);
+    const user18 = await userData.createUser(
+		"ComfyCasual",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Keeping it comfy and casual with my everyday outfits."
+	);
+    const user19 = await userData.createUser(
+		"ChicAndSophistic",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Aiming for chic and sophisticated style in all my looks."
+	);
+    const user20 = await userData.createUser(
+		"TrendsetExtr0",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Setting trends and inspiring others with my bold fashion choices."
+	);
+    const user21 = await userData.createUser(
+		"VintageVogue",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Mixing vintage finds with modern pieces for a unique and stylish look."
+	);
+    const user22 = await userData.createUser(
+		"StreetStylSav",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Mastering the art of street style with effortless cool."
+	);
+    const user23 = await userData.createUser(
+		"MinimalistM8",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Keeping it simple and stylish with a minimalist approach to fashion."
+	);
+    const user24 = await userData.createUser(
+		"BohoBabe",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Embracing the boho lifestyle with flowy fabrics and earthy tones."
+	);
+    const user25 = await userData.createUser(
+		"ClassicCouture",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Investing in classic pieces that never go out of style."
+	);
+    const user26 = await userData.createUser(
+		"SportySpice",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Mixing sporty and stylish pieces for a comfortable and chic look."
+	);
+    const user27 = await userData.createUser(
+		"EcoFashionista",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Making sustainable fashion choices that are good for the planet and my wardrobe."
+	);
+    const user28 = await userData.createUser(
+		"HollywoodGlam",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Channeling old Hollywood glamour with elegant and sophisticated looks."
+	);
+    const user29 = await userData.createUser(
+		"PreppyPerfect",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Perfecting the preppy look with classic pieces and bold colors."
+	);
+    const user30 = await userData.createUser(
+		"RockstarStyle",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Rocking out in style with edgy and rebellious fashion choices."
+	);
+    const user31 = await userData.createUser(
+		"GirlyGirl",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Embracing my feminine side with girly and glamorous outfits."
+	);
+    const user32 = await userData.createUser(
+		"TomboyChic",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Mixing tomboy style with chic pieces for a cool and effortless look."
+	);
+    const user33 = await userData.createUser(
+		"CreativeCouture",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Expressing my creativity through my unique and artistic fashion choices."
+	);
+    const user34 = await userData.createUser(
+		"DaringDresser",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Taking fashion risks and experimenting with bold and daring looks."
+	);
+    const user35 = await userData.createUser(
+		"CasualCool",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Keeping it casual and cool with my everyday style."
+	);
+    const user36 = await userData.createUser(
+		"SophistStyl",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Elevating my wardrobe with sophisticated and timeless pieces."
+	);
+    const user37 = await userData.createUser(
+		"FashionForward",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Staying ahead of the trends and embracing fashion-forward looks."
+	);
+    const user38 = await userData.createUser(
+		"RetroRevival",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Bringing back retro styles with a modern twist."
+	);
+    const user39 = await userData.createUser(
+		"UrbanEdge",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Adding an urban edge to my outfits with streetwear-inspired pieces."
+	);
+    const user40 = await userData.createUser(
+		"SimpleAndChic",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Keeping it simple and chic with my minimalist wardrobe."
+	);
+    const user41 = await userData.createUser(
+		"BohemianSpirit",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Expressing my bohemian spirit through my free-flowing and eclectic style."
+	);
+    const user42 = await userData.createUser(
+		"TimelessTaste",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Investing in timeless pieces that will last for years to come."
+	);
+    const user43 = await userData.createUser(
+		"ActivaterBobby",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Staying active and stylish with my athleisure-inspired looks."
+	);
+    const user44 = await userData.createUser(
+		"Lilyann",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Making conscious fashion choices that are good for the environment and the people who make my clothes."
+	);
+    const user45 = await userData.createUser(
+		"GlamGoddess",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Adding a touch of glam to my everyday outfits."
+	);
+    const user46 = await userData.createUser(
+		"GeorgeHarr",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Keeping it polished and preppy with my classic and timeless style."
+	);
+    const user47 = await userData.createUser(
+		"RebelWithStyle",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Adding a rebellious edge to my outfits with rocker-inspired pieces."
+	);
+    const user48 = await userData.createUser(
+		"FeminineFashion",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Embracing my femininity with girly and glamorous fashion choices."
+	);
+    const user49 = await userData.createUser(
+		"CoolAndCasual",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Keeping it cool and casual with my effortless style."
+	);
+    const user50 = await userData.createUser(
+		"ArtsyAndUnique",
+		generatePassword(),
+		"fillerimage.url",
+		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+		"Expressing my artistic side through my unique and creative fashion choices."
+	);
 
 	// Create posts
 	const post1 = await postData.create(
 		user1._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword1", "keyword2"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["classic", "minimalist"],
+		"A classic style with great minimalist qualities"
 	);
 	const post2 = await postData.create(
-		user2._id,
+		user1._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword2", "keyword3"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Trendy", "Urban", "Chic"],
+		"Rocking the latest trends on the city streets"
 	);
 	const post3 = await postData.create(
-		user3._id,
+		user1._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword3", "keyword4"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Classic", "Elegant", "Timeless"],
+		"Classic elegance never goes out of style"
 	);
 	const post4 = await postData.create(
-		user4._id,
+		user2._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword4", "keyword5"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Sporty", "Athleisure", "Comfortable"],
+		"Staying comfy and stylish in my athleisure wear Yasss"
 	);
 	const post5 = await postData.create(
-		user5._id,
+		user2._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword5", "keyword1"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Vintage", "Retro", "Unique"],
+		"Found the perfect vintage piece to add to my collection"
 	);
 	const post6 = await postData.create(
-		user6._id,
+		user2._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword6", "keyword7"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Minimalist", "Simple", "Chic"],
+		"Less is more Embracing the beauty of minimalism in fashion"
 	);
 	const post7 = await postData.create(
-		user7._id,
+		user3._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword7", "keyword8"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html",],
+		["Bohemian", "Vintage", "Earthy"],
+		"Flowy fabrics and earthy tones for the bohemian soul"
 	);
 	const post8 = await postData.create(
-		user8._id,
+		user3._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword8", "keyword9"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Classic", "Elegant", "Timeless"],
+		"Timeless elegance and sophistication are my style staples"
 	);
 	const post9 = await postData.create(
-		user9._id,
+		user4._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword9", "keyword10"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Athleisure", "Sporty", "Comfortable"],
+		"Living in athleisure and loving it Comfort and style combined"
 	);
 	const post10 = await postData.create(
-		user10._id,
+		user4._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword10", "keyword11"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Sustainable", "Ethical", "Casual"],
+		"Promoting sustainable and ethical fashion choices. #sustainablefashion"
 	);
 	const post11 = await postData.create(
-		user11._id,
+		user5._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword11", "keyword12"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Glamorous", "Chic", "Sparkly"],
+		"Adding a touch of glamour to every outfit. #glamstyle"
 	);
 	const post12 = await postData.create(
-		user12._id,
+		user6._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword12", "keyword13"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Preppy", "Classic", "Polished"],
+		"Embracing the preppy aesthetic with classic and polished looks. #preppystyle"
 	);
 	const post13 = await postData.create(
-		user13._id,
+		user6._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword13", "keyword14"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Rocker", "Edgy", "Rebellious"],
+		"Adding a rocker edge to my wardrobe with leather jackets and band tees. #rockerstyle"
 	);
 	const post14 = await postData.create(
-		user14._id,
+		user7._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword14", "keyword15"]
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Girly", "Glamorous", "Feminine"],
+		"All about girly and glamorous fashion choices. #girlyglam"
 	);
 	const post15 = await postData.create(
+		user7._id,
+		"image.png",
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Tomboy", "Trendy", "Casual"],
+		"Mixing tomboy style with trendy pieces for a unique look. #tomboychic"
+	);
+	const post16 = await postData.create(
+		user7._id,
+		"image.png",
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Artsy", "Creative", "Unique"],
+		"Expressing myself through my artsy and creative fashion choices. #artsyfashion"
+	);
+	const post17 = await postData.create(
+		user8._id,
+		"image.png",
+		["https://www.hanes.com/hanes-classic-mens-white-crew-neck-t-shirt-p6.html"],
+		["Edgy", "Daring", "Bold"],
+		"Pushing the boundaries with edgy and daring ensembles. #edgystyle"
+	);
+	const post18 = await postData.create(
+		user9._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Casual", "Comfortable", "Relaxed"],
+		"Keeping it comfy and casual with my everyday outfits. #casualstyle"
+	);
+	const post19 = await postData.create(
+		user9._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Chic", "Sophisticated", "Elegant"],
+		"Aiming for chic and sophisticated style in all my looks. #chicstyle"
+	);
+	const post20 = await postData.create(
+		user10._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Trendy", "Bold", "Vintage"],
+		"Setting trends and inspiring others with my bold fashion choices. #trendsetter"
+	);
+	const post21 = await postData.create(
+		user10._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Vintage", "Modern", "Unique"],
+		"Mixing vintage finds with modern pieces for a unique and stylish look. #vintagefashion"
+	);
+	const post22 = await postData.create(
+		user10._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Streetstyle", "Urban", "Cool"],
+		"Mastering the art of street style with effortless cool. #streetstylesavvy"
+	);
+	const post23 = await postData.create(
+		user11._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Minimalist", "Simple", "Understated"],
+		"Keeping it simple and stylish with a minimalist approach to fashion. #minimalistmaster"
+	);
+	const post24 = await postData.create(
+		user12._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Bohemian", "Flowy", "Earthy"],
+		"Embracing the boho lifestyle with flowy fabrics and earthy tones. #bohobabe"
+	);
+	const post25 = await postData.create(
+		user12._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Classic", "Timeless", "Sophisticated"],
+		"Investing in classic pieces that never go out of style. #classiccouture"
+	);
+	const post26 = await postData.create(
+		user13._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Rocker", "Edgy", "Rebellious"],
+		"Adding a rocker edge to my wardrobe with leather jackets and band tees. #rockerstyle"
+	);
+	const post27 = await postData.create(
+		user13._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Grunge", "Dark", "Alternative"], 
+		"Embracing my inner grunge with dark and edgy pieces. #grungestyle"
+	);
+	const post28 = await postData.create(
+		user14._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Girly", "Glamorous", "Feminine"],
+		"All about girly and glamorous fashion choices. #girlyglam"
+	);
+	const post29 = await postData.create(
+		user14._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
+		["Trendy", "Chic", "Colorful"],
+		"Loving these bright and trendy pieces! #fashionlover"
+	);
+	const post30 = await postData.create(
 		user15._id,
 		"image.png",
-		["https://github.com/"],
-		["keyword15", "keyword6"]
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Tomboy", "Trendy", "Casual"],
+		"Mixing tomboy style with trendy pieces for a unique look. #tomboychic" 
 	);
-	console.log(post1);
-
+	const post31 = await postData.create(
+		user16._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Artsy", "Creative", "Unique"],
+		"Expressing myself through my artsy and creative fashion choices. #artsyfashion"
+	);
+	const post32 = await postData.create( 
+		user16._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Bohemian", "Flowy", "Colorful"], 
+		"Adding a touch of bohemian flair to my wardrobe. #bohovibes" 
+	);
+	const post33 = await postData.create(
+		user17._id,
+		"image.png", 
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Edgy", "Daring", "Bold"],
+		"Pushing the boundaries with edgy and daring ensembles. #edgystyle" 
+	);
+	const post34 = await postData.create( 
+		user18._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Casual", "Comfortable", "Relaxed"],
+		"Keeping it comfy and casual with my everyday outfits. #casualstyle"
+	); 
+	const post35 = await postData.create(
+		user18._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
+		["Sporty", "Athleisure", "Active"],
+		"Staying active and stylish in my athleisure wear. #sportystyle" 
+	); 
+	const post36 = await postData.create(
+		user19._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Chic", "Sophisticated", "Elegant"], 
+		"Aiming for chic and sophisticated style in all my looks. #chicstyle"
+	);
+	const post37 = await postData.create(
+		user20._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Trendy", "Bold", "Vintage"],
+		"Setting trends and inspiring others with my bold fashion choices. #trendsetter"
+	);
+	const post38 = await postData.create(
+		user21._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Vintage", "Modern", "Unique"], 
+		"Mixing vintage finds with modern pieces for a unique and stylish look. #vintagefashion"
+	);
+	const post39 = await postData.create(
+		user22._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Streetstyle", "Urban", "Cool"], 
+		"Mastering the art of street style with effortless cool. #streetstylesavvy" 
+	);
+	const post40 = await postData.create(
+		user23._id, 
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
+		["Minimalist", "Simple", "Understated"],
+		"Keeping it simple and stylish with a minimalist approach to fashion. #minimalistmaster"
+	);
+	const post41 = await postData.create(
+		user24._id, 
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Bohemian", "Flowy", "Earthy"],
+		"Embracing the boho lifestyle with flowy fabrics and earthy tones. #bohobabe" 
+	);
+	const post42 = await postData.create( 
+		user25._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Classic", "Timeless", "Sophisticated"],
+		"Investing in classic pieces that never go out of style. #classiccouture" 
+	);
+	const post43 = await postData.create(
+		user26._id, 
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Sporty", "Stylish", "Comfortable"], 
+		"Mixing sporty and stylish pieces for a comfortable and chic look. #sportyspice" 
+	);
+	const post44 = await postData.create( 
+		user26._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
+		["Athleisure", "Trendy", "Functional"], 
+		"Loving the athleisure trend for its comfort and style. #athleisurelover" 
+	); 
+	const post45 = await postData.create(
+		user27._id,
+		"image.png", 
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
+		["Sustainable", "Ethical", "Vintage"], 
+		"Making sustainable fashion choices that are good for the planet and my wardrobe. #sustainablefashionista"
+	);
+	const post46 = await postData.create( 
+		user28._id,
+		"image.png", 
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
+		["Glamorous", "Hollywood", "Elegant"], 
+		"Channeling old Hollywood glamour with elegant and sophisticated looks. #hollywoodglam"
+	);
+	const post47 = await postData.create( 
+		user29._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
+		["Preppy", "Classic", "Polished"],
+		"Perfecting the preppy look with classic pieces and bold colors. #preppyperfection"
+	); 
+	const post48 = await postData.create(
+		user29._id, 
+		"image.png", 
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Nautical", "Stripes", "Summery"], 
+		"Loving the nautical vibes for summer! #nauticalstyle"
+	);
+	const post49 = await postData.create(
+		user30._id, 
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
+		["Rockstar", "Edgy", "Rebellious"], 
+		"Rocking out in style with edgy and rebellious fashion choices. #rockstarstyle" 
+	);
+	const post50 = await postData.create( 
+		user30._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Leather", "Black", "Bold"], 
+		"Adding a touch of leather to my look for an edgy vibe. #leatherlover"
+	);
+	const post51 = await postData.create(
+		user30._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Vintage", "Music", "Casual"], 
+		"Expressing my love for music through band tees and casual style. #bandteestyle" 
+	);
+	const post52 = await postData.create( 
+		user31._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Girly", "Pink", "Feminine"], 
+		"Embracing my feminine side with girly and pink outfits. #girlygirl"
+	);
+	const post53 = await postData.create( 
+		user32._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
+		["Tomboy", "Chic", "Effortless"],
+		"Mixing tomboy style with chic pieces for a cool and effortless look. #tomboychic" 
+	); 
+	const post54 = await postData.create(
+		user33._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Creative", "Unique", "Colorful"],
+		"Expressing my creativity through my unique and artistic fashion choices. #creativecouture"
+	); 
+	const post55 = await postData.create(
+		user34._id, 
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
+		["Daring", "Bold", "Experimental"],
+		"Taking fashion risks and experimenting with bold and daring looks. #daringdresser" 
+	); 
+	const post56 = await postData.create(
+		user34._id, 
+		"image.png", 
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
+		["Vintage", "Unique", "Retro"], 
+		"Pushing the boundaries of fashion with avant-garde and unique pieces. #avantgardestyle"
+	);
+	const post57 = await postData.create( 
+		user35._id, 
+		"image.png", 
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"],
+		["Casual", "Denim", "Comfortable"], 
+		"Keeping it casual and cool with my favorite denim pieces. #casualcool"
+	); 
+	const post58 = await postData.create(
+		user36._id,
+		"image.png",
+		["https://www.abercrombie.com/shop/us/womens-bottoms-classic-jeans-jeans"], 
+		["Sophisticated", "Timeless", "Elegant"],
+		"Elevating my wardrobe with sophisticated and timeless pieces. #sophisticatedstyle" 
+	);
+	const post59 = await postData.create(
+		user36._id,
+		"image.png",
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Tailored", "Chic", "Polished"], 
+		"Loving the look of tailored pieces for a chic and polished style. #tailoredstyle"
+	);
+	const post60 = await postData.create(
+		user37._id, 
+		"image.png",
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Retro", "Trendy", "Unique"],
+		"Staying ahead of the trends and embracing fashion-forward looks. #fashionforward"
+	);
+	const post61 = await postData.create( 
+		user37._id, 
+		"image.png",
+		["https://www.fairharborclothing.com/collections/mens-swim-1"], 
+		["Streetwear", "Urban", "Sporty"],
+		"Mixing streetwear and sporty pieces for a cool and urban look. #urbanstyle"
+	); 
+	const post62 = await postData.create( 
+		user37._id,
+		"image.png", 
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Minimalist", "Monochrome", "Chic"], 
+		"Keeping it simple and chic with a minimalist and monochrome palette. #minimalistchic" 
+	);
+	const post63 = await postData.create( 
+		user38._id,
+		"image.png", 
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Retro", "Vintage", "Colorful"],
+		"Bringing back retro styles with a modern twist. #retrorevival"
+	); 
+	const post64 = await postData.create( 
+		user38._id, 
+		"image.png",
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Denim", "Casual", "Classic"],
+		"Denim is always a classic choice for a casual and cool look. #denimlover"
+	);
+	const post65 = await postData.create(
+		user39._id, 
+		"image.png", 
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Urban", "Streetwear", "Edgy"], 
+		"Adding an urban edge to my outfits with streetwear-inspired pieces. #urbanedge"
+	);
+	const post66 = await postData.create( 
+		user39._id, 
+		"image.png",
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Urban", "Statement", "Casual"],
+		"Making a statement with graphic tees and casual style. #graphicteestyle"
+	); 
+	const post67 = await postData.create(
+		user40._id, 
+		"image.png", 
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Minimalist", "Neutral", "Timeless"],
+		"Keeping it simple and chic with a minimalist wardrobe in neutral tones. #simpleandchic"
+	); 
+	const post68 = await postData.create(
+		user41._id,
+		"image.png", 
+		["https://www.fairharborclothing.com/collections/mens-swim-1"], 
+		["Bohemian", "Flowy", "Eclectic"], 
+		"Expressing my bohemian spirit through my free-flowing and eclectic style. #bohemianspirit"
+	);
+	const post69 = await postData.create(
+		user41._id, 
+		"image.png",
+		["https://www.fairharborclothing.com/collections/mens-swim-1"], 
+		["Athletic", "Summery", "Comfortable"],
+		"Loving the comfort and style of maxi dresses for summer. #maxidresslover" 
+	);
+	const post70 = await postData.create(
+		user42._id,
+		"image.png",
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Classic", "Timeless", "Investment"], 
+		"Investing in timeless pieces that will last for years to come. #timelesstaste" 
+	);
+	const post71 = await postData.create(
+		user43._id,
+		"image.png", 
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Active", "Sporty", "Athleisure"],
+		"Staying active and stylish with my athleisure-inspired looks. #activeandstylish" 
+	);
+	const post72 = await postData.create(
+		user43._id, 
+		"image.png", 
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Sneakers", "Comfortable", "Casual"],
+		"Sneakers are my go-to for comfort and casual style. #sneakerhead" 
+	); 
+	const post73 = await postData.create( 
+		user44._id, 
+		"image.png",
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Sustainable", "Ethical", "Conscious"], 
+		"Making conscious fashion choices that are good for the environment and the people who make my clothes. #consciousconsumer"
+	);
+	const post74 = await postData.create( 
+		user44._id,
+		"image.png",
+		["https://www.fairharborclothing.com/collections/mens-swim-1"], 
+		["Vintage", "Retro", "Comfortable"], 
+		"Choosing eco-friendly clothing made from natural fabrics for comfort and sustainability. #ecofashion"
+	); 
+	const post75 = await postData.create(
+		user45._id,
+		"image.png", 
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Glamorous", "Sparkly", "Chic"], 
+		"Adding a touch of glam to my everyday outfits. #glamgoddess"
+	); 
+	const post76 = await postData.create(
+		user45._id,
+		"image.png", 
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Sequins", "Party", "Festive"],
+		"Bringing on the sparkle with sequins for a party-ready look. #sequinslover" 
+	);
+	const post77 = await postData.create( 
+		user46._id, 
+		"image.png",
+		["https://www.fairharborclothing.com/collections/mens-swim-1"], 
+		["Preppy", "Classic", "Timeless"], 
+		"Keeping it polished and preppy with my classic and timeless style. #polishedandpreppy"
+	);
+	const post78 = await postData.create(
+		user47._id,
+		"image.png", 
+		["https://www.fairharborclothing.com/collections/mens-swim-1"], 
+		["Rebellious", "Edgy", "Leather"],
+		"Adding a rebellious edge to my outfits with rocker-inspired pieces. #rebelwithstyle"
+	); 
+	const post79 = await postData.create(
+		user48._id,
+		"image.png",
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Feminine", "Floral", "Romantic"], 
+		"Embracing my femininity with floral and romantic pieces. #femininefashion"
+	);
+	const post80 = await postData.create( 
+		user49._id,
+		"image.png",
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Casual", "Effortless", "Cool"],
+		"Keeping it cool and casual with my effortless style. #casualcool" 
+	);
+	const post81 = await postData.create( 
+		user50._id,
+		"image.png", 
+		["https://www.fairharborclothing.com/collections/mens-swim-1"],
+		["Artistic", "Unique", "Creative"], 
+		"Expressing my artistic side through my unique and creative fashion choices. #artsyandunique" 
+	);
 	// Create comments
-	const comment1 = await commentData.create(post1._id, user1._id, "comment1");
-	const comment2 = await commentData.create(post2._id, user2._id, "comment2");
-	const comment3 = await commentData.create(post3._id, user3._id, "comment3");
-	const comment4 = await commentData.create(post4._id, user4._id, "comment4");
-	const comment5 = await commentData.create(post5._id, user5._id, "comment5");
-	console.log("comment1", comment1);
-	// Create keywords
-	// const keyword1 = await keywordData.create('keyword1');
-	// const keyword2 = await keywordData.create('keyword2');
-	// const keyword3 = await keywordData.create('keyword3');
-	// const keyword4 = await keywordData.create('keyword4');
-	// const keyword5 = await keywordData.create('keyword5');
-	// console.log('keyword1', keyword1);
 
-	// Add keywords to posts
-	// await postData.addKeyword(post1._id.toString(), keyword1._id.toString());
-	// await postData.addKeyword(post2._id.toString(), keyword2._id.toString());
-	// await postData.addKeyword(post3._id.toString(), keyword3._id.toString());
-	// await postData.addKeyword(post4._id.toString(), keyword4._id.toString());
-	// await postData.addKeyword(post5._id.toString(), keyword5._id.toString());
-	// console.log(post2);
+	const comment1 = await commentData.create(post1._id, user1._id, "Love this");
+	const comment2 = await commentData.create(post1._id,user2._id,"Cool Outfit!");
+	const comment3 = await commentData.create(post2._id, user17._id, "Amazing!");
+	const comment4 = await commentData.create(post3._id, user42._id, "Where did you get that?");
+	const comment5 = await commentData.create(post3._id, user3._id, "I need this in my life!"); 
+	const comment6 = await commentData.create(post4._id, user50._id, "Lovely");
+	const comment7 = await commentData.create(post5._id, user7._id, "So cool!"); 
+	const comment8 = await commentData.create(post6._id, user1._id, "Love your style!");
+	const comment9 = await commentData.create(post7._id, user22._id, "Beautiful!");
+	const comment10 = await commentData.create(post8._id, user31._id, "Looking good!");
+	const comment11 = await commentData.create(post8._id, user4._id, "Wow!"); 
+	const comment12 = await commentData.create(post9._id, user19._id, "You're an inspiration!");
+	const comment13 = await commentData.create(post10._id, user2._id, "Very nice!"); 
+	const comment14 = await commentData.create(post11._id, user44._id, "Love it!");
+	const comment15 = await commentData.create(post11._id, user15._id, "So pretty!");
+	const comment16 = await commentData.create(post12._id, user28._id, "Stunning!"); 
+	const comment17 = await commentData.create(post13._id, user33._id, "Goals!"); 
+	const comment18 = await commentData.create(post14._id, user9._id, "Fantastic!");
+	const comment19 = await commentData.create(post15._id, user39._id, "Amazing shot!"); 
+	const comment20 = await commentData.create(post15._id, user11._id, "Great photo!");
+	const comment21 = await commentData.create(post16._id, user45._id, "Well done!");
+	const comment22 = await commentData.create(post17._id, user27._id, "Excellent work!"); 
+	const comment23 = await commentData.create(post18._id, user13._id, "You're so talented!"); 
+	const comment24 = await commentData.create(post19._id, user20._id, "Keep it up!");
+	const comment25 = await commentData.create(post20._id, user35._id, "Perfect!"); 
+	const comment26 = await commentData.create(post21._id, user49._id, "I love this!"); 
+	const comment27 = await commentData.create(post22._id, user18._id, "This is great!"); 
+	const comment28 = await commentData.create(post23._id, user41._id, "Super!"); 
+	const comment29 = await commentData.create(post23._id, user6._id, "Wonderful!");
+	const comment30 = await commentData.create(post24._id, user26._id, "Spectacular!");
+	const comment31 = await commentData.create(post25._id, user34._id, "Nice one!");
+	const comment32 = await commentData.create(post26._id, user5._id, "Awesome!");
+	const comment33 = await commentData.create(post26._id, user25._id, "Rad!");
+	const comment34 = await commentData.create(post27._id, user43._id, "Breathtaking!"); 
+	const comment35 = await commentData.create(post28._id, user12._id, "You're a star!"); 
+	const comment36 = await commentData.create(post29._id, user30._id, "Killing it!");
+	const comment37 = await commentData.create(post30._id, user48._id, "Get it!"); 
+	const comment38 = await commentData.create(post31._id, user10._id, "Woohoo!"); 
+	const comment39 = await commentData.create(post31._id, user21._id, "Yes!"); 
+	const comment40 = await commentData.create(post32._id, user38._id, "Way to go!"); 
+	const comment41 = await commentData.create(post33._id, user16._id, "You rock!");
+	const comment42 = await commentData.create(post34._id, user29._id, "Congrats!");
+	const comment43 = await commentData.create(post35._id, user46._id, "Boom!");
+	const comment44 = await commentData.create(post35._id, user8._id, "Yas!");
+	const comment45 = await commentData.create(post36._id, user32._id, "Amazing job!");
+	const comment46 = await commentData.create(post37._id, user40._id, "Nailed it!"); 
+	const comment47 = await commentData.create(post38._id, user24._id, "Impressive!"); 
+	const comment48 = await commentData.create(post39._id, user47._id, "Phenomenal!");
+	const comment49 = await commentData.create(post40._id, user14._id, "Outstanding!"); 
+	const comment50 = await commentData.create(post41._id, user36._id, "Bravo!"); 
 
-	await postData.addLike(user1._id.toString(), post2._id.toString());
-	await postData.addLike(user2._id.toString(), post2._id.toString());
-	await postData.addLike(user3._id.toString(), post2._id.toString());
-	await postData.addLike(user4._id.toString(), post2._id.toString());
-	await postData.addLike(user5._id.toString(), post2._id.toString());
-
-	await postData.addLike(user1._id.toString(), post3._id.toString());
-	await postData.addLike(user2._id.toString(), post3._id.toString());
-
-	await postData.addInteraction(post1._id.toString(), user1._id.toString(), 10);
-	await postData.addInteraction(post2._id.toString(), user1._id.toString(), 10);
-	await postData.addInteraction(post3._id.toString(), user1._id.toString(), 10);
-
-	await postData.addInteraction(post2._id.toString(), user2._id.toString(), 7);
-	await postData.addInteraction(post3._id.toString(), user2._id.toString(), 7);
-
-	await postData.addInteraction(post3._id.toString(), user3._id.toString(), 10);
-
-	await postData.addInteraction(post4._id.toString(), user4._id.toString(), 8);
-
-	await postData.addInteraction(post5._id.toString(), user5._id.toString(), 9);
-
-	await postData.addInteraction(post6._id.toString(), user6._id.toString(), 7);
-
-	await postData.addInteraction(post7._id.toString(), user7._id.toString(), 7);
-
-	await postData.addInteraction(post8._id.toString(), user8._id.toString(), 6);
-
-	await postData.addInteraction(post9._id.toString(), user9._id.toString(), 5);
-
-	await postData.addInteraction(post10._id.toString(), user10._id.toString(), 5);
-
-	await postData.addInteraction(post11._id.toString(), user11._id.toString(), 5);
-
-	await postData.addInteraction(post12._id.toString(), user12._id.toString(), 6);
-
-	await postData.addInteraction(post13._id.toString(), user13._id.toString(), 7);
-
-	await postData.addInteraction(post14._id.toString(), user14._id.toString(), 6);
-
-	await postData.addInteraction(post15._id.toString(), user15._id.toString(), 7);
-
-	const recommendedPosts = await getRecommendedPosts(user1._id.toString());
-	console.log("rec posts", recommendedPosts);
-
-	// const removingLike = await posts.removeLike(user1._id.toString(),post2._id.toString());
-	// console.log('likes', removingLike.likes);
-
-	// const addingKeyword = await posts.addKeyword(post2._id.toString(), keyword1._id.toString());
-	// console.log('keywords', addingKeyword.keywords);
-
-	// const addngComment = await posts.addComment(post2._id.toString(), comment1._id.toString());
-	// console.log('comments', addngComment.comments);
-
+	//create likes
+	const like1 = await postData.addLike(user1._id.toString(), post1._id.toString());
+	const like2 = await postData.addLike(user2._id.toString(), post1._id.toString());
+	const like3 = await postData.addLike(user7._id.toString(), post67._id.toString());
+	const like4 = await postData.addLike(user2._id.toString(), post15._id.toString());
+	const like5 = await postData.addLike(user42._id.toString(), post81._id.toString());
+	const like6 = await postData.addLike(user37._id.toString(), post4._id.toString());
+	const like7 = await postData.addLike(user11._id.toString(), post55._id.toString());
+	const like8 = await postData.addLike(user28._id.toString(), post27._id.toString());
+	const like9 = await postData.addLike(user49._id.toString(), post19._id.toString());
+	const like10 = await postData.addLike(user15._id.toString(), post63._id.toString());
+	const like11= await postData.addLike(user3._id.toString(), post78._id.toString());
+	const like12 = await postData.addLike(user26._id.toString(), post51._id.toString());
+	const like13 = await postData.addLike(user47._id.toString(), post39._id.toString());
+	const like14 = await postData.addLike(user18._id.toString(), post2._id.toString());
+	const like15 = await postData.addLike(user34._id.toString(), post44._id.toString());
+	const like16 = await postData.addLike(user21._id.toString(), post77._id.toString());
+	const like17 = await postData.addLike(user9._id.toString(), post13._id.toString());
+	const like18 = await postData.addLike(user39._id.toString(), post59._id.toString());
+	const like19 = await postData.addLike(user2._id.toString(), post22._id.toString());
+	const like20 = await postData.addLike(user45._id.toString(), post68._id.toString());
+	const like21 = await postData.addLike(user30._id.toString(), post7._id.toString());
+	const like22 = await postData.addLike(user14._id.toString(), post40._id.toString());
+	const like23 = await postData.addLike(user43._id.toString(), post29._id.toString());
+	const like24 = await postData.addLike(user10._id.toString(), post76._id.toString());
+	const like25 = await postData.addLike(user36._id.toString(), post52._id.toString());
+	const like26 = await postData.addLike(user25._id.toString(), post16._id.toString());
+	const like27 = await postData.addLike(user8._id.toString(), post64._id.toString());
+	const like28 = await postData.addLike(user41._id.toString(), post35._id.toString());
+	const like29 = await postData.addLike(user17._id.toString(), post80._id.toString());
+	const like30 = await postData.addLike(user33._id.toString(), post56._id.toString());
+	const like31 = await postData.addLike(user20._id.toString(), post9._id.toString());
+	const like32 = await postData.addLike(user48._id.toString(), post41._id.toString());
+	const like33 = await postData.addLike(user13._id.toString(), post24._id.toString());
+	const like34 = await postData.addLike(user38._id.toString(), post71._id.toString());
+	const like35 = await postData.addLike(user7._id.toString(), post5._id.toString());
+	const like36 = await postData.addLike(user46._id.toString(), post32._id.toString());
+	const like37 = await postData.addLike(user12._id.toString(), post79._id.toString());
+	const like38 = await postData.addLike(user35._id.toString(), post53._id.toString());
+	const like39 = await postData.addLike(user22._id.toString(), post18._id.toString());
+	const like40 = await postData.addLike(user50._id.toString(), post66._id.toString());
+	const like41 = await postData.addLike(user16._id.toString(), post3._id.toString());
+	const like42 = await postData.addLike(user44._id.toString(), post25._id.toString());
+	const like43 = await postData.addLike(user6._id.toString(), post70._id.toString());
+	const like44 = await postData.addLike(user31._id.toString(), post57._id.toString());
+	const like45 = await postData.addLike(user24._id.toString(), post11._id.toString());
+	const like46 = await postData.addLike(user40._id.toString(), post61._id.toString());
+	const like47 = await postData.addLike(user4._id.toString(), post30._id.toString());
+	const like48 = await postData.addLike(user29._id.toString(), post75._id.toString());
+	const like49 = await postData.addLike(user1._id.toString(), post50._id.toString());
+	const like50 = await postData.addLike(user27._id.toString(), post20._id.toString());
 	await closeConnection();
 }
 

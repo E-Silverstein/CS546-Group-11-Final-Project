@@ -33,7 +33,6 @@ router
         if (user) throw "Error: Username "+req.body.username+" already exists";
 
     } catch(e) {
-        console.log("user")
         return res.status(400).send(e);
     }
     try {
@@ -49,7 +48,7 @@ router
         if (req.body.password.trim() == "") throw "Error: 'password' is an empty string";
         if (req.body.password.match(' ') != null) throw "Error: Password cannot contain spaces";
         
-        if (req.body.password.length < 8 || req.body.password.length > 20) throw "Error: Password must be at least 8 characters long or less than 20 characters long";
+        if (req.body.password.length < 8 || req.body.password.length > 32) throw "Error: Password must be at least 8 characters long or less than 20 characters long";
         if (req.body.password.match(/[0-9]/g) == null) throw "Error: Password must contain at least one number";
         if (req.body.password.match(/[A-Z]/g) == null) throw "Error: Password must contain at least one uppercase character";
         if (req.body.password.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) == null) throw "Error: Password must contain at least one special character";
@@ -58,7 +57,6 @@ router
 
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        console.log("pw")
         return res.status(400).send(e);
     }
     try {
@@ -67,18 +65,16 @@ router
         if (currYear - birthYear < 13) throw "Error: must be at least 13 years old";
     } catch(e) {
          //TO-DO: change returns to render when frontend complete
-         console.log("age")
          return res.status(400).send(e);
     }
     try {
         let birthYear = parseInt(req.body.birthdate.substring(0,4));
         let currYear = new Date().getFullYear();
         let age = currYear - birthYear;
-        let hashedPassword = await bcrypt.hash(req.body.password, salt);
-        
+                
         let user = await userData.createUser(
                                 req.body.username,
-                                hashedPassword,
+                                req.body.password,
                                 "default-pfp-png",
                                 age,
                                 "default bio"     
@@ -89,7 +85,6 @@ router
         return res.redirect(200, '/login');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
-         console.log("function")
          return res.status(500).send(e);
     }
 

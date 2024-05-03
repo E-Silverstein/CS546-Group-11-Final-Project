@@ -26,6 +26,9 @@ router
 
         req.body.username = req.body.username.trim().toLowerCase();
 
+        if (req.body.username.length < 5 || req.body.username.length > 20) throw  "Username or Password is invalid.";
+        if (req.body.username.match(' ') != null) throw "Username or Password is invalid.";;
+        
     } catch(e) {
         return res.status(400).send(e);
     }
@@ -40,7 +43,11 @@ router
         if (!req.body.password) throw "Error: Requires a 'password' input";
         if (typeof req.body.password != 'string') throw "Error: 'password' must be a string";
         if (req.body.password.trim() == "") throw "Error: 'password' is an empty string";
-
+        
+        if (req.body.password.length < 8 || req.body.password.length > 32) throw "Username or Password is invalid.";
+        if (req.body.password.match(/[0-9]/g) == null) throw "Username or Password is invalid.";
+        if (req.body.password.match(/[A-Z]/g) == null) throw "Username or Password is invalid.";
+        if (req.body.password.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) == null) throw "Username or Password is invalid.";
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(400).send(e);
@@ -51,21 +58,19 @@ router
         let user = await userCollection.findOne({username: req.body.username});
         console.log(user.password);
         console.log(req.body.password);
-        if (!user) throw "Username is invalid.";
+        if (!user) throw "Username or Password is invalid.";
         let compare = await bcrypt.compare(req.body.password, user.password);
-        if (!compare) throw "password is invalid."; 
+        if (!compare) throw "Username or password is invalid."; 
 
         req.session.user = user;
         req.session.authenticated = true;
 
-        return res.status(200).send("login succesful");
+        return res.status(200).render('test_home')
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
          console.log('valdiation')
         return res.status(400).send(e);
     }
-
 });
-
 
 export default router;
