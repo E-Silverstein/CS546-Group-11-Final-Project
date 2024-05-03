@@ -70,7 +70,7 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 	}
 
 	// Validate the password constraints
-	if (password.length < 8 || password.length > 20) {
+	if (password.length < 8 || password.length > 32) {
 		throw "Password must be at least 8 characters long";
 	}
 
@@ -480,6 +480,9 @@ export const updateUser = async (
 		throw "Could not update user";
 	}
 	const updatedUser = await userCollection.findOne({ _id: new ObjectId(id) });
+	if(updatedUser === null) {
+		throw "Error: could not find user";
+	}
 	return updatedUser;
 };
 
