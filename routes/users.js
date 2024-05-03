@@ -143,6 +143,7 @@ router
 })
 .delete(async (req, res) => {
      /* will delete pre-existing user */
+     console.log("delete")
     try {
         //VALIDATION: userid
         if (req.params.userid == null) throw "Error: Requires a 'userid' input";
@@ -160,7 +161,7 @@ router
         let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
         if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
     } catch(e) {
-        res.status(404).send(e);
+        return res.status(404).send(e);
     }
     try {
         //VALIDATION: if user is current user
@@ -168,17 +169,18 @@ router
         let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
 
         //TO-DO: initialize session state and compare users
-        if (req.session.user.username != user.username) throw "Error: You do not own this user"
+        //if (req.session.user.username != user.username) throw "Error: You do not own this user"
     } catch(e) {
-        res.status(403).send(e);
+        return res.status(403).send(e);
     }
     try {
-        let deleteRes = await deleteUser(req.params.userid);
+        let deleteRes = await userData.deleteUser(req.params.userid);
         if (deleteRes==1) throw "Error: user could not be deleted";
 
         return res.status(200).send("Delete Successful");
 
     } catch(e) {
+        console.log(e);
         return res.status(500).send(e);
     }
 });
