@@ -892,7 +892,7 @@ async function main() {
 		user42._id,
 		"image.png",
 		["https://www.fairharborclothing.com/collections/mens-swim-1"],
-		["Classic", "Timeless", "Investment Pieces"], 
+		["Classic", "Timeless", "Investment"], 
 		"Investing in timeless pieces that will last for years to come. #timelesstaste" 
 	);
 	const post71 = await postData.create(
@@ -920,7 +920,7 @@ async function main() {
 		user44._id,
 		"image.png",
 		["https://www.fairharborclothing.com/collections/mens-swim-1"], 
-		["Eco-friendly", "Natural Fabrics", "Comfortable"], 
+		["Vintage", "Retro", "Comfortable"], 
 		"Choosing eco-friendly clothing made from natural fabrics for comfort and sustainability. #ecofashion"
 	); 
 	const post75 = await postData.create(
