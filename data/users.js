@@ -92,9 +92,9 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 	}
 
 	// Make sure the password is only contains alphanumeric characters
-	if (!password.match(/^[0-9a-zA-Z]+$/)) {
-		throw "Password can only contain alphanumeric characters";
-	}
+	// if (!password.match(/^[0-9a-zA-Z]+$/)) {
+	// 	throw "Password can only contain alphanumeric characters";
+	// }
 
 	// Hash the password
 	password = await bcrypt.hash(password, 12);
