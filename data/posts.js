@@ -31,7 +31,8 @@ import * as keywordData from "./keyword.js";
  * @param {string} userID - The user id that created the post.
  * @param {string} image - The image URL of the post.
  * @param {Array<string>} clothingLinks - The links to the clothing items in the image.
- * @param {Array<string>} keywords - The keywords associated with the post.
+ * @param {Array<string>} keywords - The keywords associated with the post. 
+ * @param {string} description - Description of the post
  * @returns {Object} - Returns the created object.
  */
 export const create = async (
@@ -72,9 +73,10 @@ export const create = async (
 		throw "Description is too long";
 	}
 
-	if (!description.match(/^[a-zA-Z0-9 ]+$/)) {
-		throw "Description can only contain alphanumeric characters and spaces";
-	}
+	//TODO: Allow the post to have punctuation, but no naughty strings, so check for it
+	// if (!description.match(/^[a-zA-Z0-9 ]+$/)) {
+	// 	throw "Description can only contain alphanumeric characters and spaces";
+	// }
 
 	if (!ObjectId.isValid(userId)) {
 		throw "Invalid ObjectID";
@@ -98,7 +100,7 @@ export const create = async (
 	// Check if the keywords exist if they do not exist create them
 	const keywordCollection = await collection.keywords();
 	for (let i = 0; i < keywords.length; i++) {
-		let tempKeyword = keywords[i].trim();
+		let tempKeyword = keywords[i].trim().toLowerCase();
 		if (tempKeyword === "") {
 			throw "Keyword cannot be empty";
 		}
@@ -106,7 +108,7 @@ export const create = async (
 			keyword: tempKeyword,
 		});
 		if (helper.isNull(keywordObj)) {
-			const keyword = await keywordData.create(keywords[i]);
+			const keyword = await keywordData.create(keywords[i].trim().toLowerCase());
 			if (keyword === 1) {
 				throw "Keyword could not be created";
 			}
@@ -156,12 +158,13 @@ export const create = async (
 	// Add post to keyword's posts and vice versa
 	for (let i = 0; i < keywords.length; i++) {
 		const keywordUpdate = await keywordCollection.updateOne(
-			{ keyword: keywords[i] },
+			{ keyword: keywords[i].trim().toLowerCase() },
 			{ $addToSet: { posts: postObj._id } }
 		);
-		if (keywordUpdate.modifiedCount === 0) {
-			throw "Could not add post to keyword";
-		}
+		// TODO Check if this is necessary
+		// if (keywordUpdate.modifiedCount === 0) {
+		// 	throw "Could not add post to keyword";
+		// }
 	}
 
 	const insertedObject = await postCollection.findOne({
