@@ -974,63 +974,108 @@ async function main() {
 	);
 	// Create comments
 
-
-	// const comment1 = await commentData.create(post1._id, user1._id, "comment1");
-	// const comment2 = await commentData.create(post2._id, user2._id, "comment2");
-	// const comment3 = await commentData.create(post3._id, user3._id, "comment3");;
+	const comment1 = await commentData.create(post1._id, user1._id, "Love this");
+	const comment2 = await commentData.create(post1._id,user2._id,"Cool Outfit!");
+	const comment3 = await commentData.create(post2._id, user17._id, "Amazing!");
+	const comment4 = await commentData.create(post3._id, user42._id, "Where did you get that?");
+	const comment5 = await commentData.create(post3._id, user3._id, "I need this in my life!"); 
+	const comment6 = await commentData.create(post4._id, user50._id, "Lovely");
+	const comment7 = await commentData.create(post5._id, user7._id, "So cool!"); 
+	const comment8 = await commentData.create(post6._id, user1._id, "Love your style!");
+	const comment9 = await commentData.create(post7._id, user22._id, "Beautiful!");
+	const comment10 = await commentData.create(post8._id, user31._id, "Looking good!");
+	const comment11 = await commentData.create(post8._id, user4._id, "Wow!"); 
+	const comment12 = await commentData.create(post9._id, user19._id, "You're an inspiration!");
+	const comment13 = await commentData.create(post10._id, user2._id, "Very nice!"); 
+	const comment14 = await commentData.create(post11._id, user44._id, "Love it!");
+	const comment15 = await commentData.create(post11._id, user15._id, "So pretty!");
+	const comment16 = await commentData.create(post12._id, user28._id, "Stunning!"); 
+	const comment17 = await commentData.create(post13._id, user33._id, "Goals!"); 
+	const comment18 = await commentData.create(post14._id, user9._id, "Fantastic!");
+	const comment19 = await commentData.create(post15._id, user39._id, "Amazing shot!"); 
+	const comment20 = await commentData.create(post15._id, user11._id, "Great photo!");
+	const comment21 = await commentData.create(post16._id, user45._id, "Well done!");
+	const comment22 = await commentData.create(post17._id, user27._id, "Excellent work!"); 
+	const comment23 = await commentData.create(post18._id, user13._id, "You're so talented!"); 
+	const comment24 = await commentData.create(post19._id, user20._id, "Keep it up!");
+	const comment25 = await commentData.create(post20._id, user35._id, "Perfect!"); 
+	const comment26 = await commentData.create(post21._id, user49._id, "I love this!"); 
+	const comment27 = await commentData.create(post22._id, user18._id, "This is great!"); 
+	const comment28 = await commentData.create(post23._id, user41._id, "Super!"); 
+	const comment29 = await commentData.create(post23._id, user6._id, "Wonderful!");
+	const comment30 = await commentData.create(post24._id, user26._id, "Spectacular!");
+	const comment31 = await commentData.create(post25._id, user34._id, "Nice one!");
+	const comment32 = await commentData.create(post26._id, user5._id, "Awesome!");
+	const comment33 = await commentData.create(post26._id, user25._id, "Rad!");
+	const comment34 = await commentData.create(post27._id, user43._id, "Breathtaking!"); 
+	const comment35 = await commentData.create(post28._id, user12._id, "You're a star!"); 
+	const comment36 = await commentData.create(post29._id, user30._id, "Killing it!");
+	const comment37 = await commentData.create(post30._id, user48._id, "Get it!"); 
+	const comment38 = await commentData.create(post31._id, user10._id, "Woohoo!"); 
+	const comment39 = await commentData.create(post31._id, user21._id, "Yes!"); 
+	const comment40 = await commentData.create(post32._id, user38._id, "Way to go!"); 
+	const comment41 = await commentData.create(post33._id, user16._id, "You rock!");
+	const comment42 = await commentData.create(post34._id, user29._id, "Congrats!");
+	const comment43 = await commentData.create(post35._id, user46._id, "Boom!");
+	const comment44 = await commentData.create(post35._id, user8._id, "Yas!");
+	const comment45 = await commentData.create(post36._id, user32._id, "Amazing job!");
+	const comment46 = await commentData.create(post37._id, user40._id, "Nailed it!"); 
+	const comment47 = await commentData.create(post38._id, user24._id, "Impressive!"); 
+	const comment48 = await commentData.create(post39._id, user47._id, "Phenomenal!");
+	const comment49 = await commentData.create(post40._id, user14._id, "Outstanding!"); 
+	const comment50 = await commentData.create(post41._id, user36._id, "Bravo!"); 
 
 	//create likes
-	// await postData.addLike(user1._id.toString(), post2._id.toString());
-	// await postData.addLike(user2._id.toString(), post2._id.toString());
-
-	// await postData.addLike(user1._id.toString(), post3._id.toString());
-	// await postData.addLike(user2._id.toString(), post3._id.toString());
-
-	// await postData.addInteraction(post1._id.toString(), user1._id.toString(), 10);
-	// await postData.addInteraction(post2._id.toString(), user1._id.toString(), 10);
-	// await postData.addInteraction(post3._id.toString(), user1._id.toString(), 10);
-
-	// await postData.addInteraction(post2._id.toString(), user2._id.toString(), 7);
-	// await postData.addInteraction(post3._id.toString(), user2._id.toString(), 7);
-
-	// await postData.addInteraction(post3._id.toString(), user3._id.toString(), 10);
-
-	// await postData.addInteraction(post4._id.toString(), user4._id.toString(), 8);
-
-	// await postData.addInteraction(post5._id.toString(), user5._id.toString(), 9);
-
-	// await postData.addInteraction(post6._id.toString(), user6._id.toString(), 7);
-
-	// await postData.addInteraction(post7._id.toString(), user7._id.toString(), 7);
-
-	// await postData.addInteraction(post8._id.toString(), user8._id.toString(), 6);
-
-	// await postData.addInteraction(post9._id.toString(), user9._id.toString(), 5);
-
-	// await postData.addInteraction(post10._id.toString(), user10._id.toString(), 5);
-
-	// await postData.addInteraction(post11._id.toString(), user11._id.toString(), 5);
-
-	// await postData.addInteraction(post12._id.toString(), user12._id.toString(), 6);
-
-	// await postData.addInteraction(post13._id.toString(), user13._id.toString(), 7);
-
-	// await postData.addInteraction(post14._id.toString(), user14._id.toString(), 6);
-
-	// await postData.addInteraction(post15._id.toString(), user15._id.toString(), 7);
-
-	// const recommendedPosts = await getRecommendedPosts(user1._id.toString());
-	// console.log("rec posts", recommendedPosts);
-
-	// const removingLike = await posts.removeLike(user1._id.toString(),post2._id.toString());
-	// console.log('likes', removingLike.likes);
-
-	// const addingKeyword = await posts.addKeyword(post2._id.toString(), keyword1._id.toString());
-	// console.log('keywords', addingKeyword.keywords);
-
-	// const addngComment = await posts.addComment(post2._id.toString(), comment1._id.toString());
-	// console.log('comments', addngComment.comments);
-
+	const like1 = await postData.addLike(user1._id.toString(), post1._id.toString());
+	const like2 = await postData.addLike(user2._id.toString(), post1._id.toString());
+	const like3 = await postData.addLike(user7._id.toString(), post67._id.toString());
+	const like4 = await postData.addLike(user2._id.toString(), post15._id.toString());
+	const like5 = await postData.addLike(user42._id.toString(), post81._id.toString());
+	const like6 = await postData.addLike(user37._id.toString(), post4._id.toString());
+	const like7 = await postData.addLike(user11._id.toString(), post55._id.toString());
+	const like8 = await postData.addLike(user28._id.toString(), post27._id.toString());
+	const like9 = await postData.addLike(user49._id.toString(), post19._id.toString());
+	const like10 = await postData.addLike(user15._id.toString(), post63._id.toString());
+	const like11= await postData.addLike(user3._id.toString(), post78._id.toString());
+	const like12 = await postData.addLike(user26._id.toString(), post51._id.toString());
+	const like13 = await postData.addLike(user47._id.toString(), post39._id.toString());
+	const like14 = await postData.addLike(user18._id.toString(), post2._id.toString());
+	const like15 = await postData.addLike(user34._id.toString(), post44._id.toString());
+	const like16 = await postData.addLike(user21._id.toString(), post77._id.toString());
+	const like17 = await postData.addLike(user9._id.toString(), post13._id.toString());
+	const like18 = await postData.addLike(user39._id.toString(), post59._id.toString());
+	const like19 = await postData.addLike(user2._id.toString(), post22._id.toString());
+	const like20 = await postData.addLike(user45._id.toString(), post68._id.toString());
+	const like21 = await postData.addLike(user30._id.toString(), post7._id.toString());
+	const like22 = await postData.addLike(user14._id.toString(), post40._id.toString());
+	const like23 = await postData.addLike(user43._id.toString(), post29._id.toString());
+	const like24 = await postData.addLike(user10._id.toString(), post76._id.toString());
+	const like25 = await postData.addLike(user36._id.toString(), post52._id.toString());
+	const like26 = await postData.addLike(user25._id.toString(), post16._id.toString());
+	const like27 = await postData.addLike(user8._id.toString(), post64._id.toString());
+	const like28 = await postData.addLike(user41._id.toString(), post35._id.toString());
+	const like29 = await postData.addLike(user17._id.toString(), post80._id.toString());
+	const like30 = await postData.addLike(user33._id.toString(), post56._id.toString());
+	const like31 = await postData.addLike(user20._id.toString(), post9._id.toString());
+	const like32 = await postData.addLike(user48._id.toString(), post41._id.toString());
+	const like33 = await postData.addLike(user13._id.toString(), post24._id.toString());
+	const like34 = await postData.addLike(user38._id.toString(), post71._id.toString());
+	const like35 = await postData.addLike(user7._id.toString(), post5._id.toString());
+	const like36 = await postData.addLike(user46._id.toString(), post32._id.toString());
+	const like37 = await postData.addLike(user12._id.toString(), post79._id.toString());
+	const like38 = await postData.addLike(user35._id.toString(), post53._id.toString());
+	const like39 = await postData.addLike(user22._id.toString(), post18._id.toString());
+	const like40 = await postData.addLike(user50._id.toString(), post66._id.toString());
+	const like41 = await postData.addLike(user16._id.toString(), post3._id.toString());
+	const like42 = await postData.addLike(user44._id.toString(), post25._id.toString());
+	const like43 = await postData.addLike(user6._id.toString(), post70._id.toString());
+	const like44 = await postData.addLike(user31._id.toString(), post57._id.toString());
+	const like45 = await postData.addLike(user24._id.toString(), post11._id.toString());
+	const like46 = await postData.addLike(user40._id.toString(), post61._id.toString());
+	const like47 = await postData.addLike(user4._id.toString(), post30._id.toString());
+	const like48 = await postData.addLike(user29._id.toString(), post75._id.toString());
+	const like49 = await postData.addLike(user1._id.toString(), post50._id.toString());
+	const like50 = await postData.addLike(user27._id.toString(), post20._id.toString());
 	await closeConnection();
 }
 
