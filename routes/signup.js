@@ -82,7 +82,7 @@ router
                                 
         if (!user) throw "Error: user could not be created";
         
-        return res.status(200).redirect('/login');
+        return res.redirect(200, '/login');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
          return res.status(500).send(e);
