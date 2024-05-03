@@ -8,8 +8,8 @@ import { postData } from "../data/index.js";
 const constructorMethod = app => {    
   app.get('/home', async(req, res) => {
     //TO=DO need to display posts
-    //let allposts = await getAllPosts();
-    return res.status(200).render('test_home');
+    //let allposts = await postData.getAllPosts();
+    return res.status(200).render('home/home');
   });
   app.use('/login', loginRoutes);
   app.use('/signup',  signupRoutes);
@@ -20,8 +20,13 @@ const constructorMethod = app => {
   
   //app.use("/reports", reportRoutes);
 
-  app.use("/", (req, res) => { 
-    return res.redirect('home');
+  // TODO: Make this a middleware
+  /*app.use("/", (req, res) => { 
+    return res.redirect('/home');
+  });*/
+
+  app.use("/newpost", async(req, res) => {
+    return res.status(200).render('posts/newpost');
   });
 
   app.use("*", (req, res) => {
