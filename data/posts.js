@@ -31,7 +31,8 @@ import * as keywordData from "./keyword.js";
  * @param {string} userID - The user id that created the post.
  * @param {string} image - The image URL of the post.
  * @param {Array<string>} clothingLinks - The links to the clothing items in the image.
- * @param {Array<string>} keywords - The keywords associated with the post.
+ * @param {Array<string>} keywords - The keywords associated with the post. 
+ * @param {string} description - Description of the post
  * @returns {Object} - Returns the created object.
  */
 export const create = async (userId, image, clothingLinks, keywords, description) => {
@@ -86,7 +87,7 @@ export const create = async (userId, image, clothingLinks, keywords, description
 	// Check if the keywords exist if they do not exist create them
 	const keywordCollection = await collection.keywords();
 	for (let i = 0; i < keywords.length; i++) {
-		let tempKeyword = keywords[i].trim();
+		let tempKeyword = keywords[i].trim().toLowerCase();
 		if(tempKeyword === "") {
 			throw "Keyword cannot be empty";
 		}

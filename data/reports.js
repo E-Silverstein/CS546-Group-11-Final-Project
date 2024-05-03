@@ -1,4 +1,4 @@
-import { reports } from "../config/mongoCollections";
+import { reports } from "../config/mongoCollections.js";
 import * as helper from "../helpers.js"
 
 /**

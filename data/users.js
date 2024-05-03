@@ -110,8 +110,6 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 
 	// TODO check valid profilePicURL
 
-	// TODO make sure password type is correct
-
 	const newUser = {
 		username: username,
 		password: password,

@@ -1,9 +1,9 @@
-import algoFuncs from './algoFuncs.js';
-import commentFuncs from './commentFuncs.js';
-import keywordFuncs from './keywordFuncs.js';
-import postFuncs from './postFuncs.js';
-import userFuncs from './userFuncs.js';
-import reportFuncs from './reportFuncs.js';
+import algoFuncs from './algo.js';
+import commentFuncs from './comments.js';
+import keywordFuncs from './keyword.js';
+import postFuncs from './posts.js';
+import userFuncs from './users.js';
+import reportFuncs from './reports.js';
 
 export const algoData = algoFuncs;
 export const commentData = commentFuncs;
