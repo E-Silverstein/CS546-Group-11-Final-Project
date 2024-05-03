@@ -92,7 +92,7 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 	}
 
 	//TODO: Fix alphanumeric for password
-	// // Make sure the password is only contains alphanumeric characters
+  // Make sure the password is only contains alphanumeric characters
 	// if (!password.match(/^[0-9a-zA-Z]+$/)) {
 	// 	throw "Password can only contain alphanumeric characters";
 	// }

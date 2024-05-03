@@ -74,11 +74,10 @@ router
         let birthYear = parseInt(req.body.birthdate.substring(0,4));
         let currYear = new Date().getFullYear();
         let age = currYear - birthYear;
-        let hashedPassword = await bcrypt.hash(req.body.password, salt);
-        
+                
         let user = await userData.createUser(
                                 req.body.username,
-                                hashedPassword,
+                                req.body.password,
                                 "default-pfp-png",
                                 age,
                                 "default bio"     
