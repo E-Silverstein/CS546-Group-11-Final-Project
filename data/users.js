@@ -173,6 +173,8 @@ export const getUserById = async (id) => {
  * @returns {boolean} - Returns true if the user is successfully deleted.
  */
 export const deleteUser = async (id) => {
+
+	console.log("delete function")
 	if (isNull(id)) {
 		throw "ID must be provided";
 	}

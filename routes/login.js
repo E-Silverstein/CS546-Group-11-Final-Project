@@ -28,7 +28,8 @@ router
 
         if (req.body.username.length < 5 || req.body.username.length > 20) throw  "Username or Password is invalid.";
         if (req.body.username.match(' ') != null) throw "Username or Password is invalid.";;
-        
+        if (req.body.username.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) != null) throw "Error: username cannot have special characters";
+
     } catch(e) {
         return res.status(400).send(e);
     }
@@ -56,8 +57,6 @@ router
         
         const userCollection = await users();
         let user = await userCollection.findOne({username: req.body.username});
-        console.log(user.password);
-        console.log(req.body.password);
         if (!user) throw "Username or Password is invalid.";
         let compare = await bcrypt.compare(req.body.password, user.password);
         if (!compare) throw "Username or password is invalid."; 
@@ -65,10 +64,9 @@ router
         req.session.user = user;
         req.session.authenticated = true;
 
-        return res.status(200).render('test_home')
+        return res.redirect(200,'home');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
-         console.log('valdiation')
         return res.status(400).send(e);
     }
 });
