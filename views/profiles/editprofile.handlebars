@@ -1,6 +1,6 @@
 <div class="flex justify-center pt-10 w-full">
     <div>
-        <form method="patch" action="/users/{{userid}}" id="edit-user-form" class="grid grid-cols-1 gap-1 w-full">
+        <form action="/users/{{userid}}" id="edit-user-form" class="grid grid-cols-1 gap-1 w-full">
 
             <label for="profile-picture"> Profile Picture</label>
             <input type="file" id="profile-picture" name="profile-picture" class="h-10 w-full rounded-md">
@@ -20,5 +20,4 @@
             <button type="submit" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2">delete user</button>
         </form>
     </div>
-    
 </div>

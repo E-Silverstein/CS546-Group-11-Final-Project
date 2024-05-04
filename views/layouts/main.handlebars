@@ -28,12 +28,13 @@
 </head>
 <body class="bg-icon100 text-icon900 h-screen font-inter">
     <header>
-        <nav class="flex justify-around h-12 items-center">
+        <nav class="flex justify-around h-12 items-center mt-2">
             <div>
                 <a class="text-icon900 font-bold font-libreCas text-2xl">iconique</a>
             </div>
-            <div>
-                search bar goes here
+            <div class="flex">
+                <input type="text" id="search" name="search" placeholder="search" class="h-10 mt-2 px-2 w-full rounded-md">
+                <button type="submit" class="bg-icon200 h-10 w-24 mt-2 mx-2 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2">Search</button>
             </div>
             <ul class="list-none flex space-x-4">
                 <li>
@@ -43,7 +44,12 @@
                     <a href="/liked">liked</a>
                 </li>
                 <li>
-                    <a href="/userprofile">{{{profilePicture}}}</a>
+                    {{#if userSession}}
+                        <a href="/userprofile">{{{profilePicture}}}</a>
+                    {{else}}
+                        <a href="/login">Log In</a>
+                    {{/if}}
+
                 </li>
             </ul>
         </nav>

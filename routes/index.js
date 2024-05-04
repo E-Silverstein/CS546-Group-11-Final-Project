@@ -3,6 +3,7 @@ import userRoutes from "./users.js";
 import loginRoutes from './login.js';
 import signupRoutes from './signup.js';
 import searchRoutes from './search.js';
+import adminRoutes from './admin.js';
 
 const constructorMethod = app => {    
   app.get('/home', async(req, res) => {
@@ -12,7 +13,7 @@ const constructorMethod = app => {
   });
   app.use('/login', loginRoutes);
   app.use('/signup',  signupRoutes);
-
+  app.use('/admin', adminRoutes);
   app.use("/posts", postRoutes);
   app.use("/users", userRoutes);
   app.use("/search", searchRoutes);

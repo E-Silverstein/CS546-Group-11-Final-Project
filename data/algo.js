@@ -1,4 +1,5 @@
-import { getAllPosts } from "./posts.js";
+import { getAllPosts, getPostById } from "./posts.js";
+import { createEmptyInteraction } from "./posts.js";
 
 const createInteractionMatrix = async () => {
 	const posts = await getAllPosts();
@@ -81,17 +82,27 @@ const getTopMatches = async (userId, userSimilarities, matrix) => {
 	console.log("similarUsers", similarUsers);
 	const recommendedPosts = new Set();
 
-	similarUsers.forEach(function ([similarUserId]) {
+	similarUsers.forEach(async function ([similarUserId]) {
 		const posts = matrix[similarUserId];
 		for (const postId in posts) {
 			if (!matrix[userId].hasOwnProperty(postId)) {
 				// Add unique posts not interacted with by the target user
 				recommendedPosts.add(postId);
+				// Create an empty interaction for the user to avoid recommending the same post again
+				await createEmptyInteraction(postId.toString(), userId.toString());
+
 			}
 		}
 	});
 
-	return [...recommendedPosts];
+	const reccomendedPostsIds = [...recommendedPosts];
+	const reccomendedPostsObjs = [];
+	for (let i = 0; i < reccomendedPostsIds.length; i++) {
+		const post = await getPostById(reccomendedPostsIds[i]);
+		reccomendedPostsObjs.push(post);
+	}
+
+	return reccomendedPostsObjs;
 };
 
 /**
@@ -115,20 +126,32 @@ export const calculateEngagementScore = async (
 	postObj,
 	links_clicked
 ) => {
+	const postComments = postObj.comments;
+	console.log("postComments", userObj);
+	const userComments = [];
+	for (let i = 0; i < postComments.length; i++) {
+		const comment = postComments[i];
+		if (comment.user === userObj._id) {
+			userComments.push(comment);
+		}
+	}
+	
 	const postKeys = postObj.keywords;
-	const userLikedKeywords = userObj.likedKeywords;
-	const comments_posted = postObj.comments.filter(
-		(comment) => comment.user === userObj._id
-	).length;
-	const matchingKeywords = postKeys.filter((key) =>
-		userLikedKeywords.includes(key)
-	);
+	const userLikedKeywords = userObj.keywords;
+	const matchingKeywords = [];
+	for (let i = 0; i < postKeys.length; i++) {
+		const key = postKeys[i];
+		if (userLikedKeywords.indexOf(key) !== -1) {
+			matchingKeywords.push(key);
+		}
+	}
+	
 	const isFollowingUser = userObj.following.includes(postObj.user._id);
 	return (
 		matchingKeywords.length +
 		isFollowingUser * 5 +
 		links_clicked +
-		comments_posted * 2
+		userComments * 2
 	);
 };
 export default { getRecommendedPosts, calculateEngagementScore }

@@ -14,6 +14,14 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   next();
 };
 
+app.use('/public', express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(rewriteUnsupportedBrowserMethods);
+
+app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
+app.set("view engine", "handlebars");
+
 /*call req.session.authenticated to see if user is logged in*/
 app.use(session({
   name: 'AuthenticationState',
@@ -23,23 +31,52 @@ app.use(session({
   authenticated: false /*logged in or not logged in */
 }))
 
-/*admin page to be added eventually to review all the reports made by the users*/
-app.get('/admin', function(req,res,next) {
-  if(req.session.user) {
-    if(req.session.user.role !== 'admin'){
-      res.send("you don't have access to this page") /* to look at the reports page */
-    }
+app.use('/', function(req,res,next){
+  console.log(req.method + " "+ req.originalUrl + " " + req.session.authenticated);
+  if (req.path == "/") {
+    req.method = 'GET';
+    return res.status(200).redirect('/home');
   }
   next();
 });
 
-app.use('/public', express.static('public'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(rewriteUnsupportedBrowserMethods);
+/*admin page to be added eventually to review all the reports made by the users*/
+app.use('/admin', function(req,res,next) {
+  if(!req.session.authenticated){
+    return res.status(200).redirect('/login');
+  }
+  else if (req.session.authenticated && !req.session.user.isAdmin) {
+    return res.status(403).render('error', {error: "You do not have permission to view the page.",});
+  }
+  next();
+});
 
-app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
-app.set("view engine", "handlebars");
+//works
+app.use('/users', function(req,res,next){
+  if(!req.session.authenticated){
+    return res.status(200).redirect('/login');
+  }
+  next();
+});
+
+app.use('/login', function(req,res,next) {
+  if (req.method == 'GET' && req.session.authenticated) {
+    return res.status(200).redirect('/users');
+  }
+  next();
+});
+
+app.use('/signup', function(req,res,next) {
+  if(req.method == 'GET' && req.session.authenticated){
+    return res.status(200).redirect('/home');
+  }
+  next();
+});
+
+app.use('/home',function(req,res,next){
+  next();
+});
+
 configRoutes(app);
 
 app.listen(3000, () =>
