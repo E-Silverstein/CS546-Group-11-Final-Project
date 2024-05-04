@@ -354,6 +354,13 @@ export const addLike = async (user, post) => {
 	}
 
 	const postCollection = await posts();
+
+	// First check if the user has already liked the post
+	const existingPost = await postCollection.findOne({ _id: new ObjectId(post) });
+	if (existingPost.likes.includes(user)) {
+		throw "User has already liked the post";
+	}
+
 	const updateInfo = await postCollection.updateOne(
 		{ _id: new ObjectId(post) },
 		{ $addToSet: { likes: new ObjectId(user) } }
