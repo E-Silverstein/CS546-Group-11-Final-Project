@@ -1,4 +1,4 @@
-import { users, comments, posts } from "../config/mongoCollections.js";
+import { users, comments, posts, reports } from "../config/mongoCollections.js";
 import {
 	areAllValuesNotNull,
 	areAllValuesOfType,
@@ -233,20 +233,21 @@ export const deleteUser = async (id) => {
 	// Delete user from all comments
 	let userId = user._id.toString();
 	const commentCollection = await comments();
-	const comments = await commentCollection.find({ user: userId }).toArray();
-	for (let i = 0; i < comments.length; i++) {
+	const retrivedComments = await commentCollection.find({ user: userId }).toArray();
+	for (let i = 0; i < retrivedComments.length; i++) {
 		const deletedComment = await commentData.deleteComment(comments[i]._id.toString());
 		if (!deletedComment) {
 			throw "Could not delete comment";
 		}
 	}
 
-	// Delete user from all reports
-	const reportCollection = await reports();
-	const updateReports = await reportCollection.updateMany(
-		{ _id: { $in: user.reports } },
-		{ $pull: { author: new ObjectId(id) } }
-	);
+	// TODO update this once the reporting funcitonality is implemented
+	// Delete user from all reports 
+	// const reportCollection = await reports();
+	// const updateReports = await reportCollection.updateMany(
+	// 	{ _id: { $in: user.reports } },
+	// 	{ $pull: { author: new ObjectId(id) } }
+	// );
 
 	// Delete user
 	const deleteInfo = await userCollection.deleteOne({ _id: new ObjectId(id) });
