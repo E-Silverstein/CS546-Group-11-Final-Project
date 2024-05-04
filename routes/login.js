@@ -28,7 +28,7 @@ router
 
         if (req.body.username.length < 5 || req.body.username.length > 20) throw  "Username or Password is invalid.";
         if (req.body.username.match(' ') != null) throw "Username or Password is invalid.";;
-        if (req.body.username.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) != null) throw "Error: username cannot have special characters";
+        if (req.body.username.match(/[’\/`~!#*$@_%+=,^&(){}[\]|;:”<>?\\]/g) != null) throw "Error: username cannot have special characters";
 
     } catch(e) {
         return res.status(400).send(e);
