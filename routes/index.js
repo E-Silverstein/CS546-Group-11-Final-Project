@@ -12,7 +12,7 @@ const constructorMethod = app => {
   });
   app.use('/login', loginRoutes);
   app.use('/signup',  signupRoutes);
-
+  app.use('/admin', adminRoutes);
   app.use("/posts", postRoutes);
   app.use("/users", userRoutes);
   app.use("/search", searchRoutes);

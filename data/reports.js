@@ -1,5 +1,8 @@
 import { reports } from "../config/mongoCollections.js";
+import { getUserByUsername } from "./users.js";
+import { ObjectId } from "mongodb";
 import * as helper from "../helpers.js"
+import { getPostById } from "./posts.js";
 
 /**
  * Schema for Reports Collection
@@ -21,39 +24,48 @@ import * as helper from "../helpers.js"
 //be data to see somewhere?
 
 /**
- * creates a report with these necessary fields
- * @param {postId} postId
- * @param {User} reportedBy 
+ * creates a report with these necessary fields. Input the postId, reportedBy, Reason
+ * @param {postId} postId -needs the post id, will be a button on the post so its easy to get postid
+ * @param {User} reportedBy - username of who reported the post
  * @param {User} reportedUser 
  * @param {string} reason 
  * @param {Date} createdAt 
  * @param {string} status 
  * @return {Object} - returns created report
  */
-export const createReport = async(postId,reportedBy,reportedUser,reason,createdAt,status) => {
+export const createReport = async(postId,reportedBy,reason) => {
   //check if postId is a valid post id
+  if (!ObjectId.isValid(postId)) {
+		throw "Invalid ObjectID";
+	}
   //check if reportedBy is a valid user
+  const reportedById = await getUserByUsername(reportedBy);
+  if (!ObjectId.isValid(reportedById)) {
+		throw "Invalid ObjectID";
+	}
   //check if reportedUser is a valid user
+  const post = await getPostById(postId.toString());
+  const reportedUserId = await getUserByUsername(post.username);
+  if (!ObjectId.isValid(reportedUserId)) {
+		throw "Invalid ObjectID";
+	}
 
-  if(helper.areAllValuesNotNull([postId,reportedBy,reportedUser,reason,createdAt,status])){
+  if(helper.areAllValuesNotNull([reportedBy,reason])){
     throw "Error: All values are not provided";
   }
 
-  if(!helper.areAllValuesOfType([reason,status],'string')){
-    throw "Error: Values are not of correct type";
+  if(!helper.isOfType(reason,'string')){
+    throw "Error: Value are not of correct type";
   }
   reason = reason.trim();
-  status = status.trim();
-
-  //check date is valid(it will just be from req anyways so it should always be correct)
 
   const newReport = {
     postId:postId,
-    reportedBy: reportedBy,
-    reportedUser: reportedUser,
+    reportedBy: reportedById,
+    reportedUser: reportedUserId,
     reason:reason,
-    createdAt:createdAt,
-    status:status
+    createdAt: new Date(),
+    status:"Pending"
   };
 
   const reportCollection = await reports();
