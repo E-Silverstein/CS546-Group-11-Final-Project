@@ -26,8 +26,19 @@ router
 })
 
 router
-.route('/edit/:userid')
+.route('/editUser/:userid')
 .get(async (req, res) => {
+    try {
+        //VALIDATION: userid
+        if (req.params.userid == null) throw "Error: Requires a 'userid' input";
+        if (typeof req.params.userid != 'string') throw "Error: 'userid' must be a string";
+        if (req.params.userid.trim() == '') throw "Error: 'userid' cannot be an empty string";
+        if(!ObjectId.isValid(req.params.userid)) throw "Error: 'userid' is not a valid ObjectId";
+        req.params.userid = req.params.userid.trim();
+    } catch (e) {
+        //TO-DO: change returns to render when frontend complete
+        return res.status(400).send(e);
+    }
     return res.status(200).render('test_editUser', {'userid': req.params.userid});
 })
 
