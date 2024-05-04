@@ -105,7 +105,7 @@ router
         //deletes the report
         let deleteReport = await reportData.deleteReport(req.params.reportid);
         if (deleteReport==1) throw "Error: Post could not be deleted";
-        return res.status(200).send("Delete Successful");
+        return res.status(200).send("Report Handled");
     }catch(e){
         return res.status(500).send(e);
     }

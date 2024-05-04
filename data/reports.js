@@ -34,12 +34,19 @@ import { getPostById } from "./posts.js";
  * @return {Object} - returns created report
  */
 export const createReport = async(postId,reportedBy,reason) => {
+  if(helper.areAllValuesNotNull([postId,reportedBy,reason])){
+    throw "Error: All values are not provided";
+  }
+
+  if(!helper.areAllValuesOfType([reportedBy,reason],'string')){
+    throw "Error: Value are not of correct type";
+  }
   //check if postId is a valid post id
   if (!ObjectId.isValid(postId)) {
 		throw "Invalid ObjectID";
 	}
   //check if reportedBy is a valid user
-  const reportedById = await getUserByUsername(reportedBy);
+  const reportedById = await getUserByUsername(reportedBy.trim());
   if (!ObjectId.isValid(reportedById)) {
 		throw "Invalid ObjectID";
 	}
@@ -50,13 +57,6 @@ export const createReport = async(postId,reportedBy,reason) => {
 		throw "Invalid ObjectID";
 	}
 
-  if(helper.areAllValuesNotNull([reportedBy,reason])){
-    throw "Error: All values are not provided";
-  }
-
-  if(!helper.isOfType(reason,'string')){
-    throw "Error: Value are not of correct type";
-  }
   reason = reason.trim();
 
   const newReport = {
