@@ -6,6 +6,7 @@ import {
 	isOfType,
 } from "../helpers.js";
 import { ObjectId } from "mongodb";
+import { commentData } from "./index.js";
 import bcrypt from 'bcrypt';
 
 /* Schema for User
@@ -198,30 +199,49 @@ export const deleteUser = async (id) => {
 	}
 
 	// Delete user from all followers' following lists
-	const updateFollowers = await userCollection.updateMany(
-		{ _id: { $in: user.followers } },
-		{ $pull: { following: new ObjectId(id) } }
-	);
+	const following = await userCollection.find({ followers: new ObjectId(id) }).toArray();
+	for (let i = 0; i < following.length; i++) {
+		const updateFollowers = await userCollection.updateOne(
+			{ _id: following[i]._id },
+			{ $pull: { following: new ObjectId(id) } }
+		);
+		if (updateFollowers.modifiedCount === 0) {
+			throw "Could not update user";
+		}
+	}
 
 	// Delete user from all following users' followers lists
-	const updateFollowing = await userCollection.updateMany(
-		{ _id: { $in: user.following } },
-		{ $pull: { followers: new ObjectId(id) } }
-	);
+	const followers = await userCollection.find({ following: new ObjectId(id) }).toArray();
+	for (let i = 0; i < followers.length; i++) {
+		const updateFollowing = await userCollection.updateOne(
+			{ _id: followers[i]._id },
+			{ $pull: { followers: new ObjectId(id) } }
+		);
+		if (updateFollowing.modifiedCount === 0) {
+			throw "Could not update user";
+		}
+	}
 
 	// Delete user from all posts
 	const postCollection = await posts();
-	const updatePosts = await postCollection.updateMany(
-		{ _id: { $in: user.posts } },
-		{ $pull: { author: new ObjectId(id) } }
-	);
+	const userPosts = await postCollection.find({ user: new ObjectId(id) }).toArray();
+	for (let i = 0; i < userPosts.length; i++) {
+		const deletedPost = await postCollection.deleteOne({ _id: userPosts[i]._id });
+		if (!deletedPost) {
+			throw "Could not delete post";
+		}
+	}
 
 	// Delete user from all comments
+	let userId = user._id.toString();
 	const commentCollection = await comments();
-	const updateComments = await commentCollection.updateMany(
-		{ _id: { $in: user.comments } },
-		{ $pull: { author: new ObjectId(id) } }
-	);
+	const comments = await commentCollection.find({ user: userId }).toArray();
+	for (let i = 0; i < comments.length; i++) {
+		const deletedComment = await commentData.deleteComment(comments[i]._id.toString());
+		if (!deletedComment) {
+			throw "Could not delete comment";
+		}
+	}
 
 	// Delete user from all reports
 	const reportCollection = await reports();
