@@ -1,4 +1,5 @@
-import { getAllPosts } from "./posts.js";
+import { getAllPosts, getPostById } from "./posts.js";
+import { createEmptyInteraction } from "./posts.js";
 
 const createInteractionMatrix = async () => {
 	const posts = await getAllPosts();
@@ -81,17 +82,27 @@ const getTopMatches = async (userId, userSimilarities, matrix) => {
 	console.log("similarUsers", similarUsers);
 	const recommendedPosts = new Set();
 
-	similarUsers.forEach(function ([similarUserId]) {
+	similarUsers.forEach(async function ([similarUserId]) {
 		const posts = matrix[similarUserId];
 		for (const postId in posts) {
 			if (!matrix[userId].hasOwnProperty(postId)) {
 				// Add unique posts not interacted with by the target user
 				recommendedPosts.add(postId);
+				// Create an empty interaction for the user to avoid recommending the same post again
+				await createEmptyInteraction(postId.toString(), userId.toString());
+
 			}
 		}
 	});
 
-	return [...recommendedPosts];
+	const reccomendedPostsIds = [...recommendedPosts];
+	const reccomendedPostsObjs = [];
+	for (let i = 0; i < reccomendedPostsIds.length; i++) {
+		const post = await getPostById(reccomendedPostsIds[i]);
+		reccomendedPostsObjs.push(post);
+	}
+
+	return reccomendedPostsObjs;
 };
 
 /**
