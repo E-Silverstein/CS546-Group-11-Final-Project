@@ -64,7 +64,8 @@ router
         req.session.user = user;
         req.session.authenticated = true;
 
-        return res.redirect(200,'home');
+        console.log(req.session);
+        return res.status(200).redirect('home');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
         return res.status(400).send(e);

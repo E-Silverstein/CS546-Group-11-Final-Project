@@ -31,10 +31,19 @@ app.use(session({
   authenticated: false /*logged in or not logged in */
 }))
 
+app.use('/', function(req,res,next){
+  console.log(req.method + " "+ req.originalUrl + " " + req.session.authenticated);
+  if (req.path == "/") {
+    req.method = 'GET';
+    return res.status(200).redirect('/home');
+  }
+  next();
+});
+
 /*admin page to be added eventually to review all the reports made by the users*/
 app.use('/admin', function(req,res,next) {
   if(!req.session.authenticated){
-    return res.status(200).redirect('auth/login');
+    return res.status(200).redirect('/login');
   }
   else if (req.session.authenticated && !req.session.user.isAdmin) {
     return res.status(403).render('error', {error: "You do not have permission to view the page.",});
@@ -42,16 +51,17 @@ app.use('/admin', function(req,res,next) {
   next();
 });
 
+//works
 app.use('/users', function(req,res,next){
   if(!req.session.authenticated){
-    return res.status(200).redirect('auth/login');
+    return res.status(200).redirect('/login');
   }
   next();
 });
 
 app.use('/login', function(req,res,next) {
   if (req.method == 'GET' && req.session.authenticated) {
-    return res.status(200).redirect('/user');
+    return res.status(200).redirect('/users');
   }
   next();
 });

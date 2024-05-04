@@ -144,7 +144,7 @@ router
                                     );
 
         if (!updateRes) throw "Error: user could not be updated";  
-        return res.redirect(200,`/users/${req.params.userid}`);
+        return res.status(200).redirect(`/users/${req.params.userid}`);
 
     } catch(e) {
         console.log(e)
