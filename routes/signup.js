@@ -18,6 +18,8 @@ router
         /*VALIDATION: username
             constraints:
             - 5-20 characters long
+            - no spaces
+            - no special characters
         */
         if (!req.body.username) throw "Error: Requires a 'username' input";
         if (typeof req.body.username != 'string') throw "Error: 'username' must be a string";
@@ -27,13 +29,13 @@ router
 
         if (req.body.username.length < 5 || req.body.username.length > 20) throw "Error: 'username' does not meet length constraints (5-20 characters)";
         if (req.body.username.match(' ') != null) throw "Error: 'username' cannot contain spaces";
-       
+        if (req.body.username.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) != null) throw "Error: username cannot have special characters";
+
         const userCollection = await users();
         let user = await userCollection.findOne({username: {$eq: req.body.username}});
         if (user) throw "Error: Username "+req.body.username+" already exists";
 
     } catch(e) {
-        console.log("user")
         return res.status(400).send(e);
     }
     try {
@@ -49,7 +51,7 @@ router
         if (req.body.password.trim() == "") throw "Error: 'password' is an empty string";
         if (req.body.password.match(' ') != null) throw "Error: Password cannot contain spaces";
         
-        if (req.body.password.length < 8 || req.body.password.length > 20) throw "Error: Password must be at least 8 characters long or less than 20 characters long";
+        if (req.body.password.length < 8 || req.body.password.length > 32) throw "Error: Password must be at least 8 characters long or less than 20 characters long";
         if (req.body.password.match(/[0-9]/g) == null) throw "Error: Password must contain at least one number";
         if (req.body.password.match(/[A-Z]/g) == null) throw "Error: Password must contain at least one uppercase character";
         if (req.body.password.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) == null) throw "Error: Password must contain at least one special character";
@@ -58,7 +60,6 @@ router
 
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        console.log("pw")
         return res.status(400).send(e);
     }
     try {
@@ -67,7 +68,6 @@ router
         if (currYear - birthYear < 13) throw "Error: must be at least 13 years old";
     } catch(e) {
          //TO-DO: change returns to render when frontend complete
-         console.log("age")
          return res.status(400).send(e);
     }
     try {
@@ -78,17 +78,16 @@ router
         let user = await userData.createUser(
                                 req.body.username,
                                 req.body.password,
-                                "default-pfp-png",
+                                "/uploads/default-pfp.png",
                                 age,
-                                "default bio"     
+                                "bio:"     
                             );
                                 
         if (!user) throw "Error: user could not be created";
         
-        return res.status(200).redirect('/login');
+        return res.redirect(200, '/login');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
-         console.log("function")
          return res.status(500).send(e);
     }
 

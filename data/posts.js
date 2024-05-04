@@ -35,7 +35,7 @@ import * as keywordData from "./keyword.js";
  * @param {string} description - Description of the post
  * @returns {Object} - Returns the created object.
  */
-export const create = async (
+export const createPost = async (
 	userId,
 	image,
 	clothingLinks,
@@ -194,7 +194,9 @@ export const getPostById = async (id) => {
 	}
 
 	const postCollection = await posts();
+
 	const post = await postCollection.findOne({ _id: new ObjectId(id)});
+
 	if (helper.isNull(post)) {
 		throw "Post does not exist";
 	}
@@ -354,6 +356,13 @@ export const addLike = async (user, post) => {
 	}
 
 	const postCollection = await posts();
+
+	// First check if the user has already liked the post
+	const existingPost = await postCollection.findOne({ _id: new ObjectId(post) });
+	if (existingPost.likes.includes(user)) {
+		throw "User has already liked the post";
+	}
+
 	const updateInfo = await postCollection.updateOne(
 		{ _id: new ObjectId(post) },
 		{ $addToSet: { likes: new ObjectId(user) } }
@@ -704,6 +713,6 @@ export const addInteraction = async (post, user, score) => {
 	return postObj;
 };
 
-export default { create, getPostById, deletePost, getAllPosts, getPostsByUser, 
+export default { createPost, getPostById, deletePost, getAllPosts, getPostsByUser, 
 	getPostsByKeyword, getLikedPostsByUser, addLike, removeLike, addKeyword, 
 	updatePost, addComment, removeComment, addInteraction };
