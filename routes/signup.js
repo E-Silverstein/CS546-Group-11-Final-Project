@@ -27,7 +27,7 @@ router
 
         req.body.username = req.body.username.trim().toLowerCase();
 
-        if (req.body.username.length < 5 || req.body.username.length > 20) throw "Error: 'username' does not meet length constraints (5-20 characters)";
+        if (req.body.username.length < 5 || req.body.username.length > 32) throw "Error: 'username' does not meet length constraints (5-20 characters)";
         if (req.body.username.match(' ') != null) throw "Error: 'username' cannot contain spaces";
         if (req.body.username.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) != null) throw "Error: username cannot have special characters";
 
@@ -85,7 +85,7 @@ router
                                 
         if (!user) throw "Error: user could not be created";
         
-        return res.redirect(200, '/login');
+        return res.status(200).redirect('/login');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
          return res.status(500).send(e);

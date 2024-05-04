@@ -92,7 +92,7 @@ export const createPost = async (
 
 	// Check if the user exists
 	const userCollection = await users();
-	const userObj = await userCollection.findOne({ _id: userId });
+	const userObj = await userCollection.findOne({ _id: new ObjectId(userId) });
 	if (helper.isNull(userObj)) {
 		throw "User does not exist";
 	}
