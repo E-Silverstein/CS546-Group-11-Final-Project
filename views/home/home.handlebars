@@ -9,8 +9,12 @@
         {{!-- gonna make it display top 3 comments later --}}
         <p>{{{clothingLinks}}} </p>
         <button>Add a comment</button>
-        <div> 
-            {{{comments}}}
+        <div>
+            {{#if userSession}}
+                {{{comments}}}
+            {{else}}
+                <p>Sign in to view comments</p>
+            {{/if}}
         </div>
     {{/each}}
 </div>
