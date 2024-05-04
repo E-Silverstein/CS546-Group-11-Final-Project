@@ -18,6 +18,8 @@ router
         /*VALIDATION: username
             constraints:
             - 5-20 characters long
+            - no spaces
+            - no special characters
         */
         if (!req.body.username) throw "Error: Requires a 'username' input";
         if (typeof req.body.username != 'string') throw "Error: 'username' must be a string";
@@ -27,7 +29,8 @@ router
 
         if (req.body.username.length < 5 || req.body.username.length > 20) throw "Error: 'username' does not meet length constraints (5-20 characters)";
         if (req.body.username.match(' ') != null) throw "Error: 'username' cannot contain spaces";
-       
+        if (req.body.username.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) != null) throw "Error: username cannot have special characters";
+
         const userCollection = await users();
         let user = await userCollection.findOne({username: {$eq: req.body.username}});
         if (user) throw "Error: Username "+req.body.username+" already exists";
@@ -75,9 +78,9 @@ router
         let user = await userData.createUser(
                                 req.body.username,
                                 req.body.password,
-                                "default-pfp-png",
+                                "/uploads/default-pfp.png",
                                 age,
-                                "default bio"     
+                                "bio:"     
                             );
                                 
         if (!user) throw "Error: user could not be created";

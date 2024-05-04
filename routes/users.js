@@ -57,6 +57,7 @@ router
     }
 })
 .patch(upload.single('profile-picture'), async (req, res) => {
+    console.log("Patch");
     /*will update a pre-existing user with new data provided from an edit form*/
     try {
         //VALIDATION: userid
@@ -132,7 +133,7 @@ router
                                     );
 
         if (!updateRes) throw "Error: user could not be updated";  
-        return res.status(200).send("Update successful");
+        return res.redirect(200,`/users/${req.params.userid}`);
 
     } catch(e) {
         console.log(e)
