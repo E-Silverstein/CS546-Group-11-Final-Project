@@ -43,7 +43,12 @@
                     <a href="/liked">liked</a>
                 </li>
                 <li>
-                    <a href="/userprofile">{{{profilePicture}}}</a>
+                    {{#if usersession}}
+                        <a href="/userprofile">{{{profilePicture}}}</a>
+                    {{else}}
+                        <a href="/login">Log In</a>
+                    {{/if}}
+
                 </li>
             </ul>
         </nav>
