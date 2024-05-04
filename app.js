@@ -31,6 +31,15 @@ app.use(session({
   authenticated: false /*logged in or not logged in */
 }))
 
+app.use('/', function(req,res,next){
+  console.log(req.method + " "+ req.originalUrl + " " + req.session.authenticated);
+  if (req.path == "/") {
+    req.method = 'GET';
+    return res.status(200).redirect('/home');
+  }
+  next();
+});
+
 /*admin page to be added eventually to review all the reports made by the users*/
 app.use('/admin', function(req,res,next) {
   if(!req.session.authenticated){
