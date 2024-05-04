@@ -115,8 +115,6 @@ export const calculateEngagementScore = async (
 	postObj,
 	links_clicked
 ) => {
-	const postKeys = postObj.keywords;
-	const userLikedKeywords = userObj.keywords;
 	const postComments = postObj.comments;
 	console.log("postComments", userObj);
 	const userComments = [];
@@ -126,6 +124,9 @@ export const calculateEngagementScore = async (
 			userComments.push(comment);
 		}
 	}
+	
+	const postKeys = postObj.keywords;
+	const userLikedKeywords = userObj.keywords;
 	const matchingKeywords = [];
 	for (let i = 0; i < postKeys.length; i++) {
 		const key = postKeys[i];
@@ -133,6 +134,7 @@ export const calculateEngagementScore = async (
 			matchingKeywords.push(key);
 		}
 	}
+	
 	const isFollowingUser = userObj.following.includes(postObj.user._id);
 	return (
 		matchingKeywords.length +

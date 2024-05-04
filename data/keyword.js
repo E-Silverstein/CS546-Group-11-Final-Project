@@ -60,7 +60,7 @@ export const create = async (keyword) => {
     }
 
 	const newKeyword = {
-		keyword,
+		keyword: keyword.toLowerCase().trim(),
 		posts: [],
 	};
 

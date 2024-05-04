@@ -31,7 +31,7 @@ import * as keywordData from "./keyword.js";
  * @param {string} userID - The user id that created the post.
  * @param {string} image - The image URL of the post.
  * @param {Array<string>} clothingLinks - The links to the clothing items in the image.
- * @param {Array<string>} keywords - The keywords associated with the post. 
+ * @param {Array<string>} keywords - The keywords associated with the post.
  * @param {string} description - Description of the post
  * @returns {Object} - Returns the created object.
  */
@@ -108,7 +108,9 @@ export const createPost = async (
 			keyword: tempKeyword,
 		});
 		if (helper.isNull(keywordObj)) {
-			const keyword = await keywordData.create(keywords[i].trim().toLowerCase());
+			const keyword = await keywordData.create(
+				keywords[i].trim().toLowerCase()
+			);
 			if (keyword === 1) {
 				throw "Keyword could not be created";
 			}
@@ -195,7 +197,7 @@ export const getPostById = async (id) => {
 
 	const postCollection = await posts();
 
-	const post = await postCollection.findOne({ _id: new ObjectId(id)});
+	const post = await postCollection.findOne({ _id: new ObjectId(id) });
 
 	if (helper.isNull(post)) {
 		throw "Post does not exist";
@@ -281,7 +283,7 @@ export const getPostsByKeyword = async (keyword) => {
 };
 
 /**
- * 
+ *
  * @param {Object} keywords Array of string keywords
  * @param {string} username The username of the user
  * @returns A list of posts from the user that contain any of the keywords.
@@ -294,19 +296,21 @@ export const getPostsByKeywordsAndUser = async (keywords, username) => {
 	if (!helper.isOfType(username, "string")) {
 		throw "User must be of type string";
 	}
-	
+
 	if (helper.isNull(keywords)) {
 		throw "Keywords must be provided";
 	}
 	if (!helper.isOfType(keywords, "string")) {
 		throw "Keywords must be of type string";
 	}
-	
+
 	username = username.trim();
 	keywords = keywords.trim();
 	const postCollection = await posts();
-	const postList = await postCollection.find({ "username": username, "keywords": {$in: keywords}}).toArray();
-	if(helper.isNull(postList)) {
+	const postList = await postCollection
+		.find({ username: username, keywords: { $in: keywords } })
+		.toArray();
+	if (helper.isNull(postList)) {
 		throw "Posts not found";
 	}
 	return postList;
@@ -358,7 +362,9 @@ export const addLike = async (user, post) => {
 	const postCollection = await posts();
 
 	// First check if the user has already liked the post
-	const existingPost = await postCollection.findOne({ _id: new ObjectId(post) });
+	const existingPost = await postCollection.findOne({
+		_id: new ObjectId(post),
+	});
 	if (existingPost.likes.includes(user)) {
 		throw "User has already liked the post";
 	}
@@ -380,12 +386,14 @@ export const addLike = async (user, post) => {
 	}
 
 	const likedKeywords = postObj.keywords;
-	const userUpdate = await userCollection.updateOne(
-		{ _id: new ObjectId(user) },
-		{ $addToSet: { likedKeywords: likedKeywords } }
-	);
-	if (userUpdate.modifiedCount === 0) {
-		throw "Could not add liked keywords to user";
+	for (let i = 0; i < likedKeywords.length; i++) {
+		const userUpdate = await userCollection.updateOne(
+			{ _id: new ObjectId(user) },
+			{ $addToSet: { likedKeywords: likedKeywords[i].toLowerCase().trim() } }
+		);
+		if (userUpdate.modifiedCount === 0) {
+			throw "Could not add liked keywords to user";
+		}
 	}
 
 	// Recalculate the engagement score of the post
@@ -639,7 +647,6 @@ export const createEmptyInteraction = async (post, user) => {
 	return postObj;
 };
 
-
 export const incrementEngagementScore = async (post, user, num) => {
 	if (helper.areAllValuesNotNull([post, user, num])) {
 		throw "All values must be provided";
@@ -662,11 +669,12 @@ export const incrementEngagementScore = async (post, user, num) => {
 
 	// check if the interaction exists
 	const postCollection = await posts();
-	const interaction = await postCollection.findOne(
-		{ _id: new ObjectId(post), "interactions.user": new ObjectId(user) },
-	);
+	const interaction = await postCollection.findOne({
+		_id: new ObjectId(post),
+		"interactions.user": new ObjectId(user),
+	});
 
-	if(helper.isNull(interaction)) {
+	if (helper.isNull(interaction)) {
 		await createEmptyInteraction(post, user);
 	}
 
@@ -679,7 +687,7 @@ export const incrementEngagementScore = async (post, user, num) => {
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
 	return postObj;
-}
+};
 
 export const addInteraction = async (post, user, score) => {
 	if (helper.areAllValuesNotNull([post, user, score])) {
@@ -713,6 +721,19 @@ export const addInteraction = async (post, user, score) => {
 	return postObj;
 };
 
-export default { createPost, getPostById, deletePost, getAllPosts, getPostsByUser, 
-	getPostsByKeyword, getLikedPostsByUser, addLike, removeLike, addKeyword, 
-	updatePost, addComment, removeComment, addInteraction };
+export default {
+	createPost,
+	getPostById,
+	deletePost,
+	getAllPosts,
+	getPostsByUser,
+	getPostsByKeyword,
+	getLikedPostsByUser,
+	addLike,
+	removeLike,
+	addKeyword,
+	updatePost,
+	addComment,
+	removeComment,
+	addInteraction,
+};
