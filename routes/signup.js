@@ -71,11 +71,10 @@ router
         let birthYear = parseInt(req.body.birthdate.substring(0,4));
         let currYear = new Date().getFullYear();
         let age = currYear - birthYear;
-        let hashedPassword = await bcrypt.hash(req.body.password, salt);
-        
+                
         let user = await userData.createUser(
                                 req.body.username,
-                                hashedPassword,
+                                req.body.password,
                                 "default-pfp-png",
                                 age,
                                 "default bio"     
@@ -83,7 +82,7 @@ router
                                 
         if (!user) throw "Error: user could not be created";
         
-        return res.status(200).redirect('/login');
+        return res.redirect(200, '/login');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
          return res.status(500).send(e);

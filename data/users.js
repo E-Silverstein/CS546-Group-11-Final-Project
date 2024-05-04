@@ -91,10 +91,11 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 		throw "Password cannot contain spaces";
 	}
 
-	// Make sure the password is only contains alphanumeric characters
-	if (!password.match(/^[0-9a-zA-Z]+$/)) {
-		throw "Password can only contain alphanumeric characters";
-	}
+	//TODO: Fix alphanumeric for password
+  // Make sure the password is only contains alphanumeric characters
+	// if (!password.match(/^[0-9a-zA-Z]+$/)) {
+	// 	throw "Password can only contain alphanumeric characters";
+	// }
 
 	// Hash the password
 	password = await bcrypt.hash(password, 12);
@@ -109,8 +110,6 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 	const createdAt = new Date();
 
 	// TODO check valid profilePicURL
-
-	// TODO make sure password type is correct
 
 	const newUser = {
 		username: username,
