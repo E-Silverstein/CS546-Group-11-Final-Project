@@ -115,20 +115,32 @@ export const calculateEngagementScore = async (
 	postObj,
 	links_clicked
 ) => {
+	const postComments = postObj.comments;
+	console.log("postComments", userObj);
+	const userComments = [];
+	for (let i = 0; i < postComments.length; i++) {
+		const comment = postComments[i];
+		if (comment.user === userObj._id) {
+			userComments.push(comment);
+		}
+	}
+	
 	const postKeys = postObj.keywords;
-	const userLikedKeywords = userObj.likedKeywords;
-	const comments_posted = postObj.comments.filter(
-		(comment) => comment.user === userObj._id
-	).length;
-	const matchingKeywords = postKeys.filter((key) =>
-		userLikedKeywords.includes(key)
-	);
+	const userLikedKeywords = userObj.keywords;
+	const matchingKeywords = [];
+	for (let i = 0; i < postKeys.length; i++) {
+		const key = postKeys[i];
+		if (userLikedKeywords.indexOf(key) !== -1) {
+			matchingKeywords.push(key);
+		}
+	}
+	
 	const isFollowingUser = userObj.following.includes(postObj.user._id);
 	return (
 		matchingKeywords.length +
 		isFollowingUser * 5 +
 		links_clicked +
-		comments_posted * 2
+		userComments * 2
 	);
 };
 export default { getRecommendedPosts, calculateEngagementScore }

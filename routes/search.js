@@ -5,6 +5,7 @@ const router = express.Router();
 router
 .route('/')
     .get(async (req, res) => {
+        // TODO: Change, when search page is made, to actual location
         res.render("search");
     })
     .post(async (req, res) => {

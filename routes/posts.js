@@ -24,19 +24,7 @@ router
     }
 })
 // upload.single('name') takes in the name of the INPUT ELEMENT that the file is being inputted to
-.post(upload.single('image'), async (req, res) => {
-    /* Will get data from creation form and create a post if valid arguments */
-    try {
-        //VALIDATION: user -> should later be validated using the session state
-        if (!req.body.user) throw "Error: Requires a 'user' input";
-        if (typeof req.body.user != 'string') throw "Error: 'user' input must be a string";
-        if (req.body.user.trim() =='') throw "Error: 'user' cannot be empty string";
-        req.body.user = req.body.user.trim();
-
-    } catch(e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
-    } 
+.post(upload.single('post-image'), async (req, res) => {
     try {
         //VALIDATION: image 
         /*multer will send file information to req.file
@@ -82,21 +70,60 @@ router
         return res.status(400).send(e);
     } 
     try {
-        let newPost = await create(
-                                req.body.user,
+         //VALIDATION: description
+         if (req.body.description == null) throw "Error: Requires a 'description' input";
+         if (typeof req.body.description != 'string') throw "Error: 'description' must be a string";
+         if (req.body.description.trim() == '') throw "Error: 'description' cannot be an empty string";
+         req.body.description = req.body.description.trim();
+
+         if (description.length < 5 || description.length > 256) throw "Error: 'description' does not meet length constriants";
+    } catch(e) {
+        return res.status(400).send(e);
+    }
+    try {
+        let newPost = await postData.createPost(
+                                req.session.user,
                                 req.file.path,
                                 req.body.clothingLinks,
-                                req.body.keywords
+                                req.body.keywords,
+                                req.body.description
                             );
         if (!newPost) throw "Error: Post could not be created"
 
-        //TO-DO: change returns to render when frontend complete
-        res.status(200).send(newPost)
+        // will redirect to the newly created post
+        return res.status(200).redirect(`/posts/${newPost._id.toString()}`)
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(500).send(e);
     }
 });
+
+router
+.route('/editPost/:postid')
+.get(async (req,res) => {
+
+    try {
+        //VALIDATION: postid
+        if (req.params.postid == null) throw "Error: Requires a 'postid' input";
+        if (typeof req.params.postid != 'string') throw "Error: 'postid' must be a string";
+        if (req.params.postid.trim() == '') throw "Error: 'postid' cannot be an empty string";
+        if(!ObjectId.isValid(req.params.postid)) throw "Error: 'postid' is not a valid ObjectId";
+        req.params.postid = req.params.postid.trim();
+
+    } catch (e) {
+        //TO-DO: change returns to render when frontend complete
+        return res.status(400).send(e);
+    }
+    
+    return res.status(200).render('test_editPost', {postid: req.params.postid});
+});
+
+router
+.route('/createPost')
+.get(async (req, res) => {
+    return res.status(200).render('posts/newpost');
+});
+
 router
 .route('/:postid')
 .get(async (req, res) => {
@@ -148,8 +175,9 @@ router
         //VALIDATION: if user owns post
         const postCollection = await posts();
         let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
-        //TO-DO: initialize session state
-        //if (req.session.user.name != post.user) throw "Error: You do not own this post"
+
+        if (req.session.user.username != post.user) throw "Error: You do not own this post"
+
     } catch(e) {
         res.status(403).send(e);
     }
@@ -194,11 +222,22 @@ router
         return res.status(400).send(e);
     } 
     try {
+        //VALIDATION: description
+        if (req.body.description == null) throw "Error: Requires a 'description' input";
+        if (typeof req.body.description != 'string') throw "Error: 'description' must be a string";
+        if (req.body.description.trim() == '') throw "Error: 'description' cannot be an empty string";
+        req.body.description = req.body.description.trim();
+
+        if (description.length < 5 || description.length > 256) throw "Error: 'description' does not meet length constriants";
+   } catch(e) {
+       return res.status(400).send(e);
+   }
+    try {
        let updateRes = await postData.updatePost(req.params.postid, req.file.path, req.body.clothingLinks, req.body.keywords);
-       if (updateRes == 0) throw "Error: Post could not be updated"
+       if (updateRes == null) throw "Error: Post could not be updated"
        
        //TO-DO: change returns to render when frontend complete
-        return res.status(200).send("Update Successful");
+        return res.status(200).redirect(`/posts/${updateRes._id.toString()}`)
 
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
@@ -231,14 +270,14 @@ router
         const postCollection = await posts();
         let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
         //TO-DO: initialize session state
-        //if (req.session.user.name != post.user) throw "Error: You do not own this post"
+
+        if (req.session.user.username != post.user) throw "Error: You do not own this post"
     } catch(e) {
         res.status(403).send(e);
     }
     try {
         let deleteRes = await postData.deletePost(req.params.postid);
         if (deleteRes==1) throw "Error: Post could not be deleted";
-
 
         return res.status(200).send("Delete Successful");
 
