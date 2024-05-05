@@ -22,6 +22,7 @@ import bcrypt from 'bcrypt';
   "posts": ["ObjectId (Posts)"],
   "bio": "string", 
   "likedKeywords": ["ObjectId (Keywords)"],
+  "isAdmin": "boolean"
   ]
 }
 */
@@ -127,6 +128,7 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 		posts: [],
 		bio: bio,
 		likedKeywords: [],
+		isAdmin: false,
 	};
 
 	const userCollection = await users();
