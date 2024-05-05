@@ -72,8 +72,8 @@ router
     }
     try {
         let newPost = await postData.createPost(
-                                req.session.user._id,
-                                '/'+req.file.path,
+                                req.session.userid,
+                                '../'+req.file.path,
                                 req.body.clothingLinks,
                                 req.body.keywords,
                                 req.body.description
