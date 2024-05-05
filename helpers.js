@@ -1,3 +1,6 @@
+import { ObjectId } from "mongodb";
+
+
 /**
  * Checks if a value is null
  * @param {*} value 
@@ -59,3 +62,53 @@ export function isValidURL(string) {
     }
     return true;
 }
+
+
+
+
+export function isValidString(input, min_len=0, max_len=Number.MAX_VALUE) {
+    if (input == null) throw "Error: No string input";
+    if (typeof input != 'string') throw "Error: Input is not a string";
+    if (input.trim() == '') throw "Error: String input cannot be empty";
+
+    if (input.length < min_length || input.length > max_len) throw "Error: Input does not fit length constraints";
+}
+
+export function isValidId(input) {
+    isValidString(input);
+    input = input.trim();
+    if (!ObjectId.isValid(input)) throw "Error: Input is not a valid id"
+}
+
+export function isValidUsername(input) {
+    isValidString(input, 5, 32);
+    input = input.trim();
+
+    if (input.match(/[^\w.-]/) != null) throw "Error: Username can only contain numbers, letters, '-', '_', and '.'";
+}
+
+export function isValidPassword(input) {
+    isValidString(input, 8, 32);
+    input = input.trim();
+    if (input.match(/[0-9]/g) == null) throw "Error: Password must contain at least one number";
+    if (input.match(/[A-Z]/g) == null) throw "Error: Password must contain at least one uppercase character";
+    if (input.match(/[^\w]/g) == null) throw "Error: Password must contain at least one special character";
+    if (input.match(' ') != null) throw "Error: Password cannot contain spaces"
+}
+
+export function isValidLink(input) {
+    isValidString(input);
+    input = input.trim();
+    if (link.match(/^https?:\/\/(?:www\.)?\w{0,64}\.(?:com|co\.\w{2})/) == null) throw "Error: Invalid link";
+
+}
+
+export function isValidImg(input) {
+    if (!input) throw "Error: No file input";
+    if (!input.mimetype.includes('image/')) throw "Error: file must be an image input";
+}
+
+export function isValidKeyword(input) {
+    isValidString(input, 3, 16);
+}
+
