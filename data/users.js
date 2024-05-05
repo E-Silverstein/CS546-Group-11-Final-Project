@@ -3,7 +3,7 @@ import {
 	areAllValuesNotNull,
 	areAllValuesOfType,
 	isNull,
-	isOfType,
+	isOfType
 } from "../helpers.js";
 import { ObjectId } from "mongodb";
 import { commentData } from "./index.js";
@@ -112,9 +112,9 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 	const createdAt = new Date();
 
 	// TODO check valid profilePicURL
-	if (!isValidImg(profilePicURL)) {
-		throw "Invalid image URL";
-	}
+	// if (!isValidImg(profilePicURL)) {
+	// 	throw "Invalid image URL";
+	// }
 
 	const newUser = {
 		username: username,

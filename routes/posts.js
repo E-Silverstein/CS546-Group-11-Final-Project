@@ -6,7 +6,7 @@ import {posts} from "../config/mongoCollections.js";
 import express from 'express';
 import {ObjectId} from 'mongodb';
 import {upload} from '../middleware.js';
-import { isValidImg, isValidKeyword, isValidLink, isValidString } from "../helpers.js";
+import { isValidImg, isValidKeyword, isValidLink, isValidString, isValidId } from "../helpers.js";
 
 const router = express.Router();
 

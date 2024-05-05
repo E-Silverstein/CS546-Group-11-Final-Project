@@ -76,6 +76,7 @@ app.use('/home',function(req,res,next){
 };*/
 
 app.use('/public', express.static('public'));
+app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //app.use(rewriteUnsupportedBrowserMethods);
