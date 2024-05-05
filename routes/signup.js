@@ -29,7 +29,7 @@ router
 
         if (req.body.username.length < 5 || req.body.username.length > 32) throw "Error: 'username' does not meet length constraints (5-20 characters)";
         if (req.body.username.match(' ') != null) throw "Error: 'username' cannot contain spaces";
-        if (req.body.username.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) != null) throw "Error: username cannot have special characters";
+        if (req.body.username.match(/[-’\/`~!#*$@_%+=\.,^&(){}[\]|;:”<>?\\]/g) != null) throw "Error: username cannot have special characters";
 
         const userCollection = await users();
         let user = await userCollection.findOne({username: {$eq: req.body.username}});
@@ -54,7 +54,7 @@ router
         if (req.body.password.length < 8 || req.body.password.length > 32) throw "Error: Password must be at least 8 characters long or less than 20 characters long";
         if (req.body.password.match(/[0-9]/g) == null) throw "Error: Password must contain at least one number";
         if (req.body.password.match(/[A-Z]/g) == null) throw "Error: Password must contain at least one uppercase character";
-        if (req.body.password.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) == null) throw "Error: Password must contain at least one special character";
+        if (req.body.password.match(/[-’\/`~!#*$@_%+=\.,^&(){}[\]|;:”<>?\\]/g) == null) throw "Error: Password must contain at least one special character";
 
         if (req.body.password != req.body.confirmPassword) throw "Error: Passwords do not match";
 
