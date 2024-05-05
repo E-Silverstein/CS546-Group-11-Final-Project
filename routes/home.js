@@ -6,7 +6,7 @@ router
 .get((req, res) => {
     try{
         if(req.session.authenticated){
-            return res.render('home/home', {isAuth: true, userid: req.session.user._id});
+            return res.render('home/home', {isAuth: true, userid: req.session.userid});
         }
         return res.render('home/home', {isAuth: false});
     } catch(e){

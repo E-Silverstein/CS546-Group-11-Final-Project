@@ -15,13 +15,15 @@ router
 .get(async (req, res) => {
     try {
         // Route Will get current user profile
-        if (!req.session.authenticated) throw "Error: user must be logged in";
+        if (!req.session.authenticated){
+            return res.redirect('/login');
+        }
 
         let user = await userData.getUserById(req.session.userid);
         if (!user) throw "Error: Could not get users";
 
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).render('user', user)
+        return res.status(200).render('profiles/user', {userid:req.session.userid, username: user.username, bio: user.bio, isAuth: true, isUser: true});
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(500).render('error/error', {error: e});
@@ -104,7 +106,7 @@ router
 .route('/editUser')
 .get(async (req, res) => {
     if (!req.session.authenticated) throw "Error: user must be logged in";
-    return res.status(200).render('profiles/editprofile', {'userid': req.session.userid});
+    return res.status(200).render('profiles/editprofile', {'userid': req.session.userid, isAuth:true});
 })
 
 router
@@ -123,10 +125,16 @@ router
         let user = await userData.getUserById(req.params.userid);
         if (user == null) throw "Error: No users found with id: "+req.params.userid;;
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).render('profiles/user', user);
+        if(req.session.userid == req.params.userid){
+            return res.status(200).render('profiles/user',{ username: user.username, bio:user.bio, userid: req.params.userid, isAuth: true,isUser: true});
+        }
+        if(req.session.authenticated){
+            return res.status(200).render('profiles/user',{username: user.username, bio:user.bio, userid: req.params.userid, isUser: false, isAuth:true});
+        }
+        return res.redirect('/login');
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(404).send(e);
+        return res.status(404).render('error/error', {error: e});
     }
 })
 
