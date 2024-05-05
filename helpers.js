@@ -71,7 +71,7 @@ export function isValidString(input, min_len=0, max_len=Number.MAX_VALUE) {
     if (typeof input != 'string') throw "Error: Input is not a string";
     if (input.trim() == '') throw "Error: String input cannot be empty";
 
-    if (input.length < min_length || input.length > max_len) throw "Error: Input does not fit length constraints";
+    if (input.length < min_len || input.length > max_len) throw "Error: Input does not fit length constraints";
 }
 
 export function isValidId(input) {
@@ -99,7 +99,7 @@ export function isValidPassword(input) {
 export function isValidLink(input) {
     isValidString(input);
     input = input.trim();
-    if (link.match(/^https?:\/\/(?:www\.)?\w{0,64}\.(?:com|co\.\w{2})/) == null) throw "Error: Invalid link";
+    if (input.match(/^https?:\/\/(?:www\.)?\w{0,64}\.(?:com|co\.\w{2})/) == null) throw "Error: Invalid link";
 
 }
 

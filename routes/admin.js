@@ -36,7 +36,7 @@ router
         if(!ObjectId.isValid(req.params.postid)) throw "Error: 'postid' is not a valid ObjectId";
         req.params.postid = req.params.postid.trim();
     }catch(e){
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error: e});
     }
     try {
         //VALIDATION: if post exists
@@ -44,7 +44,7 @@ router
         let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
         if (!post) throw "Error: Post with id: "+req.params.postid+" does not exist";
     } catch (e) {
-        res.status(404).send(e);
+        return res.status(400).render('error/error',{error: e});
     }
     try {
         //deleting the post
@@ -53,7 +53,7 @@ router
         return res.status(200).send("Delete Successful");
         //return res.status(200).send("profiles/admin");
     } catch (e) {
-        return res.status(500).send(e);
+        return res.status(500).render('error/error',{error: e});
     }
 });
 
@@ -70,7 +70,7 @@ router
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error: e});
     }
     try {
         //VALIDATION: if user exists
@@ -78,7 +78,7 @@ router
         let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
         if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
     } catch(e) {
-        res.status(404).send(e);
+        return res.status(404).render('error/error',{error: e});
     }
     try{
         //deletes the user
@@ -87,7 +87,7 @@ router
         return res.status(200).send("Delete Successful");
         //return res.status(200).render("profiles/admin");
     }catch(e){
-        return res.status(500).send(e);
+        return res.status(500).render('error/error',{error: e});
     }
 });
 
@@ -100,7 +100,7 @@ router
         let report = await reportsCollection.find({ _id: new ObjectId(req.params.reportid)});
         if (!report) throw "Error: user with id: "+req.params.reportid+" does not exist";
     } catch(e) {
-        res.status(404).send(e);
+        return res.status(404).render('error/error',{error: e});
     }
     try{
         //deletes the report
@@ -108,7 +108,7 @@ router
         if (deleteReport==1) throw "Error: Post could not be deleted";
         return res.status(200).render("profiles/admin");
     }catch(e){
-        return res.status(500).send(e);
+        return res.status(500).render('error/error',{error: e});
     }
 });
 

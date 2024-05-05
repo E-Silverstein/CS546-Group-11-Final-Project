@@ -2,11 +2,12 @@
     ROUTES ARE NOT TESTED YET
 */
 import { postData } from "../data/index.js";
+import { userData } from "../data/index.js";
 import {posts} from "../config/mongoCollections.js";
 import express from 'express';
 import {ObjectId} from 'mongodb';
 import {upload} from '../middleware.js';
-import { isValidImg, isValidKeyword, isValidLink, isValidString } from "../helpers.js";
+import { isValidImg, isValidKeyword, isValidLink, isValidString, isValidId } from "../helpers.js";
 
 const router = express.Router();
 
@@ -20,8 +21,7 @@ router
         //TO-DO: change returns to render when frontend complete
         return res.status(200).json(posts);
     } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(500).send(e);
+        return res.status(500).render('error/error', {error:e});
     }
 })
 // upload.single('name') takes in the name of the INPUT ELEMENT that the file is being inputted to
@@ -36,8 +36,7 @@ router
        isValidImg(req.file);
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        console.log('file');
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     } 
     try {
         //VALIDATION: clothingLinks
@@ -49,10 +48,7 @@ router
         }
 
      } catch(e) {
-        //TO-DO: change returns to render when frontend complete
-        console.log(e)
-
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     } 
     try {
         //VALIDATION: keywords
@@ -60,17 +56,12 @@ router
         
         for (let i = 0; i < req.body.keywords.length ; i++) {
             let keyword = req.body.keywords[i];
+            console.log(keyword.length)
             isValidKeyword(keyword);
             req.body.keywords[i] = keyword.trim();
         }
-
-       
-
     } catch(e) {
-        //TO-DO: change returns to render when frontend complete
-        console.log(e)
-
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     } 
     try {
          //VALIDATION: description
@@ -78,14 +69,12 @@ router
         req.body.description = req.body.description.trim();
 
     } catch(e) {
-        console.log(e)
-
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         let newPost = await postData.createPost(
-                                req.session.user._id,
-                                '/'+req.file.path,
+                                req.session.userid,
+                                '../'+req.file.path,
                                 req.body.clothingLinks,
                                 req.body.keywords,
                                 req.body.description
@@ -97,8 +86,7 @@ router
         return res.status(200).redirect(`/posts/${newPost._id.toString()}`)
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        console.log(e)
-        return res.status(500).send(e);
+        return res.status(500).render('error/error', {error:e});
     }
 });
 
@@ -114,15 +102,18 @@ router
 
     try {
         //VALIDATION: postid
+        if(!req.session.authenticated) throw "Error: You must be logged in to edit a post";
         isValidId(req.params.postid)
         req.params.postid = req.params.postid.trim();
-
+        let post = await postData.getPostById(req.params.postid);
+        if(!post) throw "Error: Post does not exist";
+        let user = await userData.getUserById(req.session.userid);
+        if(post.username != user.username) throw "Error: You do not own this post";
+        return res.status(200).render('posts/editpost', {postid: req.params.postid, isAuth: req.session.authenticated});
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
-    
-    return res.status(200).render('test_editPost', {postid: req.params.postid});
 });
 
 router
@@ -134,8 +125,7 @@ router
         isValidId(req.params.postid);
         req.params.postid = req.params.postid.trim();
     } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error', {error:e});
     }
     try {
         let post = await postData.getPostById(req.params.postid);
@@ -144,11 +134,10 @@ router
         console.log(post.image);
         return res.status(200).render('posts/singlepost', {username: post.username, image: post.image, clothingLinks: post.clothingLinks, description: post.description});
     } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(404).send(e);
+        return res.status(404).render('error/error', {error:e});
     }
 })
-.patch(upload.single('image'), async (req, res) => {
+.patch(upload.single('post-image'), async (req, res) => {
     /*will update a pre-existing post with new data provided from an edit form*/
     
     try {
@@ -156,9 +145,7 @@ router
         isValidId(req.params.postid)
         req.params.postid = req.params.postid.trim();
     } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        console.log(e);
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         //VALIDATION: if post exists
@@ -166,8 +153,7 @@ router
         let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
         if (!post) throw "Error: Post with postid: "+req.params.postid+" does not exist"
     } catch(e) {
-        console.log(e);
-        res.status(404).send(e);
+        res.status(404).render('error/error', {error:e});
     }
     try {
         //VALIDATION: if user owns post
@@ -177,8 +163,7 @@ router
         if (req.session.user.username != post.user) throw "Error: You do not own this post"
 
     } catch(e) {
-        console.log(e);
-        res.status(403).send(e);
+        res.status(403).render('error/error', {error:e});
     }
     try {
         //VALIDATION: image 
@@ -186,9 +171,7 @@ router
         if (!req.file.mimetype.includes('image/')) throw "Error: 'image' input is incorrect file type";
         
     } catch(e) {
-        //TO-DO: change returns to render when frontend complete
-        console.log(e);
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     } 
     try {
         //VALIDATION: clothingLinks
@@ -201,7 +184,7 @@ router
         }
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     } 
     try {
         //VALIDATION: keywords
@@ -216,14 +199,14 @@ router
         }
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     } 
     try {
         //VALIDATION: description
        isValidString(req.body.description, 0, 256);
         req.body.description = req.body.description.trim();
    } catch(e) {
-       return res.status(400).send(e);
+       return res.status(400).render('error/error',{error:e});
    }
     try {
        let updateRes = await postData.updatePost(req.params.postid, req.file.path, req.body.clothingLinks, req.body.keywords);
@@ -234,7 +217,7 @@ router
 
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(500).send(e);
+        return res.status(500).render('error/error', {error:e});
     }
 })
 .delete(async (req, res) => {
@@ -245,7 +228,7 @@ router
         req.params.postid = req.params.postid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error', {error:e});
     }
     try {
         //VALIDATION: if post exists
@@ -253,7 +236,7 @@ router
         let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
         if (!post) throw "Error: Post with id: "+req.params.postid+" does not exist"
     } catch(e) {
-        res.status(404).send(e);
+        res.status(404).render('error/error', {error:e});
     }
     try {
         //VALIDATION: if user owns post
@@ -263,7 +246,7 @@ router
 
         if (req.session.user.username != post.user) throw "Error: You do not own this post"
     } catch(e) {
-        res.status(403).send(e);
+        res.status(403).render('error/error', {error:e});
     }
     try {
         let deleteRes = await postData.deletePost(req.params.postid);
@@ -272,7 +255,7 @@ router
         return res.status(200).send("Delete Successful");
 
     } catch(e) {
-        return res.status(500).send(e);
+        return res.status(500).render('error/error', {error:e});
     }
 });
 

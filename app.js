@@ -16,7 +16,7 @@ app.use(session({
 }))
 
 app.use('/', function(req,res,next){
-    if (req.session.user === undefined) {
+    if (req.session.userid === undefined) {
         req.session.authenticated = false;
     } else {
         req.session.authenticated = true;
@@ -43,9 +43,6 @@ app.use('/admin', function(req,res,next) {
 
 //works
 app.use('/users', function(req,res,next){
-  if(!req.session.authenticated){
-    return res.status(200).redirect('/login');
-  }
   next();
 });
 
@@ -76,6 +73,7 @@ app.use('/home',function(req,res,next){
 };*/
 
 app.use('/public', express.static('public'));
+app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //app.use(rewriteUnsupportedBrowserMethods);

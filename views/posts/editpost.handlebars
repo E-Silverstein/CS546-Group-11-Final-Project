@@ -1,15 +1,19 @@
 <div>
-    <form action="/posts/{{postid}}" enctype="multipart/form-data">
+    <form enctype="multipart/form-data">
 
         <label for="post-image">Select Image</label>
-        <input type="file" accept="image/*" id="post-image" name="post-image">
+        <input type="file" accept=".png, .jpg, .jpeg" id="post-image" name="post-image">
         
         <label for="description">Description</label>
-        <input type="text" id="description" name="description">
+        <input type="text" id="description" value={{desc}} name="description">
         <label for="clothingLinks">Clothing Links</label>
-        <input type="text" id="clothingLinks" name="clothingLinks">
+        {{#each clothingLinks}}
+            <input type="text" id="clothingLinks" value={{this}} name="clothingLinks">
+        {{/each}}
         <label for="keywords">Keywords</label>
-        <input type="text" id="keywords" name="keywords">
+        {{#each keywords}}
+            <input type="text" id="keywords" value={{this}} name="keywords">
+        {{/each}}
         <button type="submit">Create Post</button>
     </form>
 </div>

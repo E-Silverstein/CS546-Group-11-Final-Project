@@ -29,7 +29,7 @@ router
         if (user) throw "Error: Username "+req.body.username+" already exists";
 
     } catch(e) {
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         /*VALIDATION: password
@@ -44,16 +44,14 @@ router
         if (req.body.password != req.body.confirmPassword) throw "Error: Passwords do not match";
         
     } catch(e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         let birthYear = parseInt(req.body.birthdate.substring(0,4));
         let currYear = new Date().getFullYear();
         if (currYear - birthYear < 13) throw "Error: must be at least 13 years old";
     } catch(e) {
-         //TO-DO: change returns to render when frontend complete
-         return res.status(400).send(e);
+         return res.status(400).render('error/error',{error:e});
     }
     try {
         let birthYear = parseInt(req.body.birthdate.substring(0,4));
@@ -72,8 +70,7 @@ router
         
         return res.status(200).redirect('/login');
     } catch (e) {
-         //TO-DO: change returns to render when frontend complete
-         return res.status(500).send(e);
+         return res.status(500).render('error/error',{error:e});
     }
 
 });
