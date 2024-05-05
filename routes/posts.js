@@ -54,6 +54,8 @@ router
 
      } catch(e) {
         //TO-DO: change returns to render when frontend complete
+        console.log(e)
+
         return res.status(400).send(e);
     } 
     try {
@@ -73,6 +75,8 @@ router
 
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
+        console.log(e)
+
         return res.status(400).send(e);
     } 
     try {
@@ -84,12 +88,14 @@ router
 
          if ( req.body.description.length < 5 ||  req.body.description.length > 256) throw "Error: 'description' does not meet length constriants";
     } catch(e) {
+        console.log(e)
+
         return res.status(400).send(e);
     }
     try {
         let newPost = await postData.createPost(
                                 req.session.user._id,
-                                req.file.path,
+                                '/'+req.file.path,
                                 req.body.clothingLinks,
                                 req.body.keywords,
                                 req.body.description
@@ -151,7 +157,8 @@ router
         let post = await postData.getPostById(req.params.postid);
         if (post==null) throw "Error: No Posts found with id: "+req.params.postid;;
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).render('posts/singlepost', {image: post.image, description: post.description});
+        console.log(post.image);
+        return res.status(200).render('posts/singlepost', {username: post.username, image: post.image, clothingLinks: post.clothingLinks, description: post.description});
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(404).send(e);
