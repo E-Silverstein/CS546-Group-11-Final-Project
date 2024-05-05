@@ -25,6 +25,10 @@ router
 })
 // upload.single('name') takes in the name of the INPUT ELEMENT that the file is being inputted to
 .post(upload.single('post-image'), async (req, res) => {
+<<<<<<< Updated upstream
+=======
+    console.log("posts");
+>>>>>>> Stashed changes
     try {
         //VALIDATION: image 
         /*multer will send file information to req.file
@@ -105,6 +109,12 @@ router
         return res.status(500).send(e);
     }
 });
+
+router
+.route("/createPost")
+.get(async(req, res) => {
+    return res.status(200).render('posts/newpost');
+  });
 
 router
 .route('/editPost/:postid')

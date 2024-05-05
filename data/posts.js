@@ -42,6 +42,8 @@ export const createPost = async (
 	keywords,
 	description
 ) => {
+
+	console.log(userId);
 	if (
 		helper.areAllValuesNotNull([
 			userId,
@@ -145,6 +147,7 @@ export const createPost = async (
 		throw "Could not create post";
 	}
 
+	console.log(insertedInfo)
 	const postObj = await postCollection.findOne({ _id: insertInfo.insertedId });
 	console.log(postObj);
 	// Add post to user's post
