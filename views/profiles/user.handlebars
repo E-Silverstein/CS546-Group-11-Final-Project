@@ -1,6 +1,16 @@
-<div>
-    <h2>{{{username}}}</h2>
-    <p>User Profile</p>
 
-    <a href="/users/editUser/{{_id}}">edit profile</a>
+<div class="flex justify-center">
+    <div class="pt-12 w-3/5">
+        <h2>{{{username}}}</h2>
+        <p>{{{bio}}}</p>
+        <a href="/users/editUser/{{_id}}" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2">Edit Profile</a>
+        <a href="/logout" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2">Logout</a>
+        <div>
+            {{#each posts}}
+                <div>
+                    <img src="{{this.image}}">
+                </div>
+            {{/each}}
+        </div>
+    </div>
 </div>

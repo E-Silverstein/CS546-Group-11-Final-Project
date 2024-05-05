@@ -61,7 +61,7 @@ router
         let user = await userData.getUserById(req.params.userid);
         if (user == null) throw "Error: No users found with id: "+req.params.userid;;
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).render('profiles/user', user);
+        return res.status(200).render('profiles/user', {username: user.username, bio: user.bio});
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(404).send(e);
