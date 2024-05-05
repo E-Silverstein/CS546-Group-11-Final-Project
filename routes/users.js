@@ -49,7 +49,8 @@ router
     }
     try {
         //VALIDATION: image
-        isValidImg(req.file);
+        if (req.file)
+            isValidImg(req.file);
     } catch(e) {
         return res.status(400).render('error/error',{error:e});
     }
