@@ -4,9 +4,8 @@
 import { userData } from '../data/index.js';
 import { users } from '../config/mongoCollections.js';
 import express from 'express';
-import bcrypt from 'bcrypt';
+import { isValidId, isValidUsername, isValidPassword } from '../helpers.js';
 const router = express.Router();
-const salt = 12;
 
 router
 .route('/')
@@ -21,15 +20,9 @@ router
             - no spaces
             - no special characters
         */
-        if (!req.body.username) throw "Error: Requires a 'username' input";
-        if (typeof req.body.username != 'string') throw "Error: 'username' must be a string";
-        if ((req.body.username).trim() == "") throw "Error: 'username' is an empty string";
-
+        
+        isValidUsername(req.body.username);
         req.body.username = req.body.username.trim().toLowerCase();
-
-        if (req.body.username.length < 5 || req.body.username.length > 32) throw "Error: 'username' does not meet length constraints (5-20 characters)";
-        if (req.body.username.match(' ') != null) throw "Error: 'username' cannot contain spaces";
-        if (req.body.username.match(/[-’\/`~!#*$@_%+=\.,^&(){}[\]|;:”<>?\\]/g) != null) throw "Error: username cannot have special characters";
 
         const userCollection = await users();
         let user = await userCollection.findOne({username: {$eq: req.body.username}});
@@ -46,18 +39,10 @@ router
             - at least one number
             - at least one special character
         */
-        if (!req.body.password) throw "Error: Requires a 'password' input";
-        if (typeof req.body.password != 'string') throw "Error: 'password' must be a string";
-        if (req.body.password.trim() == "") throw "Error: 'password' is an empty string";
-        if (req.body.password.match(' ') != null) throw "Error: Password cannot contain spaces";
-        
-        if (req.body.password.length < 8 || req.body.password.length > 32) throw "Error: Password must be at least 8 characters long or less than 20 characters long";
-        if (req.body.password.match(/[0-9]/g) == null) throw "Error: Password must contain at least one number";
-        if (req.body.password.match(/[A-Z]/g) == null) throw "Error: Password must contain at least one uppercase character";
-        if (req.body.password.match(/[-’\/`~!#*$@_%+=\.,^&(){}[\]|;:”<>?\\]/g) == null) throw "Error: Password must contain at least one special character";
 
+        isValidPassword(req.body.password);
         if (req.body.password != req.body.confirmPassword) throw "Error: Passwords do not match";
-
+        
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(400).send(e);

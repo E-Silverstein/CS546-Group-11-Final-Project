@@ -6,6 +6,7 @@ import { upload } from '../middleware.js';
 import { users } from '../config/mongoCollections.js';
 import express from 'express';
 import { ObjectId } from 'mongodb';
+import { isValidId, isValidImg, isValidString, isValidUsername } from "../helpers.js";
 
 const router = express.Router();
 
@@ -30,10 +31,7 @@ router
 .get(async (req, res) => {
     try {
         //VALIDATION: userid
-        if (req.params.userid == null) throw "Error: Requires a 'userid' input";
-        if (typeof req.params.userid != 'string') throw "Error: 'userid' must be a string";
-        if (req.params.userid.trim() == '') throw "Error: 'userid' cannot be an empty string";
-        if(!ObjectId.isValid(req.params.userid)) throw "Error: 'userid' is not a valid ObjectId";
+        isValidId(req.params.userid);
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
@@ -48,10 +46,7 @@ router
     /* Route will get an individual user given a userid */
     try {
         //VALIDATION: userid
-        if (req.params.userid == null) throw "Error: Requires a 'userid' input";
-        if (typeof req.params.userid != 'string') throw "Error: 'userid' must be a string";
-        if (req.params.userid.trim() == '') throw "Error: 'userid' cannot be an empty string";
-        if(!ObjectId.isValid(req.params.userid)) throw "Error: 'userid' is not a valid ObjectId";
+        isValidId(req.params.userid);
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
@@ -72,48 +67,31 @@ router
     /*will update a pre-existing user with new data provided from an edit form*/
     try {
         //VALIDATION: userid
-        if (req.params.userid == null) throw "Error: Requires a 'userid' input";
-        if (typeof req.params.userid != 'string') throw "Error: 'userid' must be a string";
-        if (req.params.userid.trim() == '') throw "Error: 'userid' cannot be an empty string";
-        if(!ObjectId.isValid(req.params.userid)) throw "Error: 'userid' is not a valid ObjectId";
+        isValidId(req.params.userid);
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(400).send(e);
     }
     try {
-        //VALIDATION: username
-        if (!req.body.username) throw "Error: Requires a 'username' input";
-        if (typeof req.body.username != 'string') throw "error: 'username must be a string";
-        if (req.body.username.trim() == "") throw "Error: 'username' is an empty input";
+        //VALIDATION: username        
+        isValidUsername(req.body.username);
+        req.body.username = req.body.username.trim().toLowerCase();
 
-        req.body.username =  req.body.username.trim().toLowerCase();
-
-        if (req.body.username.length < 5 || req.body.username.length > 32) throw "Error: 'username' does not meet length constraints (5-20 characters)";
-        if (req.body.username.match(' ') != null) throw "Error: 'username' cannot contain spaces";
-          
     } catch(e) {
         return res.status(400).send(e);
     }
     try {
         //VALIDATION: bios
-        if (!req.body.bio) throw "Error: Requires a 'username' input";
-        if (typeof req.body.bio != 'string') throw "error: 'username must be a string";
-        if (req.body.bio.trim() == "") throw "Error: 'username' is an empty input";
-
-        req.body.bio =  req.body.bio.trim().toLowerCase();
-
-        if (req.body.bio.length < 0 || req.body.bio.length > 256) throw "Error: 'username' does not meet length constraints (5-20 characters)";
-        if (req.body.bio.match(' ') != null) throw "Error: 'username' cannot contain spaces";
+        isValidString(req.body.bio, 0, 256);
+        req.body.bio = req.body.bio.trim();
           
     } catch(e) {
         return res.status(400).send(e);
     }
     try {
         //VALIDATION: image
-        if (!req.file) throw "Error: Requires an 'image' input";
-        if (!req.file.mimetype.includes("image/")) throw "error: 'image' is incorrect file type";
-       
+        isValidImg(req.file);
     } catch(e) {
         return res.status(400).send(e);
     }
@@ -158,10 +136,7 @@ router
      console.log("delete")
     try {
         //VALIDATION: userid
-        if (req.params.userid == null) throw "Error: Requires a 'userid' input";
-        if (typeof req.params.userid != 'string') throw "Error: 'userid' must be a string";
-        if (req.params.userid.trim() == '') throw "Error: 'userid' cannot be an empty string";
-        if(!ObjectId.isValid(req.params.userid)) throw "Error: 'userid' is not a valid ObjectId";
+       isValidId(req.params.userid);
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
