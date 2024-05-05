@@ -736,4 +736,6 @@ export default {
 	addComment,
 	removeComment,
 	addInteraction,
+	incrementEngagementScore,
+	createEmptyInteraction,
 };
