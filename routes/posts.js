@@ -2,6 +2,7 @@
     ROUTES ARE NOT TESTED YET
 */
 import { postData } from "../data/index.js";
+import { userData } from "../data/index.js";
 import {posts} from "../config/mongoCollections.js";
 import express from 'express';
 import {ObjectId} from 'mongodb';
@@ -101,15 +102,18 @@ router
 
     try {
         //VALIDATION: postid
+        if(!req.session.authenticated) throw "Error: You must be logged in to edit a post";
         isValidId(req.params.postid)
         req.params.postid = req.params.postid.trim();
-
+        let post = await postData.getPostById(req.params.postid);
+        if(!post) throw "Error: Post does not exist";
+        let user = await userData.getUserById(req.session.userid);
+        if(post.username != user.username) throw "Error: You do not own this post";
+        return res.status(200).render('posts/editpost', {postid: req.params.postid, isAuth: req.session.authenticated});
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).render('error/error', {error:e});
+        return res.status(400).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
-    
-    return res.status(200).render('posts/editpost', {postid: req.params.postid});
 });
 
 router
