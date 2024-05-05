@@ -1,8 +1,10 @@
 /*
     ROUTES ARE NOT TESTED YET
 */
+
 import { postData } from "../data/index.js";
 import { userData } from "../data/index.js";
+
 import {posts} from "../config/mongoCollections.js";
 import express from 'express';
 import {ObjectId} from 'mongodb';
