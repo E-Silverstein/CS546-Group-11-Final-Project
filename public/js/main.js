@@ -4,7 +4,7 @@
 $(document).ready(function() {
     const currPath = window.location.pathname;
     let scriptName = currPath.split("/");
-    scriptName = scriptName[scriptName.length - 1];
+    scriptName = scriptName[1];
     if (scriptName === "/") {
         scriptName = "home";
     }
