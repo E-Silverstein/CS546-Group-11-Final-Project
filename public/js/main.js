@@ -9,5 +9,6 @@ $(document).ready(function() {
     } else {
         scriptName = scriptName[1];
     }
+    console.log(scriptName);
     $("<script>").attr("src", "/public/js/" + scriptName + ".js").appendTo("head");
 });
