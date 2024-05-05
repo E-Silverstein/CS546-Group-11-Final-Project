@@ -1,4 +1,5 @@
 $("#edit-user-form").on("submit", (event) => {
+    event.preventDefault();
     let username = $(username);
     let bio = $(bio);
     
@@ -6,8 +7,8 @@ $("#edit-user-form").on("submit", (event) => {
         type: "PATCH",
         url: "/users",
         data: {
-            username: username,
-            bio: bio
+            "username": username,
+            "bio": bio
         }
     });
     

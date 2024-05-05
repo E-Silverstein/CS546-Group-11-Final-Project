@@ -104,7 +104,12 @@ router
 .route('/editUser')
 .get(async (req, res) => {
     if (!req.session.authenticated) throw "Error: user must be logged in";
-    return res.status(200).render('profiles/editprofile', {'userid': req.session.userid});
+    try {
+        let user = await userData.getUserById(req.session.userid);
+        return res.status(200).render('profiles/editprofile', {isAuth: req.session.authenticated, isUser: !user.isAdmin, "username": user.username, "bio": user.bio});
+    } catch (e) {
+        res.status(404).render('error/error', {isAuth: req.session.authenticated, error: e});
+    }
 })
 
 router
