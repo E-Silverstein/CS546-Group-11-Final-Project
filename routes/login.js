@@ -22,7 +22,7 @@ router
         isValidUsername(req.body.username);
         req.body.username = req.body.username.trim().toLowerCase();
     } catch(e) {
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         /*VALIDATION: password

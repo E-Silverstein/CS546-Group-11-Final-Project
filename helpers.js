@@ -71,7 +71,7 @@ export function isValidString(input, min_len=0, max_len=Number.MAX_VALUE) {
     if (typeof input != 'string') throw "Error: Input is not a string";
     if (input.trim() == '') throw "Error: String input cannot be empty";
 
-    if (input.length < min_length || input.length > max_len) throw "Error: Input does not fit length constraints";
+    if (input.length < min_len || input.length > max_len) throw "Error: Input does not fit length constraints";
 }
 
 export function isValidId(input) {
