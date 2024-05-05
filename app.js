@@ -16,7 +16,6 @@ app.use(session({
 }))
 
 app.use('/', function(req,res,next){
-    if (req.session.user === undefined) {
     if (req.session.userid === undefined) {
         req.session.authenticated = false;
     } else {
