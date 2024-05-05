@@ -22,7 +22,7 @@ router
         return res.status(200).json(users);
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(500).send(e)
+        return res.status(500).render('error/error', {error: e});
     }
 })
 
@@ -50,7 +50,7 @@ router
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error', {error: e});
     }
     try {
         let user = await userData.getUserById(req.params.userid);
@@ -65,7 +65,7 @@ router
         
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(404).send(e);
+        return res.status(404).render('error/error', {error: e});
     }
 })
 .patch(upload.single('profile-picture'), async (req, res) => {
@@ -77,7 +77,7 @@ router
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         //VALIDATION: username        
@@ -85,7 +85,7 @@ router
         req.body.username = req.body.username.trim().toLowerCase();
 
     } catch(e) {
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         //VALIDATION: bios
@@ -93,13 +93,13 @@ router
         req.body.bio = req.body.bio.trim();
           
     } catch(e) {
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         //VALIDATION: image
         isValidImg(req.file);
     } catch(e) {
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         //VALIDATION: if user exists
@@ -107,7 +107,7 @@ router
         let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
         if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
     } catch(e) {
-        res.status(404).send(e);
+        res.status(404).render('error/error', {error: e});
     }
     try {
         //VALIDATION: if user is current user
@@ -117,7 +117,7 @@ router
         //TO-DO: doesnt work, need middle wares
         if (req.session.user.username != user.username) throw "Error: you are not this user";
     } catch(e) {
-        return res.status(403).send(e);
+        return res.status(403).render('error/error', {error: e});
     }
     try {
         let updateRes = await userData.updateUser(
@@ -133,7 +133,7 @@ router
     } catch(e) {
         console.log(e)
         
-        return res.status(500).send(e);
+        return res.status(500).render('error/error', {error: e});
     }
 
 })
@@ -146,7 +146,7 @@ router
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error', {error: e});
     }
     try {
         //VALIDATION: if user exists
@@ -154,7 +154,7 @@ router
         let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
         if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
     } catch(e) {
-        return res.status(404).send(e);
+        return res.status(404).render('error/error', {error: e});
     }
     try {
         //VALIDATION: if user is current user
@@ -164,7 +164,7 @@ router
         //TO-DO: initialize session state and compare users
         //if (req.session.user.username != user.username) throw "Error: You do not own this user"
     } catch(e) {
-        return res.status(403).send(e);
+        return res.status(403).render('error/error', {error: e});
     }
     try {
         let deleteRes = await userData.deleteUser(req.params.userid);
@@ -174,7 +174,7 @@ router
 
     } catch(e) {
         console.log(e);
-        return res.status(500).send(e);
+        return res.status(500).render('error/error', {error: e});
     }
 });
 
