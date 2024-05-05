@@ -60,6 +60,7 @@ router
         
         for (let i = 0; i < req.body.keywords.length ; i++) {
             let keyword = req.body.keywords[i];
+            console.log(keyword.length)
             isValidKeyword(keyword);
             req.body.keywords[i] = keyword.trim();
         }
@@ -69,7 +70,6 @@ router
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         console.log(e)
-
         return res.status(400).send(e);
     } 
     try {

@@ -99,7 +99,7 @@ export function isValidPassword(input) {
 export function isValidLink(input) {
     isValidString(input);
     input = input.trim();
-    if (link.match(/^https?:\/\/(?:www\.)?\w{0,64}\.(?:com|co\.\w{2})/) == null) throw "Error: Invalid link";
+    if (input.match(/^https?:\/\/(?:www\.)?\w{0,64}\.(?:com|co\.\w{2})/) == null) throw "Error: Invalid link";
 
 }
 

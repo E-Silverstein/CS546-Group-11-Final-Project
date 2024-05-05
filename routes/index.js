@@ -17,6 +17,7 @@ const constructorMethod = app => {
   
   //app.use("/reports", reportRoutes);
 
+  // app.use("/error",  )
 
 
   app.use("*", (req, res) => {
