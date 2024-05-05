@@ -156,7 +156,7 @@ router
         let post = await postData.getPostById(req.params.postid);
         if (post==null) throw "Error: No Posts found with id: "+req.params.postid;;
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).json(post);
+        return res.status(200).render('posts/singlepost', {image: post.image, description: post.description});
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(404).send(e);

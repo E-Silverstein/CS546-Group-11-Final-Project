@@ -1,0 +1,13 @@
+<div class="mt-24 flex justify-center">
+    <div class="justify-center flex-col">
+        <p>{{{username}}}</p>
+        <img src={{{image}}}>
+        {{#each clothingLinks}}
+            <p>{{this}} </p>
+        {{/each}}
+        {{#each comments}}
+            <p>{{{this.text}}}</p>
+        {{/each}}
+        <p>{{{description}}}</p>
+    </div>
+</div>

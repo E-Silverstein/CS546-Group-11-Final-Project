@@ -1,3 +1,4 @@
+import homeRoutes from "./home.js"
 import postRoutes from "./posts.js";
 import userRoutes from "./users.js";
 import loginRoutes from './login.js';
@@ -6,11 +7,7 @@ import searchRoutes from './search.js';
 import adminRoutes from './admin.js';
 
 const constructorMethod = app => {    
-  app.get('/home', async(req, res) => {
-    //TO=DO need to display posts
-    //let allposts = await postData.getAllPosts();
-    return res.status(200).render('home/home');
-  });
+  app.use('/home', homeRoutes);
   app.use('/login', loginRoutes);
   app.use('/signup',  signupRoutes);
   app.use('/admin', adminRoutes);

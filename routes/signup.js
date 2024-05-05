@@ -11,7 +11,7 @@ const salt = 12;
 router
 .route('/')
 .get(async (req, res) => {
-    return res.status(200).render('auth/signup');
+    return res.status(200).render('auth/signup', {layout: 'nonav'});
 })
 .post(async (req, res) => {
     try {

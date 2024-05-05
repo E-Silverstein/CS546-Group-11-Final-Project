@@ -39,7 +39,7 @@ router
         //TO-DO: change returns to render when frontend complete
         return res.status(400).send(e);
     }
-    return res.status(200).render('test/test_editUser', {'userid': req.params.userid});
+    return res.status(200).render('profiles/editprofile', {'userid': req.params.userid});
 })
 
 router
