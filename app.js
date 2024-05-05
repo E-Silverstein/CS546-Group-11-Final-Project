@@ -22,6 +22,7 @@ app.use(rewriteUnsupportedBrowserMethods);
 app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
 app.set("view engine", "handlebars");
 
+
 /*call req.session.authenticated to see if user is logged in*/
 app.use(session({
   name: 'AuthenticationState',

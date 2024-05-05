@@ -10,7 +10,7 @@ const router = express.Router();
 router
 .route('/')
 .get(async (req, res) => {
-    return res.status(200).render('auth/signin');
+    return res.status(200).render('auth/signin', {layout: 'nonav'});
 })
 .post(async (req, res) => {
     try {
@@ -65,7 +65,7 @@ router
         req.session.authenticated = true;
 
         console.log(req.session);
-        return res.status(200).redirect('home');
+        return res.status(200).redirect('/home');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
         return res.status(400).send(e);
