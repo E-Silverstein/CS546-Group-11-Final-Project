@@ -35,7 +35,7 @@ router
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error', {error: e});
     }
     return res.status(200).render('profiles/editprofile', {'userid': req.params.userid});
 })
@@ -56,7 +56,13 @@ router
         let user = await userData.getUserById(req.params.userid);
         if (user == null) throw "Error: No users found with id: "+req.params.userid;;
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).render('profiles/user', user);
+        if(req.session.user._id == user._id) {
+            return res.status(200).render('profiles/user', {username: user.username, bio: user.bio, userid: user._id, isUser: true, isAuth: true});
+        } else if(req.session.user._id != user._id) {
+            return res.status(200).render('profiles/user', {username: user.username, bio: user.bio, userid: user._id, isUser: false, isAuth: true});
+        }
+        return res.status(200).render('profiles/user', {username: user.username, bio: user.bio, userid: user._id, isUser: false, isAuth: false});
+        
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(404).send(e);

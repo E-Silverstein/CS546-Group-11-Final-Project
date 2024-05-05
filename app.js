@@ -51,7 +51,7 @@ app.use('/users', function(req,res,next){
 
 app.use('/login', function(req,res,next) {
   if (req.method == 'GET' && req.session.authenticated) {
-    return res.status(200).redirect('/users');
+    return res.status(200).redirect(`/users/${req.session.user._id}`);
   }
   next();
 });
