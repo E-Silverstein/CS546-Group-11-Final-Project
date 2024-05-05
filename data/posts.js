@@ -128,7 +128,8 @@ export const createPost = async (
 	const username = userObj.username;
 
 	const postCollection = await posts();
-	console.log(postCollection)
+	keywords = keywords.map((keyword) => keyword.toLowerCase().trim());
+
 	const newPost = {
 		'username': username,
 		'image': image,
