@@ -6,6 +6,7 @@ import {posts} from "../config/mongoCollections.js";
 import express from 'express';
 import {ObjectId} from 'mongodb';
 import {upload} from '../middleware.js';
+import { isValidImg, isValidKeyword, isValidLink, isValidString } from "../helpers.js";
 
 const router = express.Router();
 
@@ -25,8 +26,6 @@ router
 })
 // upload.single('name') takes in the name of the INPUT ELEMENT that the file is being inputted to
 .post(upload.single('post-image'), async (req, res) => {
-    console.log('post');
-    console.log(req.session)
     try {
         //VALIDATION: image 
         /*multer will send file information to req.file
@@ -34,8 +33,7 @@ router
             - fieldname: input element name
             - mimetype: type of file
         */
-        if (!req.file) throw "Error: Requires a 'image' input";
-        if (!req.file.mimetype.includes('image/')) throw "Error 'image' input is incorrect file type";
+       isValidImg(req.file);
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         console.log('file');
@@ -44,54 +42,50 @@ router
     try {
         //VALIDATION: clothingLinks
         if (!req.body.clothingLinks) throw "Error: Requires a list of 'clothing link' input";
-        if (typeof req.body.clothingLinks != 'string' ) throw "Error: 'clothing link' must be a string";
-        if (req.body.clothingLinks.trim() == '') throw "Error: 'clothing link' cannot be an empty an be a string";
-
-        let linksList = (req.body.clothingLinks).split(', ');
-
-        for (let i = 0; i < linksList.length ; i++) {
-            let link = linksList[i];
-            if (link.match(/^https?:\/\/(?:www\.)?\w{0,64}\.(?:com|co\.\w{2})/) == null) throw "Error: Invalid link";
+        for (let i = 0; i < req.body.clothingLinks.length ; i++) {
+            let link = req.body.clothingLinks[i];
+            isValidLink(link);
+            req.body.clothingLinks[i] = link.trim();
         }
 
-    } catch(e) {
+     } catch(e) {
         //TO-DO: change returns to render when frontend complete
+        console.log(e)
+
         return res.status(400).send(e);
     } 
     try {
         //VALIDATION: keywords
         if (!req.body.keywords) throw "Error: Requires a list of 'keywords' input";
         
-        let keywordsList = (req.body.keywords).split(', ');
-
-        for (let i = 0; i < keywordsList.length ; i++) {
-            let keyword = keywordsList[i];
-            if (typeof keyword != 'string') throw "Error: 'keyword' must be a string";
-            if (keyword.trim() =='') throw "Error: 'keyword' cannot be empty string";
-            keywordsList[i] = keyword.trim();
+        for (let i = 0; i < req.body.keywords.length ; i++) {
+            let keyword = req.body.keywords[i];
+            isValidKeyword(keyword);
+            req.body.keywords[i] = keyword.trim();
         }
 
-        req.body.keywords = keywordsList;
+       
 
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
+        console.log(e)
+
         return res.status(400).send(e);
     } 
     try {
          //VALIDATION: description
-         if (req.body.description == null) throw "Error: Requires a 'description' input";
-         if (typeof req.body.description != 'string') throw "Error: 'description' must be a string";
-         if (req.body.description.trim() == '') throw "Error: 'description' cannot be an empty string";
-         req.body.description = req.body.description.trim();
+        isValidString(req.body.description, 5, 256);
+        req.body.description = req.body.description.trim();
 
-         if ( req.body.description.length < 5 ||  req.body.description.length > 256) throw "Error: 'description' does not meet length constriants";
     } catch(e) {
+        console.log(e)
+
         return res.status(400).send(e);
     }
     try {
         let newPost = await postData.createPost(
                                 req.session.user._id,
-                                req.file.path,
+                                '/'+req.file.path,
                                 req.body.clothingLinks,
                                 req.body.keywords,
                                 req.body.description
@@ -109,15 +103,18 @@ router
 });
 
 router
+.route("/createPost")
+.get(async(req, res) => {
+    return res.status(200).render('posts/newpost');
+  });
+
+router
 .route('/editPost/:postid')
 .get(async (req,res) => {
 
     try {
         //VALIDATION: postid
-        if (req.params.postid == null) throw "Error: Requires a 'postid' input";
-        if (typeof req.params.postid != 'string') throw "Error: 'postid' must be a string";
-        if (req.params.postid.trim() == '') throw "Error: 'postid' cannot be an empty string";
-        if(!ObjectId.isValid(req.params.postid)) throw "Error: 'postid' is not a valid ObjectId";
+        isValidId(req.params.postid)
         req.params.postid = req.params.postid.trim();
 
     } catch (e) {
@@ -129,21 +126,12 @@ router
 });
 
 router
-.route('/createPost')
-.get(async (req, res) => {
-    return res.status(200).render('posts/newpost');
-});
-
-router
 .route('/:postid')
 .get(async (req, res) => {
     /* Route will get an individual post given a postid */
     try {
         //VALIDATION: postid
-        if (req.params.postid == null) throw "Error: Requires a 'postid' input";
-        if (typeof req.params.postid != 'string') throw "Error: 'postid' must be a string";
-        if (req.params.postid.trim() == '') throw "Error: 'postid' cannot be an empty string";
-        if(!ObjectId.isValid(req.params.postid)) throw "Error: 'postid' is not a valid ObjectId";
+        isValidId(req.params.postid);
         req.params.postid = req.params.postid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
@@ -153,7 +141,8 @@ router
         let post = await postData.getPostById(req.params.postid);
         if (post==null) throw "Error: No Posts found with id: "+req.params.postid;;
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).json(post);
+        console.log(post.image);
+        return res.status(200).render('posts/singlepost', {username: post.username, image: post.image, clothingLinks: post.clothingLinks, description: post.description});
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(404).send(e);
@@ -164,10 +153,7 @@ router
     
     try {
         //VALIDATION: postid
-        if (req.params.postid == null) throw "Error: Requires a 'postid' input";
-        if (typeof req.params.postid != 'string') throw "Error: 'postid' must be a string";
-        if (req.params.postid.trim() == '') throw "Error: 'postid' cannot be an empty string";
-        if(!ObjectId.isValid(req.params.postid)) throw "Error: 'postid' is not a valid ObjectId";
+        isValidId(req.params.postid)
         req.params.postid = req.params.postid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
@@ -210,12 +196,8 @@ router
         //may be unnecessary: if (req.body.clothingLinks.length == 0) throw "Error: List of clothing links is empty"
         for (let i = 0; i < req.body.clothingLinks.length ; i++) {
             let link = req.body.clothingLinks[i];
-            if (typeof link != 'string') throw "Error: 'clothing link' must be a string";
-            if (link.trim() =='') throw "Error: 'clothing link' cannot be empty string";
+            isValidLink(link);
             req.body.clothingLinks[i] = link.trim();
-            
-            let split_link = link.split('.');
-            if (split_link[0] != 'https://' || split_link[split_link.length-1] != '.com') throw "Error: Invalid 'clothing link': "+link;
         }
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
@@ -229,9 +211,8 @@ router
         //may be unnecessary: if (req.body.keywords.length == 0) throw "Error: List of keywords is empty"
         for (let i = 0; i < req.body.keywords.length ; i++) {
             let keyword = req.body.keywords[i];
-            if (typeof keyword != 'string') throw "Error: 'keyword' must be a string";
-            if (keyword.trim() =='') throw "Error: 'keyword' cannot be empty string";
-            req.body.keywords[i] = link.trim();
+            isValidKeyword(keyword);
+            req.body.keywords[i] = keyword.trim();
         }
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
@@ -239,12 +220,8 @@ router
     } 
     try {
         //VALIDATION: description
-        if (req.body.description == null) throw "Error: Requires a 'description' input";
-        if (typeof req.body.description != 'string') throw "Error: 'description' must be a string";
-        if (req.body.description.trim() == '') throw "Error: 'description' cannot be an empty string";
+       isValidString(req.body.description, 0, 256);
         req.body.description = req.body.description.trim();
-
-        if (description.length < 0 || description.length > 256) throw "Error: 'description' does not meet length constriants";
    } catch(e) {
        return res.status(400).send(e);
    }
@@ -264,10 +241,7 @@ router
     /* will delete pre-existing post */
     try {
         //VALIDATION: postid
-        if (req.params.postid == null) throw "Error: Requires a 'postid' input";
-        if (typeof req.params.postid != 'string') throw "Error: 'postid' must be a string";
-        if (req.params.postid.trim() == '') throw "Error: 'postid' cannot be an empty string";
-        if(!ObjectId.isValid(req.params.postid)) throw "Error: 'postid' is not a valid ObjectId";
+        isValidId(req.params.postid);
         req.params.postid = req.params.postid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete

@@ -96,7 +96,7 @@ export const createPost = async (
 	if (helper.isNull(userObj)) {
 		throw "User does not exist";
 	}
-
+	
 	// Check if the keywords exist if they do not exist create them
 	const keywordCollection = await collection.keywords();
 	for (let i = 0; i < keywords.length; i++) {
@@ -128,16 +128,17 @@ export const createPost = async (
 	const username = userObj.username;
 
 	const postCollection = await posts();
+	console.log(postCollection)
 	const newPost = {
-		username,
-		image,
-		clothingLinks,
-		keywords,
-		likes: [],
-		comments: [],
-		createdAt: new Date(),
-		interactions: [],
-		description: description,
+		'username': username,
+		'image': image,
+		'clothingLinks': clothingLinks,
+		'keywords': keywords,
+		'likes': [],
+		'comments': [],
+		'createdAt': new Date(),
+		'interactions': [],
+		'description': description,
 	};
 
 	const insertInfo = await postCollection.insertOne(newPost);
@@ -145,12 +146,15 @@ export const createPost = async (
 		throw "Could not create post";
 	}
 
+	console.log(insertInfo)
+
 	const postObj = await postCollection.findOne({ _id: insertInfo.insertedId });
 	console.log(postObj);
+	 
 	// Add post to user's post
-	const userUpdate = await userCollection.updateOne(
-		{ _id: userId },
-		{ $addToSet: { posts: postObj } }
+	const userUpdate = await userCollection.findOneAndUpdate(
+		{ _id: new ObjectId(userId) },
+		{ $push: { posts: postObj } }
 	);
 
 	if (userUpdate.modifiedCount === 0) {

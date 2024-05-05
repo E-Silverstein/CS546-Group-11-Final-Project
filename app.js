@@ -6,32 +6,22 @@ import session from 'express-session';
 
 const app = express();
 
-const rewriteUnsupportedBrowserMethods = (req, res, next) => {
-  if (req.body && req.body._method) {
-    req.method = req.body._method;
-    delete req.body._method;
-  }
-  next();
-};
-
-app.use('/public', express.static('public'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(rewriteUnsupportedBrowserMethods);
-
-app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
-app.set("view engine", "handlebars");
-
 /*call req.session.authenticated to see if user is logged in*/
 app.use(session({
   name: 'AuthenticationState',
   secret: 'Our secret string',
   resave: false,
-  saveUninitialized: false,
-  authenticated: false /*logged in or not logged in */
+  saveUninitialized: false
+  //authenticated: false /*logged in or not logged in */
 }))
 
 app.use('/', function(req,res,next){
+    if (req.session.user === undefined) {
+        req.session.authenticated = false;
+    } else {
+        req.session.authenticated = true;
+    }
+
   console.log(req.method + " "+ req.originalUrl + " " + req.session.authenticated);
   if (req.path == "/") {
     req.method = 'GET';
@@ -76,6 +66,22 @@ app.use('/signup', function(req,res,next) {
 app.use('/home',function(req,res,next){
   next();
 });
+
+/*const rewriteUnsupportedBrowserMethods = (req, res, next) => {
+  if (req.body && req.body._method) {
+    req.method = req.body._method;
+    delete req.body._method;
+  }
+  next();
+};*/
+
+app.use('/public', express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+//app.use(rewriteUnsupportedBrowserMethods);
+
+app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
+app.set("view engine", "handlebars");
 
 configRoutes(app);
 
