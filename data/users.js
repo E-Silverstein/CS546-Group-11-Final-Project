@@ -124,6 +124,7 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 		posts: [],
 		bio: bio,
 		likedKeywords: [],
+		banned: false
 	};
 
 	const userCollection = await users();
