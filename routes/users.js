@@ -24,7 +24,7 @@ router
         return res.status(200).render('user', user)
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(500).send(e)
+        return res.status(500).render('error/error', {error: e});
     }
 })
 .patch(upload.single('profile-picture'), async (req, res) => {
@@ -34,7 +34,7 @@ router
         req.body.username = req.body.username.trim().toLowerCase();
 
     } catch(e) {
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         //VALIDATION: bios
@@ -42,13 +42,13 @@ router
         req.body.bio = req.body.bio.trim();
           
     } catch(e) {
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         //VALIDATION: image
         isValidImg(req.file);
     } catch(e) {
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         //VALIDATION: if user exists
@@ -58,7 +58,7 @@ router
         let user = await userCollection.find({ _id: req.session.userid});
         if (!user) throw "Error: user with id: "+ req.session.userid+" does not exist";
     } catch(e) {
-        res.status(404).send(e);
+        res.status(404).render('error/error', {error: e});
     }
     try {
         let updateRes = await userData.updateUser(
@@ -72,7 +72,7 @@ router
         return res.status(200).redirect(`/users/${req.params.userid}`);
 
     } catch(e) {
-        return res.status(500).send(e);
+        return res.status(500).render('error/error', {error: e});
     }
 })
 .delete(async (req, res) => {
@@ -85,7 +85,7 @@ router
         let user = await userCollection.find({ _id: req.session.userid});
         if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
     } catch(e) {
-        return res.status(404).send(e);
+        return res.status(404).render('error/error', {error: e});
     }
     try {
         let deleteRes = await userData.deleteUser(req.session.userid);
@@ -96,7 +96,7 @@ router
 
     } catch(e) {
         console.log(e);
-        return res.status(500).send(e);
+        return res.status(500).render('error/error', {error: e});
     }
 });
 

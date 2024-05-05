@@ -6,7 +6,7 @@ router
 .route('/')
     .get(async (req, res) => {
         // TODO: Change, when search page is made, to actual location
-        res.render("search");
+        return res.render("search");
     })
     .post(async (req, res) => {
         const { keywords } = req.body;
@@ -50,7 +50,7 @@ router
             renderData.users = null;
         }
         
-        res.render("search", renderData);
+        return res.render("search", renderData);
     });
 
 export default router;
