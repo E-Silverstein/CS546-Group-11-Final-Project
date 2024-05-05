@@ -112,7 +112,7 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 	const createdAt = new Date();
 
 	// TODO check valid profilePicURL
-	if isValidImg(profilePicURL) {
+	if (!isValidImg(profilePicURL)) {
 		throw "Invalid image URL";
 	}
 
