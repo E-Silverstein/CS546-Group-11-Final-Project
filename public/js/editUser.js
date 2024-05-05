@@ -10,6 +10,9 @@ $("#edit-user-form").on("submit", (event) => {
             "username": username,
             "bio": bio
         }
+        },
+        error: () => console.log("ERROR"),
+        success: (data) => console.log("SUCCESS")
     });
     
 });
