@@ -1,7 +1,7 @@
 /*
     ROUTES ARE NOT TESTED YET
 */
-import { postData } from "../data/index.js";
+import { postData, algoData } from "../data/index.js";
 import {posts} from "../config/mongoCollections.js";
 import express from 'express';
 import {ObjectId} from 'mongodb';
@@ -251,6 +251,20 @@ router
         return res.status(200).send("Delete Successful");
 
     } catch(e) {
+        return res.status(500).render('error/error', {error:e});
+    }
+});
+
+router
+.route('/getReccomendedPosts')
+.get(async (req, res) => {
+    /* Route will get all posts that are recommended for the user */
+    try {
+        let posts = await algoData.getRecommendedPosts(req.session.userid);
+        if (!posts) throw "Error: Could not get posts";
+        //TO-DO: change returns to render when frontend complete
+        return res.status(200).json(posts);
+    } catch (e) {
         return res.status(500).render('error/error', {error:e});
     }
 });
