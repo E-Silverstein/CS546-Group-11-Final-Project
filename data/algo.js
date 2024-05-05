@@ -1,9 +1,13 @@
 import { getAllPosts, getPostById } from "./posts.js";
+import { getUserById } from "./users.js";
+import { getCommentById } from "./comments.js";
 import { createEmptyInteraction } from "./posts.js";
+import { ObjectId } from "mongodb";
+import { posts, comments } from "../config/mongoCollections.js";
 
 const createInteractionMatrix = async () => {
 	const posts = await getAllPosts();
-	console.log("posts", posts);
+	// console.log("posts", posts);
 	const userPostMatrix = {};
 	posts.forEach((post) => {
 		const postId = post._id;
@@ -74,30 +78,46 @@ const createSimilarityMatrix = async (matrix) => {
 };
 
 const getTopMatches = async (userId, userSimilarities, matrix) => {
-	const similarUsers = Object.entries(userSimilarities[userId])
-		.sort(function (a, b) {
-			return b[1] - a[1];
-		})
-		.slice(0, 5); // Top 5 similar users
-	console.log("similarUsers", similarUsers);
 	const recommendedPosts = new Set();
-
+	let similarUsers = [];
+	if (userSimilarities && userSimilarities[userId]) {
+		similarUsers = Object.entries(userSimilarities[userId])
+			.sort(function (a, b) {
+				return b[1] - a[1];
+			})
+			.slice(0, 5); // Top 5 similar users
+	} else {
+		// get 5 random posts from the database when no similar users are found (cold start problem)
+		const allPosts = await posts();
+		const randomPosts = await allPosts
+			.aggregate([
+				{ $match: { "user._id": { $ne: userId } } },
+				{ $sample: { size: 5 } },
+			])
+			.toArray();
+		// console.log("randomPosts", randomPosts);
+		return randomPosts;
+	}
 	similarUsers.forEach(async function ([similarUserId]) {
-		const posts = matrix[similarUserId];
-		for (const postId in posts) {
+		const postSim = matrix[similarUserId];
+		for (const postId in postSim) {
 			if (!matrix[userId].hasOwnProperty(postId)) {
 				// Add unique posts not interacted with by the target user
 				recommendedPosts.add(postId);
 				// Create an empty interaction for the user to avoid recommending the same post again
 				await createEmptyInteraction(postId.toString(), userId.toString());
-
 			}
 		}
 	});
 
 	const reccomendedPostsIds = [...recommendedPosts];
 	const reccomendedPostsObjs = [];
+	// console.log("reccomendedPostsIds");
 	for (let i = 0; i < reccomendedPostsIds.length; i++) {
+		// console.log("start loop");
+		if (reccomendedPostsObjs.length >= 5) {
+			return reccomendedPostsObjs;
+		}
 		const post = await getPostById(reccomendedPostsIds[i]);
 		reccomendedPostsObjs.push(post);
 	}
@@ -111,23 +131,46 @@ const getTopMatches = async (userId, userSimilarities, matrix) => {
  * @returns {Array} The recommended posts for the user.
  */
 export const getRecommendedPosts = async (userId) => {
-
+	// console.log("userId", userId);
+	const userObj = await getUserById(userId);
+	if (!userObj) {
+		throw "User not found";
+	}
 	const matrix = await createInteractionMatrix();
-	// console.log('matrix', matrix);
 	const similarities = await createSimilarityMatrix(matrix);
-	// console.log('similarities', similarities);
 	const recommendedPosts = await getTopMatches(userId, similarities, matrix);
 
-	return recommendedPosts;
+	let out = [];
+	const commentCollection = await comments();
+	for (let i = 0; i < recommendedPosts.length; i++) {
+		let outputComments = [];
+		for (let j = 0; j < recommendedPosts[i].comments.length; j++) {
+			let comment = await commentCollection.findOne({
+				_id: new ObjectId(recommendedPosts[i].comments[j]),
+			});
+			let username = await getUserById(comment.user.toString());
+			outputComments.push({
+				user: username.username,
+				text: comment.text,
+			});
+		}
+		let outPost = {
+			username: recommendedPosts[i].username,
+			image: recommendedPosts[i].image,
+			clothingLinks: recommendedPosts[i].clothingLinks,
+			description: recommendedPosts[i].description,
+			likes: recommendedPosts[i].likes.length,
+			comments: outputComments,
+			keywords: recommendedPosts[i].keywords,
+		};
+		out.push(outPost);
+	}
+	console.log("out", out);
+	return out;
 };
 
-export const calculateEngagementScore = async (
-	userObj,
-	postObj,
-	links_clicked
-) => {
+export const calculateEngagementScore = async (userObj, postObj) => {
 	const postComments = postObj.comments;
-	console.log("postComments", userObj);
 	const userComments = [];
 	for (let i = 0; i < postComments.length; i++) {
 		const comment = postComments[i];
@@ -135,7 +178,7 @@ export const calculateEngagementScore = async (
 			userComments.push(comment);
 		}
 	}
-	
+
 	const postKeys = postObj.keywords;
 	const userLikedKeywords = userObj.keywords;
 	const matchingKeywords = [];
@@ -145,7 +188,7 @@ export const calculateEngagementScore = async (
 			matchingKeywords.push(key);
 		}
 	}
-	
+
 	const isFollowingUser = userObj.following.includes(postObj.user._id);
 	return (
 		matchingKeywords.length +
@@ -154,4 +197,46 @@ export const calculateEngagementScore = async (
 		userComments * 2
 	);
 };
-export default { getRecommendedPosts, calculateEngagementScore }
+
+export const getRandomPosts = async () => {
+	const allPosts = await posts();
+	const recommendedPosts = await allPosts
+		.aggregate([{ $sample: { size: 5 } }])
+		.toArray();
+	
+		let out = [];
+		const commentCollection = await comments();
+		for (let i = 0; i < recommendedPosts.length; i++) {
+			let outputComments = [];
+			for (let j = 0; j < recommendedPosts[i].comments.length; j++) {
+				let comment = await commentCollection.findOne({
+					_id: new ObjectId(recommendedPosts[i].comments[j]),
+				});
+				let username = await getUserById(comment.user.toString());
+				outputComments.push({
+					user: username.username,
+					text: comment.text,
+				});
+			}
+			console.log(recommendedPosts[i]._id.toString());
+			let outPost = {
+				id : recommendedPosts[i]._id.toString(),
+				username: recommendedPosts[i].username,
+				image: recommendedPosts[i].image,
+				clothingLinks: recommendedPosts[i].clothingLinks,
+				description: recommendedPosts[i].description,
+				likes: recommendedPosts[i].likes.length || 0,
+				comments: outputComments,
+				keywords: recommendedPosts[i].keywords,
+			};
+			out.push(outPost);
+		}
+		return out;
+	
+};
+
+export default {
+	getRecommendedPosts,
+	calculateEngagementScore,
+	getRandomPosts,
+};

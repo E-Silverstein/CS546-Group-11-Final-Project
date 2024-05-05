@@ -1,20 +1,7 @@
-<div>
-    {{#each post}}
-        <img src={{{image}}}>
-        <div>
-            <img src={{{profilePicture}}}>
-            <p>{{{username}}}</p>
-            <p>{{{likes}}}</p>
-        </div>
-        {{!-- gonna make it display top 3 comments later --}}
-        <p>{{{clothingLinks}}} </p>
-        <button>Add a comment</button>
-        <div>
-            {{#if userSession}}
-                {{{comments}}}
-            {{else}}
-                <p>Sign in to view comments</p>
-            {{/if}}
-        </div>
-    {{/each}}
-</div>
+<div id="content-before-loading"></div> 
+{{#if ifAuth}}
+    <script src="../public/js/home.js"></script>
+{{else}}
+    <script src="../public/js/notAuthHome.js"></script>
+{{/if}}
+
