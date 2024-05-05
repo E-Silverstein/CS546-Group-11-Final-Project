@@ -46,9 +46,12 @@ router
         if (!compare) throw "Username or password is invalid."; 
 
         req.session.user = user;
+        req.session.userid = user._id;
+        req.session.isAdmin = user.isAdmin;
         req.session.authenticated = true;
 
         console.log(req.session);
+
         return res.status(200).redirect('/home');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete

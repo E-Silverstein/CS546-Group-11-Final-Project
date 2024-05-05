@@ -14,17 +14,20 @@ router
 .route('/')
 .get(async (req, res) => {
     try {
-        // Route Will get all users 
-        let users = await userData.getAllUsers();
-        if (!users) throw "Error: Could not get users";
+        // Route Will get current user profile
+        if (!req.session.authenticated) throw "Error: user must be logged in";
+
+        let user = await userData.getUserById(req.session.userid);
+        if (!user) throw "Error: Could not get users";
 
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).json(users);
+        return res.status(200).render('user', user)
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(500).send(e)
     }
 })
+<<<<<<< Updated upstream
 
 router
 .route('/editUser/:userid')
@@ -62,17 +65,9 @@ router
         return res.status(404).send(e);
     }
 })
+=======
+>>>>>>> Stashed changes
 .patch(upload.single('profile-picture'), async (req, res) => {
-    console.log("Patch");
-    /*will update a pre-existing user with new data provided from an edit form*/
-    try {
-        //VALIDATION: userid
-        isValidId(req.params.userid);
-        req.params.userid = req.params.userid.trim();
-    } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
-    }
     try {
         //VALIDATION: username        
         isValidUsername(req.body.username);
@@ -97,25 +92,17 @@ router
     }
     try {
         //VALIDATION: if user exists
+        if (!req.session.authenticated) throw "Error: user must be logged in";
+
         const userCollection = await users();
-        let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
-        if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
+        let user = await userCollection.find({ _id: req.session.userid});
+        if (!user) throw "Error: user with id: "+ req.session.userid+" does not exist";
     } catch(e) {
         res.status(404).send(e);
     }
     try {
-        //VALIDATION: if user is current user
-        const userCollection = await users();
-        let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
-
-        //TO-DO: doesnt work, need middle wares
-        if (req.session.user.username != user.username) throw "Error: you are not this user";
-    } catch(e) {
-        return res.status(403).send(e);
-    }
-    try {
         let updateRes = await userData.updateUser(
-                                    req.params.userid,
+                                    req.session.userid,
                                     req.body.username,
                                     req.file.path,
                                     req.body.bio,
@@ -125,45 +112,26 @@ router
         return res.status(200).redirect(`/users/${req.params.userid}`);
 
     } catch(e) {
-        console.log(e)
-        
         return res.status(500).send(e);
     }
-
 })
 .delete(async (req, res) => {
      /* will delete pre-existing user */
-     console.log("delete")
-    try {
-        //VALIDATION: userid
-       isValidId(req.params.userid);
-        req.params.userid = req.params.userid.trim();
-    } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
-    }
     try {
         //VALIDATION: if user exists
+        if (!req.session.authenticated) throw "Error: user must be logged in";
+
         const userCollection = await users();
-        let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
+        let user = await userCollection.find({ _id: req.session.userid});
         if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
     } catch(e) {
         return res.status(404).send(e);
     }
     try {
-        //VALIDATION: if user is current user
-        const userCollection = await users();
-        let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
-
-        //TO-DO: initialize session state and compare users
-        //if (req.session.user.username != user.username) throw "Error: You do not own this user"
-    } catch(e) {
-        return res.status(403).send(e);
-    }
-    try {
-        let deleteRes = await userData.deleteUser(req.params.userid);
+        let deleteRes = await userData.deleteUser(req.session.userid);
         if (deleteRes==1) throw "Error: user could not be deleted";
 
+        req.session.destroy();
         return res.status(200).send("Delete Successful");
 
     } catch(e) {
@@ -172,5 +140,34 @@ router
     }
 });
 
+router
+.route('/editUser')
+.get(async (req, res) => {
+    if (!req.session.authenticated) throw "Error: user must be logged in";
+    return res.status(200).render('profiles/editprofile', {'userid': req.session.userid});
+})
+
+router
+.route('/:userid')
+.get(async (req, res) => {
+    /* Route will get an individual user given a userid */
+    try {
+        //VALIDATION: userid
+        isValidId(req.params.userid);
+        req.params.userid = req.params.userid.trim();
+    } catch (e) {
+        //TO-DO: change returns to render when frontend complete
+        return res.status(400).send(e);
+    }
+    try {
+        let user = await userData.getUserById(req.params.userid);
+        if (user == null) throw "Error: No users found with id: "+req.params.userid;;
+        //TO-DO: change returns to render when frontend complete
+        return res.status(200).render('profiles/user', user);
+    } catch (e) {
+        //TO-DO: change returns to render when frontend complete
+        return res.status(404).send(e);
+    }
+})
 
 export default router

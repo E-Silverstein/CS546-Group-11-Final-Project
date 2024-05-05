@@ -67,6 +67,7 @@ router
 
        
 
+        } 
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         console.log(e)
@@ -86,6 +87,9 @@ router
         let newPost = await postData.createPost(
                                 req.session.user._id,
                                 '/'.concat(req.file.path),
+=======
+                                req.session.userid,
+                                '../'+req.file.path,
                                 req.body.clothingLinks,
                                 req.body.keywords,
                                 req.body.description
@@ -99,53 +103,6 @@ router
         //TO-DO: change returns to render when frontend complete
         console.log(e)
         return res.status(500).send(e);
-    }
-});
-
-router
-.route("/createPost")
-.get(async(req, res) => {
-    return res.status(200).render('posts/newpost');
-  });
-
-router
-.route('/editPost/:postid')
-.get(async (req,res) => {
-
-    try {
-        //VALIDATION: postid
-        isValidId(req.params.postid)
-        req.params.postid = req.params.postid.trim();
-
-    } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
-    }
-    
-    return res.status(200).render('test_editPost', {postid: req.params.postid});
-});
-
-router
-.route('/:postid')
-.get(async (req, res) => {
-    /* Route will get an individual post given a postid */
-    try {
-        //VALIDATION: postid
-        isValidId(req.params.postid);
-        req.params.postid = req.params.postid.trim();
-    } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
-    }
-    try {
-        let post = await postData.getPostById(req.params.postid);
-        if (post==null) throw "Error: No Posts found with id: "+req.params.postid;;
-        //TO-DO: change returns to render when frontend complete
-        console.log(post.image);
-        return res.status(200).render('posts/singlepost', {username: post.username, image: post.image, clothingLinks: post.clothingLinks, description: post.description});
-    } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(404).send(e);
     }
 })
 .patch(upload.single('image'), async (req, res) => {
@@ -177,6 +134,7 @@ router
         if (req.session.user.username != post.user) throw "Error: You do not own this post"
 
     } catch(e) {
+        
         console.log(e);
         res.status(403).send(e);
     }
@@ -275,5 +233,52 @@ router
         return res.status(500).send(e);
     }
 });
+
+router
+.route("/createPost")
+.get(async(req, res) => {
+    return res.status(200).render('posts/newpost');
+  });
+
+router
+.route('/editPost/:postid')
+.get(async (req,res) => {
+
+    try {
+        //VALIDATION: postid
+        isValidId(req.params.postid)
+        req.params.postid = req.params.postid.trim();
+
+    } catch (e) {
+        //TO-DO: change returns to render when frontend complete
+        return res.status(400).send(e);
+    }
+    
+    return res.status(200).render('test_editPost', {postid: req.params.postid});
+});
+
+router
+.route('/:postid')
+.get(async (req, res) => {
+    /* Route will get an individual post given a postid */
+    try {
+        //VALIDATION: postid
+        isValidId(req.params.postid);
+        req.params.postid = req.params.postid.trim();
+    } catch (e) {
+        //TO-DO: change returns to render when frontend complete
+        return res.status(400).send(e);
+    }
+    try {
+        let post = await postData.getPostById(req.params.postid);
+        if (post==null) throw "Error: No Posts found with id: "+req.params.postid;;
+        //TO-DO: change returns to render when frontend complete
+        console.log(post.image);
+        return res.status(200).render('posts/singlepost', {username: post.username, image: post.image, clothingLinks: post.clothingLinks, description: post.description});
+    } catch (e) {
+        //TO-DO: change returns to render when frontend complete
+        return res.status(404).send(e);
+    }
+})
 
 export default router
