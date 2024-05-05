@@ -63,10 +63,6 @@ router
             console.log(keyword.length)
             isValidKeyword(keyword);
             req.body.keywords[i] = keyword.trim();
-        }
-
-       
-
         } 
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
@@ -85,11 +81,13 @@ router
     }
     try {
         let newPost = await postData.createPost(
+<<<<<<< Updated upstream
                                 req.session.user._id,
                                 '/'.concat(req.file.path),
 =======
                                 req.session.userid,
                                 '../'+req.file.path,
+>>>>>>> Stashed changes
                                 req.body.clothingLinks,
                                 req.body.keywords,
                                 req.body.description

@@ -27,46 +27,6 @@ router
         return res.status(500).send(e)
     }
 })
-<<<<<<< Updated upstream
-
-router
-.route('/editUser/:userid')
-.get(async (req, res) => {
-    try {
-        //VALIDATION: userid
-        isValidId(req.params.userid);
-        req.params.userid = req.params.userid.trim();
-    } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
-    }
-    return res.status(200).render('profiles/editprofile', {'userid': req.params.userid});
-})
-
-router
-.route('/:userid')
-.get(async (req, res) => {
-    /* Route will get an individual user given a userid */
-    try {
-        //VALIDATION: userid
-        isValidId(req.params.userid);
-        req.params.userid = req.params.userid.trim();
-    } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
-    }
-    try {
-        let user = await userData.getUserById(req.params.userid);
-        if (user == null) throw "Error: No users found with id: "+req.params.userid;;
-        //TO-DO: change returns to render when frontend complete
-        return res.status(200).render('profiles/user', user);
-    } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(404).send(e);
-    }
-})
-=======
->>>>>>> Stashed changes
 .patch(upload.single('profile-picture'), async (req, res) => {
     try {
         //VALIDATION: username        
