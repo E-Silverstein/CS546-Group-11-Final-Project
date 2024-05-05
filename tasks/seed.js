@@ -1086,7 +1086,8 @@ async function main() {
 	const like50 = await postData.addLike(user27._id.toString(), post20._id.toString());
 
 	//create report
-	const report = await reportData.createReport(post1._id,"ClassicChic","Profanity in the caption");
+	const report1 = await reportData.createReport(post1._id,"ClassicChic","Profanity in the caption");
+	const report2 = await reportData.createReport(post15._id,"MinimalistMaven","This outfit is really ugly");
 	console.log("Done seeding database");
 	await closeConnection();
 }
