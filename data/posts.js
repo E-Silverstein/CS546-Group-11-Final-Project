@@ -118,6 +118,9 @@ export const createPost = async (
 	}
 
 	// TODO Check that the image URLs are valid
+	if (!helper.isValidImg(image)) {
+		throw "Image URL is not valid";
+	}
 
 	// Check that clothing URL is valid using a regex
 	for (let i = 0; i < clothingLinks.length; i++) {
