@@ -105,11 +105,16 @@ router
         req.params.postid = req.params.postid.trim();
 
     } catch (e) {
-        //TO-DO: change returns to render when frontend complete
-        return res.status(400).render('error/error', {error:e});
+        return res.status(400).render('error/error', {isAuth: req.session.authenticated, error:e});
     }
     
-    return res.status(200).render('posts/editpost', {postid: req.params.postid});
+    try {
+        let currPost = await postData.getPostById(req.params.postid);
+        return res.status(200).render('posts/editpost', {isAuth: req.session.authenticated, desc: currPost.description, clothingLinks: currPost.clothingLinks, keywords: currPost.keywords});
+    } catch (e) {
+        return res.status(404).render('error/error', {isAuth: req.session.authenticated, error:e});
+    }
+
 });
 
 router
