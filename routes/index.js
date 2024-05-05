@@ -20,9 +20,9 @@ const constructorMethod = app => {
   
   //app.use("/reports", reportRoutes);
 
-  app.use("/newpost", async(req, res) => {
-    return res.status(200).render('posts/newpost');
-  });
+  // app.use("/newpost", async(req, res) => {
+  //   return res.status(200).render('posts/newpost');
+  // });
 
   app.use("*", (req, res) => {
     return res.status(404).json({ error: "Not found" });

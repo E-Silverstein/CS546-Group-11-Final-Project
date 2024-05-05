@@ -25,8 +25,7 @@ router
 })
 // upload.single('name') takes in the name of the INPUT ELEMENT that the file is being inputted to
 .post(upload.single('post-image'), async (req, res) => {
-    console.log('post');
-    console.log(req.session)
+    console.log("posts");
     try {
         //VALIDATION: image 
         /*multer will send file information to req.file
