@@ -30,6 +30,7 @@ router
     }
 })
 .patch(upload.single('profile-picture'), async (req, res) => {
+    console.log("Patch")
     try {
         //VALIDATION: username        
         isValidUsername(req.body.username);
