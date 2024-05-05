@@ -1,8 +1,8 @@
 <div>
-    <form action="/posts/{{postid}}" enctype="multipart/form-data">
+    <form enctype="multipart/form-data">
 
         <label for="post-image">Select Image</label>
-        <input type="file" accept="image/*" id="post-image" name="post-image">
+        <input type="file" accept=".png, .jpg, .jpeg" id="post-image" name="post-image">
         
         <label for="description">Description</label>
         <input type="text" id="description" name="description">

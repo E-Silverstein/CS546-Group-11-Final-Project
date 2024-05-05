@@ -35,7 +35,7 @@ router
         isValidPassword(req.body.password);
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
     try {
         
@@ -53,7 +53,7 @@ router
         return res.status(200).redirect('/home');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error',{error:e});
     }
 });
 

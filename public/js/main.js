@@ -4,9 +4,11 @@
 $(document).ready(function() {
     const currPath = window.location.pathname;
     let scriptName = currPath.split("/");
-    scriptName = scriptName[1];
-    if (scriptName === "/") {
-        scriptName = "home";
+    if(scriptName.length > 3 && (scriptName[1] === "posts" || scriptName[1] === "users")) {
+        scriptName = scriptName[2];
+    } else {
+        scriptName = scriptName[1];
     }
+
     $("<script>").attr("src", "/public/js/" + scriptName + ".js").appendTo("head");
 });
