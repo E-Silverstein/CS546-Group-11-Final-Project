@@ -4,6 +4,7 @@ $("form").on("submit", (event) => {
     let keywords = $(keywords);
     let currPath = window.location.pathname;
     let postId = currPath.substring(currPath.lastIndexOf("/") + 1);
+    event.preventDefault();
     
     $.ajax({
         type: "PATCH",

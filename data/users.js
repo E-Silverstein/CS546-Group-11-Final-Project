@@ -129,6 +129,7 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 		bio: bio,
 		likedKeywords: [],
 		isAdmin: false,
+		banned: false
 	};
 
 	const userCollection = await users();
@@ -513,6 +514,118 @@ export const updateUser = async (
 		throw "Error: could not find user";
 	}
 	return updatedUser;
+};
+
+export const createAdmin = async (username, password, profilePicURL, age, bio) => {
+	if (areAllValuesNotNull([username, password, profilePicURL, age, bio])) {
+		throw "All values must be provided";
+	}
+	
+	if (!areAllValuesOfType([username, password, profilePicURL, bio], "string")) {
+		throw "All values must be of type string";
+	}
+
+	username = username.trim();
+	password = password.trim();
+	profilePicURL = profilePicURL.trim();
+	bio = bio.trim();
+
+	if (!isOfType(age, "number")) {
+		throw "Age must be of type number";
+	}
+
+	if (age < 13) {
+		throw "User must be at least 13 years old in order to use this application";
+	}
+
+	// Validate the username constraints
+	if (username.length < 5 || username.length > 20) {
+		throw "Username must be between 5 and 20 characters long";
+	}
+
+	// Check if the username contains spaces
+	if (username.match(" ") !== null) {
+		throw "Username cannot contain spaces";
+	}
+
+	// Make sure the username is only contains alphanumeric characters
+	if (!username.match(/^[0-9a-zA-Z]+$/)) {
+		throw "Username can only contain alphanumeric characters";
+	}
+
+	// Validate the password constraints
+	if (password.length < 8 || password.length > 32) {
+		throw "Password must be at least 8 characters long";
+	}
+
+	if (password.match(/[0-9]/g) === null) {
+		throw "Password must contain at least one number";
+	}
+
+	if (password.match(/[A-Z]/g) === null) {
+		throw "Password must contain at least one uppercase character";
+	}
+
+	if (password.match(/[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g) === null) {
+		throw "Password must contain at least one special character";
+	}
+
+	// Check if the password contains spaces
+	if (password.match(" ") !== null) {
+		throw "Password cannot contain spaces";
+	}
+
+	//TODO: Fix alphanumeric for password
+  // Make sure the password is only contains alphanumeric characters
+	// if (!password.match(/^[0-9a-zA-Z]+$/)) {
+	// 	throw "Password can only contain alphanumeric characters";
+	// }
+
+	// Hash the password
+	password = await bcrypt.hash(password, 12);
+
+	// Check if a user with a matching username already exists
+	const searchUserCollection = await users();
+	const searchUser = await searchUserCollection.findOne({ username: username });
+	if (!isNull(searchUser)) {
+		throw "User with that username already exists";
+	}
+
+	const createdAt = new Date();
+
+	// TODO check valid profilePicURL
+	// if (!isValidImg(profilePicURL)) {
+	// 	throw "Invalid image URL";
+	// }
+
+	const newUser = {
+		username: username,
+		password: password,
+		profilePicture: profilePicURL,
+		age: age,
+		createdAt: createdAt,
+		followers: [],
+		following: [],
+		posts: [],
+		bio: bio,
+		likedKeywords: [],
+		isAdmin: true,
+		banned: false
+	};
+
+	const userCollection = await users();
+	const insertInfo = await userCollection.insertOne(newUser);
+	if (insertInfo.insertedCount === 0) {
+		throw "Could not create user";
+	}
+
+	const insertedUser = await userCollection.findOne({
+		_id: insertInfo.insertedId,
+	});
+
+	await userCollection.createIndex({ username: "text" });
+
+	return insertedUser;
 };
 
 export default { createUser, getUserById, deleteUser, getUserByUsername, getAllUsers, setAdminStatus, addFollower, removeFollower, updateUser };
