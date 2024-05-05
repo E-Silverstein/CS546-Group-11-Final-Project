@@ -39,7 +39,7 @@ router
         //TO-DO: change returns to render when frontend complete
         return res.status(400).send(e);
     }
-    return res.status(200).render('test_editUser', {'userid': req.params.userid});
+    return res.status(200).render('test/test_editUser', {'userid': req.params.userid});
 })
 
 router
@@ -89,7 +89,7 @@ router
 
         req.body.username =  req.body.username.trim().toLowerCase();
 
-        if (req.body.username.length < 5 || req.body.username.length > 20) throw "Error: 'username' does not meet length constraints (5-20 characters)";
+        if (req.body.username.length < 5 || req.body.username.length > 32) throw "Error: 'username' does not meet length constraints (5-20 characters)";
         if (req.body.username.match(' ') != null) throw "Error: 'username' cannot contain spaces";
           
     } catch(e) {
@@ -103,7 +103,7 @@ router
 
         req.body.bio =  req.body.bio.trim().toLowerCase();
 
-        if (req.body.bio.length < 0 || req.body.bio.length > 255) throw "Error: 'username' does not meet length constraints (5-20 characters)";
+        if (req.body.bio.length < 0 || req.body.bio.length > 256) throw "Error: 'username' does not meet length constraints (5-20 characters)";
         if (req.body.bio.match(' ') != null) throw "Error: 'username' cannot contain spaces";
           
     } catch(e) {
@@ -131,7 +131,7 @@ router
         let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
 
         //TO-DO: doesnt work, need middle wares
-        //if (req.session.user.username != user.username) throw "Error: you are not this user";
+        if (req.session.user.username != user.username) throw "Error: you are not this user";
     } catch(e) {
         return res.status(403).send(e);
     }

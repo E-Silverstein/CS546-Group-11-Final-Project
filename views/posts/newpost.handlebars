@@ -1,13 +1,21 @@
 <div>
+<<<<<<< Updated upstream
+    <form method="post" action="/posts">
+        <label for="post-image">Select Image</label>
+        <input type="file" accept="image/*" id="post-image" name="post-image">
+=======
     <form method="post" action="/posts/{{postid}}">
-        <label for="postImage">Select Image</label>
-        <input type="image" id="postImage" name="postImage">
+
+        <label for="post-image">Select Image</label>
+        <input type="file" accept="image/*" id="post-image" name="post-image">
+        
+>>>>>>> Stashed changes
         <label for="description">Description</label>
         <input type="text" id="description" name="description">
         <label for="clothingLinks">Clothing Links</label>
         <input type="text" id="clothingLinks" name="clothingLinks">
         <label for="keywords">Keywords</label>
         <input type="text" id="keywords" name="keywords">
-        <button type="submit"></button>
+        <button type="submit">Create Post</button>
     </form>
 </div>
