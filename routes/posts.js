@@ -148,7 +148,7 @@ router
         return res.status(404).send(e);
     }
 })
-.patch(upload.single('image'), async (req, res) => {
+.patch(upload.single('post-image'), async (req, res) => {
     /*will update a pre-existing post with new data provided from an edit form*/
     
     try {
