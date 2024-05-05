@@ -17,10 +17,10 @@ router
         //TODO will change to render admin page when html is ready
         //page should display reports for admin to review, with a button to delete
         //and a button to ban user
-        return res.status(200).render('profiles/admin');
+        return res.status(200).render('profiles/admin', {isAuth: req.session.authenticated});
     }catch(e)
     {
-        return res.status(500).send(e);
+        return res.status(500).render('error/error',{error: e, isAuth: req.session.authenticated});
     }
 });
 
@@ -37,7 +37,7 @@ router
         if(!ObjectId.isValid(req.params.postid)) throw "Error: 'postid' is not a valid ObjectId";
         req.params.postid = req.params.postid.trim();
     }catch(e){
-        return res.status(400).render('error/error',{error: e});
+        return res.status(400).render('error/error',{error: e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: if post exists
@@ -45,7 +45,7 @@ router
         let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
         if (!post) throw "Error: Post with id: "+req.params.postid+" does not exist";
     } catch (e) {
-        return res.status(400).render('error/error',{error: e});
+        return res.status(400).render('error/error',{error: e, isAuth: req.session.authenticated});
     }
     try {
         //deleting the post
@@ -53,7 +53,7 @@ router
         if (deleteRes==1) throw "Error: Post could not be deleted";
         return res.status(200).send("Delete Successful");
     } catch (e) {
-        return res.status(500).render('error/error',{error: e});
+        return res.status(500).render('error/error',{error: e, isAuth: req.session.authenticated});
     }
 });
 
@@ -70,7 +70,7 @@ router
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).render('error/error',{error: e});
+        return res.status(400).render('error/error',{error: e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: if user exists
@@ -78,7 +78,7 @@ router
         let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
         if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
     } catch(e) {
-        return res.status(404).render('error/error',{error: e});
+        return res.status(404).render('error/error',{error: e, isAuth: req.session.authenticated});
     }
     try{
         //deletes the user
@@ -86,7 +86,7 @@ router
         if (deleteRes==1) throw "Error: Post could not be deleted";
         return res.status(200).send("Delete Successful");
     }catch(e){
-        return res.status(500).render('error/error',{error: e});
+        return res.status(500).render('error/error',{error: e, isAuth: req.session.authenticated});
     }
 });
 
@@ -99,7 +99,7 @@ router
         let report = await reportsCollection.find({ _id: new ObjectId(req.params.reportid)});
         if (!report) throw "Error: user with id: "+req.params.reportid+" does not exist";
     } catch(e) {
-        return res.status(404).render('error/error',{error: e});
+        return res.status(404).render('error/error',{error: e, isAuth: req.session.authenticated});
     }
     try{
         //deletes the report
@@ -107,7 +107,7 @@ router
         if (deleteReport==1) throw "Error: Post could not be deleted";
         return res.status(200).send("Delete Successful");
     }catch(e){
-        return res.status(500).render('error/error',{error: e});
+        return res.status(500).render('error/error',{error: e, isAuth: req.session.authenticated});
     }
 });
 

@@ -10,7 +10,7 @@ router
         }
         return res.render('home/home', {isAuth: false});
     } catch(e){
-        return res.render('error/error', {error: e});
+        return res.render('error/error', {error: e, isAuth: req.session.authenticated});
     }
     
 });

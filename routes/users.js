@@ -16,17 +16,17 @@ router
     try {
         // Route Will get current user profile
         if (!req.session.authenticated){
-            return res.redirect('/login');
+            return res.status(200).redirect('/login');
         }
 
         let user = await userData.getUserById(req.session.userid);
         if (!user) throw "Error: Could not get users";
 
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).render('profiles/user', {userid:req.session.userid, username: user.username, bio: user.bio, isAuth: true, isUser: true});
+        return res.status(200).render('profiles/user', {userid:req.session.userid, username: user.username, bio: user.bio, isAuth: req.session.authenticated, isUser: true});
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(500).render('error/error', {error: e});
+        return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
 })
 .patch(upload.single('profile-picture'), async (req, res) => {
@@ -36,7 +36,7 @@ router
         req.body.username = req.body.username.trim().toLowerCase();
 
     } catch(e) {
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: bios
@@ -44,13 +44,13 @@ router
         req.body.bio = req.body.bio.trim();
           
     } catch(e) {
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: image
         isValidImg(req.file);
     } catch(e) {
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: if user exists
@@ -60,7 +60,7 @@ router
         let user = await userCollection.find({ _id: req.session.userid});
         if (!user) throw "Error: user with id: "+ req.session.userid+" does not exist";
     } catch(e) {
-        res.status(404).render('error/error', {error: e});
+        res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
     try {
         let updateRes = await userData.updateUser(
@@ -74,7 +74,7 @@ router
         return res.status(200).redirect(`/users/${req.params.userid}`);
 
     } catch(e) {
-        return res.status(500).render('error/error', {error: e});
+        return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
 })
 .delete(async (req, res) => {
@@ -87,7 +87,7 @@ router
         let user = await userCollection.find({ _id: req.session.userid});
         if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
     } catch(e) {
-        return res.status(404).render('error/error', {error: e});
+        return res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
     try {
         let deleteRes = await userData.deleteUser(req.session.userid);
@@ -98,7 +98,7 @@ router
 
     } catch(e) {
         console.log(e);
-        return res.status(500).render('error/error', {error: e});
+        return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
 });
 
@@ -119,7 +119,7 @@ router
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
     try {
         let user = await userData.getUserById(req.params.userid);
@@ -134,7 +134,7 @@ router
         return res.redirect('/login');
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(404).render('error/error', {error: e});
+        return res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
 })
 
