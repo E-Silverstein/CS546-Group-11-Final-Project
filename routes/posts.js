@@ -25,11 +25,6 @@ router
 })
 // upload.single('name') takes in the name of the INPUT ELEMENT that the file is being inputted to
 .post(upload.single('post-image'), async (req, res) => {
-<<<<<<< Updated upstream
-    console.log("posts");
-=======
-   console.log(req.file);
->>>>>>> Stashed changes
     try {
         //VALIDATION: image 
         /*multer will send file information to req.file
@@ -47,17 +42,17 @@ router
     try {
         //VALIDATION: clothingLinks
         if (!req.body.clothingLinks) throw "Error: Requires a list of 'clothing link' input";
-        if (typeof req.body.clothingLinks != 'string' ) throw "Error: 'clothing link' must be a string";
-        if (req.body.clothingLinks.trim() == '') throw "Error: 'clothing link' cannot be an empty an be a string";
-
-        let linksList = (req.body.clothingLinks).split(', ');
-
-        for (let i = 0; i < linksList.length ; i++) {
-            let link = linksList[i];
+        //may be unnecessary: if (req.body.clothingLinks.length == 0) throw "Error: List of clothing links is empty"
+        for (let i = 0; i < req.body.clothingLinks.length ; i++) {
+            let link = req.body.clothingLinks[i];
+            if (typeof link != 'string') throw "Error: 'clothing link' must be a string";
+            if (link.trim() =='') throw "Error: 'clothing link' cannot be empty string";
+            req.body.clothingLinks[i] = link.trim();
+            
             if (link.match(/^https?:\/\/(?:www\.)?\w{0,64}\.(?:com|co\.\w{2})/) == null) throw "Error: Invalid link";
         }
 
-    } catch(e) {
+     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(400).send(e);
     } 
@@ -129,12 +124,6 @@ router
     }
     
     return res.status(200).render('test_editPost', {postid: req.params.postid});
-});
-
-router
-.route('/createPost')
-.get(async (req, res) => {
-    return res.status(200).render('posts/newpost');
 });
 
 router
@@ -217,8 +206,7 @@ router
             if (link.trim() =='') throw "Error: 'clothing link' cannot be empty string";
             req.body.clothingLinks[i] = link.trim();
             
-            let split_link = link.split('.');
-            if (split_link[0] != 'https://' || split_link[split_link.length-1] != '.com') throw "Error: Invalid 'clothing link': "+link;
+            if (link.match(/^https?:\/\/(?:www\.)?\w{0,64}\.(?:com|co\.\w{2})/) == null) throw "Error: Invalid link";
         }
     } catch(e) {
         //TO-DO: change returns to render when frontend complete

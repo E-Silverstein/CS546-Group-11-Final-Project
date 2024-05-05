@@ -1,13 +1,16 @@
 <div>
-    <form method="post" action="/posts/{{postid}}">
+    <form class="flex flex-col space-y-2 w-1/2 mx-auto" method="post" enctype="multipart/form-data" action="/posts/{{postid}}">
 
         <label for="post-image">Select Image</label>
         <input type="file" accept="image/*" id="post-image" name="post-image">
         
         <label for="description">Description</label>
         <input type="text" id="description" name="description">
-        <label for="clothingLinks">Clothing Links</label>
-        <input type="text" id="clothingLinks" name="clothingLinks">
+        <span id="clothingLinksContainer" class="flex flex-col space-y-1 w-full">
+            <label for="clothingLinks[]">Clothing Links</label>
+            <button class="bg-icon500 text-icon100 hover:bg-icon900 rounded-lg" type="button" id="addClothingLink">+</button>
+            <input type="text" id="clothingLinks" name="clothingLinks[]" placeholder="Clothing Links">
+        </span>
         <label for="keywords">Keywords</label>
         <input type="text" id="keywords" name="keywords">
         <button type="submit">Create Post</button>

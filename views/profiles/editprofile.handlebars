@@ -1,6 +1,6 @@
 <div class="flex justify-center pt-10 w-full">
     <div>
-        <form action="/users/{{userid}}" id="edit-user-form" class="grid grid-cols-1 gap-1 w-full">
+        <form action="/users/{{userid}}" id="edit-user-form" enctype="multipart/form-data" class="grid grid-cols-1 gap-1 w-full">
 
             <label for="profile-picture"> Profile Picture</label>
             <input type="file" id="profile-picture" name="profile-picture" class="h-10 w-full rounded-md">
