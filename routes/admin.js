@@ -14,10 +14,9 @@ router
     try{
         let reports = await reportData.getAllReports(); //create get reports function in reports data
         if(!reports) throw "Error: Could not retrieve reports";
-        //TODO will change to render admin page when html is ready
         //page should display reports for admin to review, with a button to delete
         //and a button to ban user
-        return res.status(200).render('profiles/admin');
+        return res.status(200).render('profiles/admin', {username: req.session.user});
     }catch(e)
     {
         return res.status(500).send(e);
@@ -52,6 +51,7 @@ router
         let deleteRes = await postData.deletePost(req.params.postid);
         if (deleteRes==1) throw "Error: Post could not be deleted";
         return res.status(200).send("Delete Successful");
+        //return res.status(200).send("profiles/admin");
     } catch (e) {
         return res.status(500).render('error/error',{error: e});
     }
@@ -85,6 +85,7 @@ router
         let deleteRes = await userData.deleteUser(req.params.userid);
         if (deleteRes==1) throw "Error: Post could not be deleted";
         return res.status(200).send("Delete Successful");
+        //return res.status(200).render("profiles/admin");
     }catch(e){
         return res.status(500).render('error/error',{error: e});
     }
@@ -105,7 +106,7 @@ router
         //deletes the report
         let deleteReport = await reportData.deleteReport(req.params.reportid);
         if (deleteReport==1) throw "Error: Post could not be deleted";
-        return res.status(200).send("Delete Successful");
+        return res.status(200).render("profiles/admin");
     }catch(e){
         return res.status(500).render('error/error',{error: e});
     }
