@@ -1,25 +1,23 @@
 import { Router } from "express";
-import { algoData, postData } from "../data/index.js";
+import { algoData } from "../data/index.js";
 let router = Router();
 
 router
 .route("/")
-.get(async (req, res) => {
+.get((req, res) => {
     try{
-        const posts =await algoData.getRandomPosts();
-        if (!posts) throw "Error: Could not get posts";
         if(req.session.authenticated){
-            return res.render('home/home', {posts:posts, isAuth: true, userid: req.session.userid});
+            return res.render('home/home', {isAuth: true, userid: req.session.userid});
         }
-        return res.render('home/home', {posts:posts,isAuth: false});
+        return res.render('home/home', {isAuth: false});
     } catch(e){
-        return res.render('error/error', {error: e, isAuth: req.session.authenticated});
+        return res.render('error/error', {error: e});
     }
     
 });
 
 router
-.route('/getRecommendedPosts')
+.route('/getRecomendedPosts')
 .get(async (req, res) => {
     /* Route will get all posts that are recommended for the user */
     try {
@@ -30,9 +28,9 @@ router
         if (!posts) throw "Error: Could not get posts";
         
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).render('home/home',{posts:posts,isAuth: req.session.authenticated});
+        return res.status(200).json(posts);
     } catch (e) {
-        return res.status(500).render('error/error', {error:e,isAuth: req.session.authenticated});
+        return res.status(500).render('error/error', {error:e});
     }
 });
 
@@ -43,11 +41,10 @@ router
     try {
         const posts = await algoData.getRandomPosts();
         if (!posts) throw "Error: Could not get posts";
-        return res.status(200).render('home/home',{posts:posts,isAuth: req.session.authenticated});
+        return res.status(200).json(posts);
     } catch (e) {
-        return res.status(500).render('error/error', {error:e,isAuth: req.session.authenticated});
+        return res.status(500).render('error/error', {error:e});
     }
 });
-
 
 export default router;

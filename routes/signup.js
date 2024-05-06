@@ -67,7 +67,7 @@ router
                                 req.body.password,
                                 "/uploads/default-pfp.png",
                                 age,
-                                "bio:"     
+                                ""     
                             );
                                 
         if (!user) throw "Error: user could not be created";

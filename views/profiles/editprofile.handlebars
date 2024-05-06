@@ -1,15 +1,15 @@
 <div class="flex justify-center pt-10 w-full">
     <div>
-        <form id="edit-user-form" enctype="multipart/form-data" class="grid grid-cols-1 gap-1 w-full">
+        <form id="edit-user-form" method="post" enctype="multipart/form-data" class="grid grid-cols-1 gap-1 w-full">
 
             <label for="profile-picture">Profile Picture</label>
             <input type="file" id="profile-picture" accept=".png, .jpg, .jpeg" name="profile-picture" class="h-10 w-full rounded-md">
 
             <label for="username">Username</label>
-            <input type="text" id="username" name="username" value={{username}} class="h-10 w-full rounded-md p-2">
+            <input type="text" id="username" name="username" class="h-10 w-full rounded-md p-2" value={{username}}>
 
             <label for="bio">Bio</label>
-            <input type="text" id="bio" name="bio" value={{bio}} class="h-10 w-full rounded-md p-2">
+            <input type="text" id="bio" name="bio" class="h-10 w-full rounded-md p-2" value="{{bio}}">
 
             <button type="submit" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2">Save Changes</button>
 
@@ -19,3 +19,5 @@
         </form>
     </div>
 </div>
+
+<script src="/public/js/editUser.js"></script>

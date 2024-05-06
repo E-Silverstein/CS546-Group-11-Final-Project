@@ -135,10 +135,11 @@ router
     }
     try {
         let post = await postData.getPostById(req.params.postid);
+        let userid = req.session.userid;
         if (post==null) throw "Error: No Posts found with id: "+req.params.postid;;
         //TO-DO: change returns to render when frontend complete
         console.log(post.image);
-        return res.status(200).render('posts/singlepost', {username: post.username, image: post.image, clothingLinks: post.clothingLinks, description: post.description,keywords:post.keywords,likes: post.likes.length, comments:post.comments, isAuth: req.session.authenticated});
+        return res.status(200).render('posts/singlepost', {id: post._id,userid: userid,username: post.username, image: post.image, clothingLinks: post.clothingLinks, description: post.description,keywords:post.keywords,likes: post.likes.length, comments:post.comments, isAuth: req.session.authenticated});
     } catch (e) {
         return res.status(404).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
@@ -275,12 +276,34 @@ router
         if (!req.session.userid) throw "Error: User ID not found";
         if (!req.params.postId) throw "Error: Post ID not found";
         const postId = req.params.postId;
+        try {
         const like = await postData.addLike(req.session.userid, postId);
         console.log(like);
         if (!like) throw "Error: Could not add like";
         return res.status(200).json(like);
+        } catch (e) {
+            console.log(e);
+        }
     } catch (e) {
         console.log(e); 
+        return res.status(500).render('error/error', {error:e,isAuth: req.session.authenticated});
+    }
+});
+
+// Route to remove like from a post
+router
+.route('/removeLike/:postId')
+.patch(async (req, res) => {
+    try {
+        if (!req.session.authenticated) throw "Error: User is not authenticated";
+        if (!req.session.userid) throw "Error: User ID not found";
+        if (!req.params.postId) throw "Error: Post ID not found";
+        const postId = req.params.postId;
+        const like = await postData.removeLike(req.session.userid, postId);
+        console.log(like);
+        if (!like) throw "Error: Could not remove like";
+        return res.status(200).json(like);
+    } catch (e) {
         return res.status(500).render('error/error', {error:e,isAuth: req.session.authenticated});
     }
 });

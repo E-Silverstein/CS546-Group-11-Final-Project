@@ -1,7 +1,8 @@
-let before_loading = document.getElementById("content-before-loading");
-let c = 0;
+var before_loading = document.getElementById("content-before-loading");
+var c = 0;
+
 function getInformation() {
-	fetch(`/home/getRecommendedPosts`)
+    fetch(`/home/getRecomendedPosts`)
     .then((response) => response.json())
     .then((data) => {
         data.forEach((cardName) => {
@@ -12,15 +13,21 @@ function getInformation() {
                 <img src="${cardName.image}" alt="Post Image" class="w-full h-auto mb-3">
                 <p class="mb-1">${cardName.description}</p>
                 <p class="text-sm text-gray-600 mb-2">Clothing Links: ${cardName.clothingLinks}</p>
-                <p class="text-sm text-gray-600 mb-4">Likes: ${cardName.likes}</p>
+                <button class="like-button" data-id="${cardName.id}" data-userid="${cardName.userid}">Likes: ${cardName.likes}</button>
+                <br>
             `;
 
-            new_div.addEventListener('click', () => {
-                window.location.href = `/posts/${cardName.id}`;
+            const button = document.createElement("button");
+            button.textContent = "View Post";
+            button.className = "view-post-button";
+            button.addEventListener("click", () => {
+                const postId = cardName.id;
+                window.location.href = `/posts/${postId}`;
             });
+            new_div.appendChild(button);
 
-            // Keywords
-            if (cardName.keywords.length > 0) {
+             // Keywords
+             if (cardName.keywords.length > 0) {
                 const keywords_div = document.createElement("div");
                 keywords_div.className = "mb-4";
                 keywords_div.innerHTML = "<h4 class='font-semibold mb-2'>Keywords:</h4>";
@@ -41,7 +48,7 @@ function getInformation() {
                     const comment_div = document.createElement("div");
                     comment_div.className = "border-t border-gray-200 pt-2 mt-2";
                     comment_div.innerHTML = `
-                        <p class="text-sm text-gray-700 font-bold">User: ${comment.user}</p>
+                        <p class="text-sm text-gray-700"><strong>User:</strong> ${comment.user}</p>
                         <p class="text-sm text-gray-700">${comment.text}</p>
                     `;
                     new_div.appendChild(comment_div);
@@ -60,13 +67,49 @@ function getInformation() {
     .catch((error) => console.error("Error:", error));
 }
 
-window.addEventListener("scroll", () => {
-if (
-    document.documentElement.scrollTop +
-    document.documentElement.clientHeight >=
-    document.documentElement.scrollHeight
-) {
-    getInformation();
-}
+before_loading.addEventListener('click', function(event) {
+    if (event.target.classList.contains('like-button')) {
+        const button = event.target;
+        const postId = button.getAttribute('data-id');
+        const userId = button.getAttribute('data-userid');
+
+        fetch(`/posts/addLike/${postId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userid: userId }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            button.textContent = `Dislike: ${data.likes.length}`;
+            button.classList.replace('like-button', 'dislike-button');
+        })
+        .catch((error) => console.error("Error:", error));
+    } else if (event.target.classList.contains('dislike-button')) {
+        const button = event.target;
+        const postId = button.getAttribute('data-id');
+
+        fetch(`/posts/removeLike/${postId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userid: button.getAttribute('data-userid') }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            button.textContent = `Likes: ${data.likes.length}`;
+            button.classList.replace('dislike-button', 'like-button');
+        })
+        .catch((error) => console.error("Error:", error));
+    }
 });
+
+window.addEventListener("scroll", () => {
+    if (document.documentElement.scrollTop + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+        getInformation();
+    }
+});
+
 getInformation();
