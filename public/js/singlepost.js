@@ -2,31 +2,13 @@ document.addEventListener('DOMContentLoaded', function() {
     var container = document.querySelector('.mt-24');
 
     container.addEventListener('click', function(event) {
-        if (event.target.classList.contains('like-button')) {
-            
+        if (event.target.classList.contains('like-button') || event.target.classList.contains('dislike-button')) {
             const button = event.target;
-            const postId = button.getAttribute('data-id');
-            const userId = button.getAttribute('data-userid');
-            console.log("userId:", userId);
-            console.log("postId:", postId);
-            fetch(`/posts/addLike/${postId}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ userid: userId }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                button.textContent = `Dislike: ${data.likes.length}`;
-                button.classList.replace('like-button', 'dislike-button');
-            })
-            .catch(error => console.error("Error:", error));
-        } else if (event.target.classList.contains('dislike-button')) {
-            const button = event.target;
-            const postId = button.getAttribute('data-id');
+            const isLiking = button.classList.contains('like-button');
+            const actionUrl = isLiking ? `/posts/addLike/${button.getAttribute('data-id')}` : `/posts/removeLike/${button.getAttribute('data-id')}`;
+            const methodAction = isLiking ? "Like" : "Dislike";
 
-            fetch(`/posts/removeLike/${postId}`, {
+            fetch(actionUrl, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -35,8 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                button.textContent = `Like: ${data.likes.length}`;
-                button.classList.replace('dislike-button', 'like-button');
+                button.textContent = `${methodAction === "Like" ? "Dislike" : "Like"}: ${data.likes.length}`;
+                button.classList.toggle('like-button', methodAction !== "Like");
+                button.classList.toggle('dislike-button', methodAction === "Like");
             })
             .catch(error => console.error("Error:", error));
         }

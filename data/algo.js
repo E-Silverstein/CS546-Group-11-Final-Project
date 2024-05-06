@@ -154,6 +154,7 @@ export const getRecommendedPosts = async (userId) => {
 				text: comment.text,
 			});
 		}
+		
 		let outPost = {
 			id: recommendedPosts[i]._id.toString(),
 			username: recommendedPosts[i].username,
