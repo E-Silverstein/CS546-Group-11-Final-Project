@@ -92,7 +92,7 @@ export const getCommentById = async (id) => {
 	}
 
 	const commentCollection = await comments();
-	const commentObj = await commentCollection.findOne({ _id: id });
+	const commentObj = await commentCollection.findOne({ _id: new ObjectId(id) });
 	if (helper.isNull(commentObj)) {
 		throw "Comment does not exist";
 	}
