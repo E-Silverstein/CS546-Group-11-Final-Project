@@ -20,6 +20,7 @@
                     icon100: "#E1E0DE", //light grey
                     icon200: "#A4AEA3", //light green
                     icon500: "#567765", //dark green
+                    icon600: "#787777", //medium grey
                     icon800: "#444849", //dark grey
                     icon900: "#33322E" //black
                 },
@@ -38,15 +39,15 @@
                 <input type="text" id="search" name="search" placeholder="search" class="h-10 mt-2 px-2 w-full rounded-md">
                 <button type="submit" class="bg-icon200 h-10 w-24 mt-2 mx-2 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2">Search</button>
             </div>
-            <ul class="list-none flex space-x-4">
+            <ul class="list-none flex space-x-6">
                 <li>
-                    <a href="/posts/createPost">create post</a>
+                    <a href="/posts/createPost" class="font-bold">Create Post</a>
                 </li>
                 <li>
                     {{#if isAuth}}
-                        <a href="/users">profile pic</a>
+                        <a href="/users" class="font-bold">Profile</a>
                     {{else}}
-                        <a href="/login">log In</a>
+                        <a href="/login" class="font-bold">Log In</a>
                     {{/if}}
                 </li>
             </ul>

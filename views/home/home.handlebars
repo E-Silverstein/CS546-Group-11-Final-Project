@@ -1,7 +1,15 @@
-<div id="content-before-loading"></div> 
-{{#if ifAuth}}
-    <script src="../public/js/home.js"></script>
-{{else}}
-    <script src="../public/js/notAuthHome.js"></script>
-{{/if}}
+<div class="flex justify-center mt-8">
+    <div id="content-before-loading" class="w-2/5">
+    {{#if ifAuth}}
+        <div class="w-3/5">
+            <script src="../public/js/home.js"></script>
+        </div>
+    {{else}}
+        <div class="w-3/5">
+            <script src="../public/js/notAuthHome.js"></script>
+        </div>
+    {{/if}}
+    </div> 
+</div>
+
 

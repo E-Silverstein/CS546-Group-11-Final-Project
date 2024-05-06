@@ -41,7 +41,7 @@ function getInformation() {
                     const comment_div = document.createElement("div");
                     comment_div.className = "border-t border-gray-200 pt-2 mt-2";
                     comment_div.innerHTML = `
-                        <p class="text-sm text-gray-700"><strong>User:</strong> ${comment.user}</p>
+                        <p class="text-sm text-gray-700 font-bold">User: ${comment.user}</p>
                         <p class="text-sm text-gray-700">${comment.text}</p>
                     `;
                     new_div.appendChild(comment_div);

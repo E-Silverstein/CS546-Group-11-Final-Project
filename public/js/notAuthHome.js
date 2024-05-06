@@ -8,13 +8,13 @@ function getInformation() {
         .then((data) => {
             data.forEach((cardName) => {
                 const new_div = document.createElement("div");
-                new_div.className = "bg-white hover:bg-gray-200 shadow-lg p-4 mb-4 rounded-lg cursor-pointer transition duration-300 ease-in-out"; 
+                new_div.className = "bg-white hover:bg-icon100 shadow-lg p-4 mb-4 rounded-lg cursor-pointer transition duration-300 ease-in-out"; 
                 new_div.innerHTML = `
                     <h3 class="text-lg font-semibold mb-2">${cardName.username}</h3>
                     <img src="${cardName.image}" alt="Post Image" class="w-full h-auto mb-3">
                     <p class="mb-1">${cardName.description}</p>
-                    <p class="text-sm text-gray-600 mb-2">Clothing Links: ${cardName.clothingLinks}</p>
-                    <p class="text-sm text-gray-600 mb-4">Likes: ${cardName.likes}</p>
+                    <p class="text-sm text-icon600 mb-2">Clothing Links: ${cardName.clothingLinks}</p>
+                    <p class="text-sm text-icon600 mb-4">Likes: ${cardName.likes}</p>
                 `;
 
                 // Event listener for redirection
@@ -30,7 +30,7 @@ function getInformation() {
 
                     cardName.keywords.forEach((keyword) => {
                         const keyword_span = document.createElement("span");
-                        keyword_span.className = "bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded";
+                        keyword_span.className = "bg-icon200 text-icon900 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded";
                         keyword_span.textContent = keyword;
                         keywords_div.appendChild(keyword_span);
                     });
@@ -44,14 +44,14 @@ function getInformation() {
                         const comment_div = document.createElement("div");
                         comment_div.className = "border-t border-gray-200 pt-2 mt-2";
                         comment_div.innerHTML = `
-                            <p class="text-sm text-gray-700"><strong>User:</strong> ${comment.user}</p>
-                            <p class="text-sm text-gray-700">${comment.text}</p>
+                            <p class="text-sm text-icon800"><strong>User:</strong> ${comment.user}</p>
+                            <p class="text-sm text-icon800">${comment.text}</p>
                         `;
                         new_div.appendChild(comment_div);
                     });
                 } else {
                     const no_comments_div = document.createElement("div");
-                    no_comments_div.className = "text-sm text-gray-500 italic mt-2";
+                    no_comments_div.className = "text-sm text-icon800 italic mt-2";
                     no_comments_div.innerHTML = "No comments";
                     new_div.appendChild(no_comments_div);
                 }
