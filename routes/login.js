@@ -49,8 +49,7 @@ router
 
         req.session.userid = user._id;
         req.session.isAdmin = user.isAdmin;
-        req.session.authenticated = true;
-
+        req.session.authenticated = true && !user.banned;
 
         return res.status(200).redirect('/home');
     } catch (e) {
