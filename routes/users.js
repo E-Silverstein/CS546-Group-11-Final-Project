@@ -3,7 +3,7 @@ import { upload } from '../middleware.js';
 import { users } from '../config/mongoCollections.js';
 import express from 'express';
 import { ObjectId } from 'mongodb';
-import { isValidId, isValidImg, isValidString, isValidUsername } from "../helpers.js";
+import { isValidId, isValidBio, isValidImg, isValidString, isValidUsername } from "../helpers.js";
 import xss from 'xss';
 
 const router = express.Router();
@@ -11,6 +11,8 @@ const router = express.Router();
 router
 .route('/')
 .get(async (req, res) => {
+
+    console.log("get request for users route")
     try {
         // Route Will get current user profile
         if (!req.session.authenticated){
@@ -38,7 +40,7 @@ router
     }
     try {
         //VALIDATION: bios
-        isValidString(req.body.bio, 0, 256);
+        isValidBio(req.body.bio);
         req.body.bio = xss(req.body.bio.trim());
           
     } catch(e) {
@@ -46,7 +48,15 @@ router
     }
     try {
         //VALIDATION: image
-        isValidImg(req.file);
+        if (!req.file) {
+            let user = await userData.getUserById(req.session.userid);
+            if(!user) throw "Error: user does not exist";
+            req.body.fileUrl = user.profilePicture;
+        } else {
+            isValidImg(req.file);
+            req.body.fileUrl = req.file.path;
+        }
+        console.log(req.body.fileUrl);
     } catch(e) {
         return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     }
@@ -61,17 +71,20 @@ router
         res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
     try {
+        console.log(req.session.userid);
+        console.log(req.body);
+        
         let updateRes = await userData.updateUser(
                                     req.session.userid,
                                     req.body.username,
-                                    req.file.path,
+                                    req.body.fileUrl,
                                     req.body.bio,
                                     );
-
         if (!updateRes) throw "Error: user could not be updated";  
-        return res.status(200).redirect(`/users/${req.params.userid}`);
+        return res.redirect(303,`/users`);
 
     } catch(e) {
+        console.log(e);
         return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
 })

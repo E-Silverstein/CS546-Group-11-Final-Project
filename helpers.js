@@ -63,7 +63,12 @@ export function isValidURL(string) {
     return true;
 }
 
+export function isValidBio(input) {
+    if (input == null) throw "Error: No string input";
+    if (typeof input != 'string') throw "Error: Input is not a string";
 
+    if (input.length > 256) throw "Error: Input does not fit length constraints";
+}
 
 
 export function isValidString(input, min_len=0, max_len=Number.MAX_VALUE) {

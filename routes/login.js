@@ -7,6 +7,7 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import xss from 'xss';
 import { isValidPassword, isValidUsername } from '../helpers.js';
+import xss from 'xss';
 const router = express.Router();
 
 router
