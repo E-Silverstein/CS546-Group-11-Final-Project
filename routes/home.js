@@ -9,7 +9,7 @@ router
         const posts =await algoData.getRandomPosts();
         if (!posts) throw "Error: Could not get posts";
         if(req.session.authenticated){
-            return res.render('home/home', {posts:posts, isAuth: true, userid: req.session.userid});
+            return res.render('home/authhome', {posts:posts, isAuth: true, userid: req.session.userid});
         }
         return res.render('home/home', {posts:posts,isAuth: false});
     } catch(e){
