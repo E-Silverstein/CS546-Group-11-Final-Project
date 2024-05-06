@@ -15,6 +15,7 @@ app.use(session({
   //authenticated: false /*logged in or not logged in */
 }))
 
+
 app.use('/', function(req,res,next){
     if (req.session.userid === undefined) {
         req.session.authenticated = false;
@@ -22,9 +23,8 @@ app.use('/', function(req,res,next){
         req.session.authenticated = true;
     }
 
-  console.log(req.method + " "+ req.originalUrl + " " + req.session.authenticated);
+  //console.log(req.method + " "+ req.originalUrl + " " + req.session.authenticated);
   if (req.path == "/") {
-    req.method = 'GET';
     return res.status(200).redirect('/home');
   }
   next();
@@ -43,6 +43,7 @@ app.use('/admin', function(req,res,next) {
 
 //works
 app.use('/users', function(req,res,next){
+  console.log("i reached /users middleware");
   next();
 });
 

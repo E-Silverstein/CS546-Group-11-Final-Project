@@ -7,6 +7,7 @@ import { users } from '../config/mongoCollections.js';
 import express from 'express';
 import { ObjectId } from 'mongodb';
 import { isValidId, isValidImg, isValidString, isValidUsername } from "../helpers.js";
+import { getUserById } from "../data/users.js";
 
 const router = express.Router();
 
@@ -31,12 +32,16 @@ router
 })
 .patch(upload.single('profile-picture'), async (req, res) => {
     console.log("Patch")
+    console.log(req.session)
+    console.log(req.body)
+    console.log(req.file);
     try {
         //VALIDATION: username        
         isValidUsername(req.body.username);
         req.body.username = req.body.username.trim().toLowerCase();
 
-    } catch(e) {
+    } catch(e) {    
+        console.log(e)
         return res.status(400).render('error/error',{error:e});
     }
     try {
@@ -45,25 +50,35 @@ router
         req.body.bio = req.body.bio.trim();
           
     } catch(e) {
-        return res.status(400).render('error/error',{error:e});
-    }
-    try {
-        //VALIDATION: image
-        if (req.file)
-            isValidImg(req.file);
-    } catch(e) {
+        console.log(e)
         return res.status(400).render('error/error',{error:e});
     }
     try {
         //VALIDATION: if user exists
         if (!req.session.authenticated) throw "Error: user must be logged in";
 
-        const userCollection = await users();
-        let user = await userCollection.find({ _id: req.session.userid});
+        let user = await getUserById(req.session.userid);
         if (!user) throw "Error: user with id: "+ req.session.userid+" does not exist";
+
     } catch(e) {
-        res.status(404).render('error/error', {error: e});
+        console.log(e)
+        return res.status(404).render('error/error', {error: e});
     }
+    try {
+        //VALIDATION: image
+        if (req.file)
+            isValidImg(req.file);
+        else {
+            let user = await getUserById(req.session.userid);
+            if(!user) throw "Error: user with id: "+ req.session.userid+" does not exist"; 
+            req.file = user.profilePicture;
+        }
+        
+    } catch(e) {
+        console.log(e)
+        return res.status(400).render('error/error',{error:e});
+    }
+   
     try {
         let updateRes = await userData.updateUser(
                                     req.session.userid,
@@ -71,11 +86,13 @@ router
                                     req.file.path,
                                     req.body.bio,
                                     );
-
+        
         if (!updateRes) throw "Error: user could not be updated";  
-        return res.status(200).redirect(`/users/${req.params.userid}`);
+        console.log(`/users/${req.session.userid}`, req.method);
+        return res.status(200).redirect(`/users`);
 
     } catch(e) {
+        console.log(e)
         return res.status(500).render('error/error', {error: e});
     }
 })
@@ -107,11 +124,16 @@ router
 router
 .route('/editUser')
 .get(async (req, res) => {
+    console.log("reached edit user route")
+
     if (!req.session.authenticated) return res.status(401).render('error/error', {error: "User must be logged in"});
     try {
         let user = await userData.getUserById(req.session.userid);
-        return res.status(200).render('profiles/editprofile', {isAuth: req.session.authenticated, isUser: !user.isAdmin, "username": user.username, "bio": user.bio});
+        console.log(user)
+       return res.status(200).render('profiles/editprofile', {isAuth: req.session.authenticated, isUser: !user.isAdmin, "username": user.username, "bio": user.bio});
+       
     } catch (e) {
+        console.log(e)
         return res.status(404).render('error/error', {isAuth: req.session.authenticated, error: e});
     }
 })
@@ -126,21 +148,19 @@ router
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
+        console.log("userid validation")
         return res.status(400).send(e);
     }
     try {
         let user = await userData.getUserById(req.params.userid);
         if (user == null) throw "Error: No users found with id: "+req.params.userid;;
         //TO-DO: change returns to render when frontend complete
-        if(req.session.userid == req.params.userid){
-            return res.status(200).render('profiles/user',{ username: user.username, bio:user.bio, userid: req.params.userid, isAuth: true,isUser: true});
-        }
-        if(req.session.authenticated){
-            return res.status(200).render('profiles/user',{username: user.username, bio:user.bio, userid: req.params.userid, isUser: false, isAuth:true});
-        }
-        return res.redirect('/login');
+        return res.status(200).render('profiles/user',{ username: user.username, bio:user.bio, userid: req.params.userid, isAuth: true,isUser: true});
+        
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
+        console.log("userid validation1")
+
         return res.status(404).render('error/error', {error: e});
     }
 })

@@ -218,7 +218,7 @@ export const getRandomPosts = async () => {
 					text: comment.text,
 				});
 			}
-			console.log(recommendedPosts[i]._id.toString());
+			//console.log(recommendedPosts[i]._id.toString());
 			let outPost = {
 				id : recommendedPosts[i]._id.toString(),
 				username: recommendedPosts[i].username,

@@ -8,6 +8,7 @@ import * as keywordData from "./keyword.js";
 /**
 * Schema for Posts
 {
+	
   "_id": "ObjectId",
   "user": "ObjectId (Users)",
   "image": "string (URL)",

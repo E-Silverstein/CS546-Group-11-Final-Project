@@ -162,7 +162,6 @@ export const getUserById = async (id) => {
 	}
 
 	id = id.trim();
-
 	if (!ObjectId.isValid(id)) {
 		throw "Invalid ObjectID";
 	}
@@ -496,7 +495,7 @@ export const updateUser = async (
 		throw "User not found";
 	}
 
-	const updateInfo = await userCollection.updateOne(
+	const updateInfo = await userCollection.findOneAndUpdate(
 		{ _id: new ObjectId(id) },
 		{
 			$set: {
