@@ -1,8 +1,8 @@
-let before_loading = document.getElementById("content-before-loading");
+var before_loading = document.getElementById("content-before-loading");
 
-let c = 0;
+var c = 0;
 
-function getInformation() {
+function getInformation1() {
     fetch(`/home/getRandomPosts`)
         .then((response) => response.json())
         .then((data) => {
@@ -69,7 +69,7 @@ window.addEventListener("scroll", () => {
         document.documentElement.clientHeight >=
         document.documentElement.scrollHeight
     ) {
-        getInformation();
+        getInformation1();
     }
 });
-getInformation();
+getInformation1();
