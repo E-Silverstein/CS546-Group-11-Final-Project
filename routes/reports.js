@@ -3,7 +3,8 @@ import express, { Router } from 'express';
 import { getUserByUsername } from "../data/users.js";
 import { getPostById } from "../data/posts.js";
 import { ObjectId } from "mongodb";
-import * as helper from "../helpers.js"
+import * as helper from "../helpers.js";
+import xss from 'xss';
 const router = express.Router();
 
 router
