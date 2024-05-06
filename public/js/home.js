@@ -15,7 +15,7 @@ function getInformation() {
                 <p class="text-sm text-gray-600 mb-2">Clothing Links: ${cardName.clothingLinks}</p>
                 <button class="like-button" data-id="${cardName.id}" data-userid="${cardName.userid}">Likes: ${cardName.likes}</button>
                 <br>
-                <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2 report" data-post-id="{{this.id}}" data-reported-user="{{this.username}}">Report Post</button>
+                <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2 report" data-post-id=${cardName.id} data-reported-user=${cardName.username}>Report Post</button>
                 <br>
             `;
 
@@ -162,14 +162,14 @@ $(document).ready(() => {
             errors.push("Reason has to be a string");
         }
 
-        if(!reportReason.match(/^[0-9a-zA-Z]+$/)){
-            errors.push("Reason can only be alphanumeric");
-        }
+        if (!reportReason.match(/^[0-9a-zA-Z\s]+$/)) {
+            errors.push("Reason can only be alphanumeric and contain spaces");
+        }  
 
         if (errors.length) {
             event.preventDefault();
             $(this).append(`<p id='error'>Invalid Inputs: ${errors.join(", ")}</p>`);
-            $(this).reset();
+            $('#error').reset();
         }
 
         $.ajax({
