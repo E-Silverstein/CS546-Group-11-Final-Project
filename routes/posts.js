@@ -134,7 +134,7 @@ router
         if (post==null) throw "Error: No Posts found with id: "+req.params.postid;;
         //TO-DO: change returns to render when frontend complete
         console.log(post.image);
-        return res.status(200).render('posts/singlepost', {username: post.username, image: post.image, clothingLinks: post.clothingLinks, description: post.description, isAuth: req.session.authenticated});
+        return res.status(200).render('posts/singlepost', {username: post.username, image: post.image, clothingLinks: post.clothingLinks, description: post.description,keywords:post.keywords,likes: post.likes.length, comments:post.comments, isAuth: req.session.authenticated});
     } catch (e) {
         return res.status(404).render('error/error', {error:e, isAuth: req.session.authenticated});
     }

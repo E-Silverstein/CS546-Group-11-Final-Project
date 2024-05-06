@@ -4,12 +4,14 @@ let router = Router();
 
 router
 .route("/")
-.get((req, res) => {
+.get(async (req, res) => {
     try{
+        const posts =await algoData.getRandomPosts();
+        if (!posts) throw "Error: Could not get posts";
         if(req.session.authenticated){
-            return res.render('home/home', {isAuth: true, userid: req.session.userid});
+            return res.render('home/home', {posts:posts, isAuth: true, userid: req.session.userid});
         }
-        return res.render('home/home', {isAuth: false});
+        return res.render('home/home', {posts:posts,isAuth: false});
     } catch(e){
         return res.render('error/error', {error: e, isAuth: req.session.authenticated});
     }
@@ -28,7 +30,7 @@ router
         if (!posts) throw "Error: Could not get posts";
         
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).json(posts);
+        return res.status(200).render('home/home',{posts:posts,isAuth: req.session.authenticated});
     } catch (e) {
         return res.status(500).render('error/error', {error:e,isAuth: req.session.authenticated});
     }
@@ -41,7 +43,7 @@ router
     try {
         const posts = await algoData.getRandomPosts();
         if (!posts) throw "Error: Could not get posts";
-        return res.status(200).json(posts);
+        return res.status(200).render('home/home',{posts:posts,isAuth: req.session.authenticated});
     } catch (e) {
         return res.status(500).render('error/error', {error:e,isAuth: req.session.authenticated});
     }

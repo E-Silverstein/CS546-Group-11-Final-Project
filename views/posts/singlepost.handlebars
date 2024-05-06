@@ -1,13 +1,27 @@
 <div class="mt-24 flex justify-center">
-    <div class="justify-center flex-col">
-        <p>{{{username}}}</p>
-        <img src={{{image}}}>
-        {{#each clothingLinks}}
-            <p>{{this}} </p>
+    <div class="bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer hover:bg-icon200">
+        <p class="text-lg font-semibold mb-2">{{username}}</p>
+        <img src="{{image}}" alt="Post Image" class="w-full h-auto mb-3">
+        <p class="mb-1">{{description}}</p>
+        <p class="text-sm text-gray-600 mb-2">Clothing Links:</p>
+        {{#each this.clothingLinks}}
+            <p class="text-sm text-gray-600 mb-2">{{this}}</p>
         {{/each}}
-        {{#each comments}}
-            <p>{{{this.text}}}</p>
-        {{/each}}
-        <p>{{{description}}}</p>
+        <p class="text-sm text-gray-600 mb-4">Likes: {{likes}}</p>
+        <div class="flex">
+            {{#each keywords}}
+                <p class="bg-icon200 text-icon900 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded w-fit">{{this}}</p>
+            {{/each}}
+        </div>
+        <div class="space-x-2">
+            <p>Comments</p>
+            {{#if comments}}
+                {{#each comments}}
+                    <p>{{this}}</p>
+                {{/each}}
+            {{else}}
+                <p>No comments</p>
+            {{/if}}
+        </div>
     </div>
 </div>
