@@ -2,7 +2,7 @@
     ROUTES ARE NOT TESTED YET
 */
 
-import { postData } from "../data/index.js";
+import { commentData, postData } from "../data/index.js";
 import { userData } from "../data/index.js";
 
 import {posts} from "../config/mongoCollections.js";
@@ -139,7 +139,34 @@ router
         if (post==null) throw "Error: No Posts found with id: "+req.params.postid;;
         //TO-DO: change returns to render when frontend complete
         console.log(post.image);
-        return res.status(200).render('posts/singlepost', {id: post._id,userid: userid,username: post.username, image: post.image, clothingLinks: post.clothingLinks, description: post.description,keywords:post.keywords,likes: post.likes.length, comments:post.comments, isAuth: req.session.authenticated});
+        let comments = [];
+        for (let i = 0; i < post.comments.length; i++) {
+            let comment = await commentData.getCommentById(post.comments[i].toString());
+            console.log(comment);
+            let user = await userData.getUserById(comment.user.toString());
+            comments.push({
+              username: user.username,
+              comment: comment.text,
+              id:
+                comment.user.toString() === req.session.userid
+                  ? comment._id.toString()
+                  : null,
+            });
+        }
+        console.log(comments);
+        return res
+          .status(200)
+          .render("posts/singlepost", {
+            postid: post._id,
+            username: post.username,
+            image: post.image,
+            clothingLinks: post.clothingLinks,
+            description: post.description,
+            keywords: post.keywords,
+            likes: post.likes.length,
+            comments: comments,
+            isAuth: req.session.authenticated,
+          });
     } catch (e) {
         return res.status(404).render('error/error', {error:e, isAuth: req.session.authenticated});
     }

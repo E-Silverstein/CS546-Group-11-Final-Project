@@ -1,25 +1,37 @@
 <div class="mt-24 flex justify-center">
-    <div class="bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer hover:bg-icon200">
+    <div class="bg-white shadow-lg space-y-2 p-4 mb-4 rounded-lg">
         <p class="text-lg font-semibold mb-2">{{username}}</p>
         <img src="{{image}}" alt="Post Image" class="w-full h-auto mb-3">
         <p class="mb-1">{{description}}</p>
-        <p class="text-sm text-gray-600 mb-2">Clothing Links:</p>
+        <p class="text-sm text-gray-600">Clothing Links:</p>
         {{#each this.clothingLinks}}
-            <p class="text-sm text-gray-600 mb-2">{{this}}</p>
+            <p class="text-sm text-gray-600">{{this}}</p>
         {{/each}}
         <div class="flex justify-between items-center">
             <button class="like-button" data-id="{{id}}" data-userid="{{userid}}">Likes: {{likes}}</button>
         </div>
-        <div class="flex">
+        <div class="flex space-x-2">
             {{#each keywords}}
-                <p class="bg-icon200 text-icon900 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded w-fit">{{this}}</p>
+                <p class="bg-icon200 text-icon900 text-sm font-semibold px-2.5 py-0.5 rounded w-fit">{{this}}</p>
             {{/each}}
         </div>
-        <div class="space-x-2">
-            <p>Comments</p>
+        <p>Comments</p>
+        {{#if isAuth}}
+            <form action="/comments/{{postid}}" method="POST" class="flex space-x-2">
+                <input class="border" type="text" name="commentText" placeholder="Add comment...">
+                <button>Post</button>
+            </form>
+        {{/if}}
+        <div class="overflow-scroll max-h-16 space-y-2">
             {{#if comments}}
                 {{#each comments}}
-                    <p>{{this}}</p>
+                    <span class="flex space-x-2 border-b">
+                        {{#if this.id}}
+                            <button class="text-red-400" id="delete-comment" data-id="{{../postid}}:{{this.id}}">x</button>
+                        {{/if}}
+                        <p class="font-bold">{{this.username}}</p>
+                        <p>{{this.comment}}</p>
+                    </span>
                 {{/each}}
             {{else}}
                 <p>No comments</p>
