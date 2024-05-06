@@ -60,7 +60,7 @@ export const createReport = async(postId,reportedBy,reason) => {
   reason = reason.trim();
 
   const newReport = {
-    postId:postId,
+    postId:new ObjectId(postId),
     reportedBy: reportedById,
     reportedUser: reportedUserId,
     reason:reason,
