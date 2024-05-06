@@ -23,7 +23,7 @@ router
 
         console.log(user)
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).render('profiles/user', {userid:req.session.userid, username: user.username, bio: user.bio, isAuth: true, isUser: true, profilePicture: user.profilePicture});
+        return res.status(200).render('profiles/user', {userid:req.session.userid, username: user.username, bio: user.bio, isAuth: true, isUser: true, profilePicture: user.profilePicture, posts: user.posts});
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
