@@ -23,6 +23,9 @@ const constructorMethod = app => {
 
   // app.use("/error",  )
 
+  app.use("/error", (req, res) => {
+    return res.status(400).render('error/error', {error: req.query.error})
+  })
 
   app.use("*", (req, res) => {
     return res.status(404).render('error/error', {error: "Not found", isAuth:req.session.authenticated});

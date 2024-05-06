@@ -17,15 +17,7 @@ const router = express.Router();
 router
 .route('/')
 .get(async (req, res) => {
-    // Route Will get all posts and create a queue for main feed
-    try {
-        let posts = await postData.getAllPosts();
-        if (!posts) throw "Error: Could not get posts";
-        //TO-DO: change returns to render when frontend complete
-        return res.status(200).json(posts);
-    } catch (e) {
-        return res.status(500).render('error/error', {error:e, isAuth: req.session.authenticated});
-    }
+    return res.redirect('/home');
 })
 // upload.single('name') takes in the name of the INPUT ELEMENT that the file is being inputted to
 .post(upload.single('post-image'), async (req, res) => {

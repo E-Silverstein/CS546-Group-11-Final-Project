@@ -72,7 +72,8 @@ router
                                 age,
                                 ""     
                             );
-                                
+          
+        console.log(user);
         if (!user) throw "Error: user could not be created";
         
         return res.status(200).redirect('/login');

@@ -56,6 +56,8 @@ function getInformation() {
                     new_div.appendChild(no_comments_div);
                 }
 
+                
+
                 before_loading.appendChild(new_div);
             });
             c++;

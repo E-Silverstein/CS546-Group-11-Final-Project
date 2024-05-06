@@ -23,7 +23,7 @@ router
 
         console.log(user)
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).render('profiles/user', {userid:req.session.userid, username: user.username, bio: user.bio, isAuth: true, isUser: true, profilePicture: user.profilePicture});
+        return res.status(200).render('profiles/user', {userid:req.session.userid, username: user.username, bio: user.bio, isAuth: true, isUser: true, profilePicture: user.profilePicture, posts: user.posts});
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
@@ -145,11 +145,12 @@ router
         let user = await userData.getUserById(req.params.userid);
         if (user == null) throw "Error: No users found with id: "+req.params.userid;;
         //TO-DO: change returns to render when frontend complete
+        console.log(user.posts);
         if(req.session.userid == req.params.userid){
-            return res.status(200).render('profiles/user',{ username: user.username, bio:user.bio, userid: req.params.userid, isAuth: true,isUser: true});
+            return res.status(200).render('profiles/user',{ username: user.username, bio:user.bio, userid: req.params.userid, isAuth: true,isUser: true, posts:user.posts});
         }
         if(req.session.authenticated){
-            return res.status(200).render('profiles/user',{username: user.username, bio:user.bio, userid: req.params.userid, isUser: false, isAuth:true});
+            return res.status(200).render('profiles/user',{username: user.username, bio:user.bio, userid: req.params.userid, isUser: false, isAuth:true, posts:user.posts});
         }
         return res.status(200).redirect('/login');
     } catch (e) {
