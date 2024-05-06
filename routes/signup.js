@@ -8,10 +8,13 @@ import { isValidId, isValidUsername, isValidPassword } from '../helpers.js';
 import xss from 'xss';
 const router = express.Router();
 
+
 router
 .route('/')
 .get(async (req, res) => {
-    return res.status(200).render('auth/signup', {layout: 'nonav'});
+    let message = req.query.message;
+    req.query.message = {};
+    return res.status(200).render('auth/signup', {layout: 'nonav', 'message': message});
 })
 .post(async (req, res) => {
     try {
@@ -65,7 +68,7 @@ router
         let user = await userData.createUser(
                                 req.body.username,
                                 req.body.password,
-                                "/uploads/default-pfp.png",
+                                "/uploads/default-pfp.jpeg",
                                 age,
                                 ""     
                             );

@@ -1,14 +1,10 @@
+
 $(document).ready(function() {
 
-
-    console.log("edit user has been loaded")
     $("#edit-user-form").on("submit", (event) => {
-
 
         event.preventDefault();
 
-
-        
         let username = $('#username');
         let bio = $('#bio');
         let pfp = $('#profile-picture');
@@ -45,9 +41,20 @@ $(document).ready(function() {
     });
 
     $("#delete-user-form").on("submit", (event) => {
+        event.preventDefault();
+
         $.ajax({
             type: "DELETE",
-            url: "/users"
+            url: "/users", 
+            success: function(response) {
+                console.log("SUCCESS:" +response);
+                window.location.href = "/signup?message=delete+success";
+                
+            },
+            error: function(xhr, status, error) {
+                console.log("ERROR:" +error);
+                $("#edit-user-form").append("<p id='error'>Error: " + error + "</p>");
+            }
         });
     });
 

@@ -90,19 +90,22 @@ router
 })
 .delete(async (req, res) => {
      /* will delete pre-existing user */
+     console.log("delete");
     try {
         //VALIDATION: if user exists
         if (!req.session.authenticated) throw "Error: user must be logged in";
 
         const userCollection = await users();
-        let user = await userCollection.find({ _id: req.session.userid});
+        let user = await userData.getUserById(req.session.userid);
         if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
     } catch(e) {
         return res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
     try {
         let deleteRes = await userData.deleteUser(req.session.userid);
-        if (deleteRes==1) throw "Error: user could not be deleted";
+
+        console.log("delete results: ", deleteRes)
+        if (deleteRes==0) throw "Error: user could not be deleted";
 
         req.session.destroy();
         return res.status(200).send("Delete Successful");
@@ -110,8 +113,7 @@ router
     } catch(e) {
         console.log(e);
         return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
-    }
-});
+    }});
 
 router
 .route('/editUser')
@@ -122,6 +124,7 @@ router
         console.log(typeof user.bio);
         return res.status(200).render('profiles/editprofile', {isAuth: req.session.authenticated, isUser: !user.isAdmin, "username": user.username, "bio": user.bio});
     } catch (e) {
+        console.log(e)
         return res.status(404).render('error/error', {isAuth: req.session.authenticated, error: e});
     }
 })
