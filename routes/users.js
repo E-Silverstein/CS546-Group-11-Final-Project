@@ -122,7 +122,7 @@ router
     try {
         let user = await userData.getUserById(req.session.userid);
         console.log(typeof user.bio);
-        return res.status(200).render('profiles/editprofile', {isAuth: req.session.authenticated, isUser: !user.isAdmin, "username": user.username, "bio": user.bio});
+        return res.status(200).render('profiles/editprofile', {isAuth: req.session.authenticated, isUser: !user.isAdmin, "username": user.username, "bio": user.bio, profilePicture: user.profilePicture});
     } catch (e) {
         console.log(e)
         return res.status(404).render('error/error', {isAuth: req.session.authenticated, error: e});
@@ -144,12 +144,24 @@ router
     try {
         let user = await userData.getUserById(req.params.userid);
         if (user == null) throw "Error: No users found with id: "+req.params.userid;;
+
+        let followingCount = user.following.length;
+        let followerCount = user.followers.length;
+
+        let isFollowing = false;
+        for (let i = 0; i < user.followers.length; i++) {
+            if (user.followers[i].toString() === req.session.userid) {
+                isFollowing = true;
+                break;
+            }
+        }
+
         //TO-DO: change returns to render when frontend complete
         if(req.session.userid == req.params.userid){
-            return res.status(200).render('profiles/user',{ username: user.username, bio:user.bio, userid: req.params.userid, isAuth: true,isUser: true});
+            return res.status(200).render('profiles/user',{ username: user.username, bio:user.bio, userid: req.params.userid, isAuth: true,isUser: true, profilePicture: user.profilePicture, followingCount: followingCount, followerCount: followerCount});
         }
         if(req.session.authenticated){
-            return res.status(200).render('profiles/user',{username: user.username, bio:user.bio, userid: req.params.userid, isUser: false, isAuth:true});
+            return res.status(200).render('profiles/user',{username: user.username, bio:user.bio, userid: req.params.userid, isUser: false, isAuth:true, profilePicture: user.profilePicture, followingCount: followingCount, followerCount: followerCount, isFollowing: isFollowing});
         }
         return res.status(200).redirect('/login');
     } catch (e) {
@@ -157,5 +169,63 @@ router
         return res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
 });
+
+// Route to add a follower
+router
+.route('/follow/:username')
+.patch(async (req, res) => {
+    try {
+        if (!req.session.authenticated) throw "Error: User must be logged in";
+        if (!req.session.userid) throw "Error: User ID not found";
+        if (!req.params.username) throw "Error: User ID not found in parameters";
+    
+        const userCollection = await users();
+        const user = await userCollection.findOne({ username: req.params.username });
+        if (!user) throw "Error: User with username: " + req.params.username + " does not exist";
+        
+        try {
+            const follower = await userData.addFollower(user._id.toString(), req.session.userid);
+            console.log(follower);
+            if (!follower) throw "Error: Could not add follower";
+            return res.status(200).send("Follower added successfully");
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    } catch (e) {
+        console.log(e);
+        return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
+    }
+});
+
+// Route to remove a follower
+router
+.route('/unfollow/:username')
+.patch(async (req, res) => {
+    try {
+        if (!req.session.authenticated) throw "Error: User must be logged in";
+        if (!req.session.userid) throw "Error: User ID not found";
+        if (!req.params.username) throw "Error: Username not found in parameters";
+        console.log("username: ", req.params.username);
+        console.log("userid: ", req.session.userid);
+        const userCollection = await users();
+        const user = await userCollection.findOne({ username: req.params.username });
+        if (!user) throw "Error: User with username: " + req.params.username + " does not exist";
+        
+        try {
+            const followerRemoved = await userData.removeFollower(user._id.toString(), req.session.userid);
+            console.log(followerRemoved);
+            if (!followerRemoved) throw "Error: Could not remove follower";
+            return res.status(200).send("Follower removed successfully");
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    } catch (e) {
+        console.log(e);
+        return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
+    }
+});
+
 
 export default router
