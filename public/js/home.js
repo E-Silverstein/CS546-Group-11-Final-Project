@@ -1,7 +1,7 @@
 var before_loading = document.getElementById("content-before-loading");
 var c = 0;
 function getInformation() {
-	fetch(`/home/getReccomendedPosts`)
+	fetch(`/home/getRecomendedPosts`)
     .then((response) => response.json())
     .then((data) => {
         data.forEach((cardName) => {
