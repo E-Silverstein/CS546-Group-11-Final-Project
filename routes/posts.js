@@ -95,8 +95,11 @@ router
 router
 .route("/createPost")
 .get(async(req, res) => {
-    return res.status(200).render('posts/newpost');
-  });
+    if(!req.session.authenticated){
+        return res.status(200).redirect('/login');
+    }
+    return res.status(200).render('posts/newpost', {isAuth: req.session.authenticated});
+});
 
 router
 .route('/editPost/:postid')
