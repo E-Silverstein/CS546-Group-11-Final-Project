@@ -16,12 +16,14 @@ app.use(session({
 }))
 
 app.use('/', function(req,res,next){
+  req.session.isAdmin = false;
     if (req.session.userid === undefined) {
         req.session.authenticated = false;
     } else {
         req.session.authenticated = true;
     }
 
+    
   console.log(req.method + " "+ req.originalUrl + " " + req.session.authenticated);
   if (req.path == "/") {
     req.method = 'GET';
@@ -88,7 +90,9 @@ app.use('/comment', function(req,res,next) {
   next();
 })
 
-
+app.use('/home', function(req,res,next){
+  next();
+})
 /*const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   if (req.body && req.body._method) {
     req.method = req.body._method;
