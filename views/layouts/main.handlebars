@@ -5,6 +5,7 @@
     <title>iconique</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="/public/css/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="/public/js/main.js"></script>
@@ -20,6 +21,7 @@
                     icon100: "#E1E0DE", //light grey
                     icon200: "#A4AEA3", //light green
                     icon500: "#567765", //dark green
+                    icon600: "#787777", //medium grey
                     icon800: "#444849", //dark grey
                     icon900: "#33322E" //black
                 },
@@ -28,27 +30,30 @@
         }
     </script>
 </head>
-<body class="bg-icon100 text-icon900 h-screen font-inter">
+<body class=" text-icon900 h-screen font-inter">
     <header>
         <nav class="flex justify-around h-12 items-center mt-2">
             <div>
                 <a class="text-icon900 font-bold font-libreCas text-2xl" href="/home">iconique</a>
             </div>
-            <div class="flex">
+            <form id="searchbar" name="searchbar" class="flex">
+                <div id="keywords" class="flex"></div>
                 <input type="text" id="search" name="search" placeholder="search" class="h-10 mt-2 px-2 w-full rounded-md">
                 <button type="submit" class="bg-icon200 h-10 w-24 mt-2 mx-2 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2">Search</button>
-            </div>
-            <ul class="list-none flex space-x-4">
-                <li>
-                    <a href="/posts/createPost">create post</a>
-                </li>
-                <li>
-                    {{#if isAuth}}
-                        <a href="/users">profile pic</a>
-                    {{else}}
-                        <a href="/login">log In</a>
-                    {{/if}}
-                </li>
+            </form>
+            <ul class="list-none flex space-x-6">
+                {{#if isAuth}}
+                    <li>
+                        <a href="/posts/createPost" class="font-bold">Create Post</a>
+                    </li>
+                    <li>
+                        <a href="/users" class="font-bold">Profile</a>
+                    </li>  
+                {{else}}
+                    <li>
+                        <a href="/login" class="font-bold">Log In</a>
+                    </li>
+                {{/if}}
             </ul>
         </nav>
     </header>

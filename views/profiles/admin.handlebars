@@ -1,4 +1,27 @@
 <div>
-    <h2>{{{username}}}</h2>
     <p>Admin Profile</p>
 </div>
+
+<div id="reports">
+    {{#if report}}
+        {{#each report}}
+            <div> 
+                <img src= {{{this.postImg}}}>
+                <p>{{{this.postCaption}}}</p>
+            </div>
+            <div>
+                <p>{{{this.reason}}}</p>
+            </div>
+            <div>
+                <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2 dismiss" data-report-id="{{this._id}}">Dismiss Report</button>
+                <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2 remove" data-post-id="{{this.postId}}" data-report-id="{{this._id}}">Remove Post</button>
+                <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2 ban" data-user-id="{{this.reportedUser}}" data-report-id="{{this._id}}" data-post-id="{{this.postId}}">Ban User</button>
+            </div>
+
+        {{/each}}
+    {{else}}
+        <p>No reports to view at this time!</p>
+    {{/if}}
+</div>
+
+<script src= "../../public/js/admin.js"></script>

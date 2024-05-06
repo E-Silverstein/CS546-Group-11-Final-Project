@@ -1,14 +1,14 @@
 $("#edit-user-form").on("submit", (event) => {
-    let username = $(username);
-    let bio = $(bio);
+    let username = $('#username');
+    let bio = $('#bio');
     event.preventDefault();
     
     $.ajax({
         type: "PATCH",
         url: "/users",
         data: {
-            "username": username,
-            "bio": bio
+            "username": username[0].value,
+            "bio": bio[0].value
         }
     });
     

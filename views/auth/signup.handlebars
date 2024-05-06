@@ -1,19 +1,20 @@
 <script>src="/public/js/signup.js"</script>
-<div class="flex justify-center pt-10 w-full">
-    <div>
+<div class="flex justify-center pt-24 w-full">
+    <div class="text-center">
         <form method="post" action="/signup" id="signupForm" class="grid grid-cols-1 gap-1 w-full">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" class="h-10 w-full rounded-md">
+            <label for="username" class="text-left">Username</label>
+            <input type="text" id="username" name="username" class="h-10 w-full rounded-md p-2">
 
-            <label for="birthdate">Birth Date</label>
-            <input type="date" id="birthdate" name="birthdate" class="h-10 w-full rounded-md" min="1">
+            <label for="birthdate" class="text-left">Birth Date</label>
+            <input type="date" id="birthdate" name="birthdate" class="h-10 w-full rounded-md p-2" min="1">
 
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" class="h-10 w-full rounded-md">
-            <label for="confirmPassword">Confirm Password</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" class="h-10 w-full rounded-md">
+            <label for="password" class="text-left">Password</label>
+            <input type="password" id="password" name="password" class="h-10 w-full rounded-md p-2">
+            <label for="confirmPassword" class="text-left">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" class="h-10 w-full rounded-md p-2">
             <button type="submit" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2">Sign Up</button>
         </form>
-        <a href="/login" class="inline-block">Already have an account? Click here to sign in</a>
+        <p>Already have an account? <a href="/login" class="inline-block underline hover:text-icon500">Click here to sign in</a></p> 
+        <a href="/home" class="inline-block mt-2 underline hover:text-icon500">Click here to go back to home</a>
     </div>
 </div>

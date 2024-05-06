@@ -1,12 +1,10 @@
-/*
-    ROUTES ARE NOT TESTED YET
-*/
 import { userData } from "../data/index.js";
 import { upload } from '../middleware.js';
 import { users } from '../config/mongoCollections.js';
 import express from 'express';
 import { ObjectId } from 'mongodb';
 import { isValidId, isValidImg, isValidString, isValidUsername } from "../helpers.js";
+import xss from 'xss';
 
 const router = express.Router();
 
@@ -26,31 +24,31 @@ router
         return res.status(200).render('profiles/user', {userid:req.session.userid, username: user.username, bio: user.bio, isAuth: true, isUser: true});
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(500).render('error/error', {error: e});
+        return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
-})
+}) // kevinthuhstink says good job :3 | :3
 .patch(upload.single('profile-picture'), async (req, res) => {
-    try {
+    try                                                                                                {
         //VALIDATION: username        
         isValidUsername(req.body.username);
-        req.body.username = req.body.username.trim().toLowerCase();
+        req.body.username = xss(req.body.username.trim().toLowerCase());
 
     } catch(e) {
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: bios
         isValidString(req.body.bio, 0, 256);
-        req.body.bio = req.body.bio.trim();
+        req.body.bio = xss(req.body.bio.trim());
           
     } catch(e) {
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: image
         isValidImg(req.file);
     } catch(e) {
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: if user exists
@@ -60,7 +58,7 @@ router
         let user = await userCollection.find({ _id: req.session.userid});
         if (!user) throw "Error: user with id: "+ req.session.userid+" does not exist";
     } catch(e) {
-        res.status(404).render('error/error', {error: e});
+        res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
     try {
         let updateRes = await userData.updateUser(
@@ -74,7 +72,7 @@ router
         return res.status(200).redirect(`/users/${req.params.userid}`);
 
     } catch(e) {
-        return res.status(500).render('error/error', {error: e});
+        return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
 })
 .delete(async (req, res) => {
@@ -87,7 +85,7 @@ router
         let user = await userCollection.find({ _id: req.session.userid});
         if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
     } catch(e) {
-        return res.status(404).render('error/error', {error: e});
+        return res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
     try {
         let deleteRes = await userData.deleteUser(req.session.userid);
@@ -98,7 +96,7 @@ router
 
     } catch(e) {
         console.log(e);
-        return res.status(500).render('error/error', {error: e});
+        return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
 });
 
@@ -124,7 +122,7 @@ router
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).send(e);
+        return res.status(400).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
     try {
         let user = await userData.getUserById(req.params.userid);
@@ -136,11 +134,11 @@ router
         if(req.session.authenticated){
             return res.status(200).render('profiles/user',{username: user.username, bio:user.bio, userid: req.params.userid, isUser: false, isAuth:true});
         }
-        return res.redirect('/login');
+        return res.status(200).redirect('/login');
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(404).render('error/error', {error: e});
+        return res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
-})
+});
 
 export default router

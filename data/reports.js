@@ -60,10 +60,12 @@ export const createReport = async(postId,reportedBy,reason) => {
   reason = reason.trim();
 
   const newReport = {
-    postId:postId,
+    postId:new ObjectId(postId),
     reportedBy: reportedById,
     reportedUser: reportedUserId,
     reason:reason,
+    postImg: post.image,
+    postCaption: post.description,
     createdAt: new Date(),
     status:"Pending"
   };
@@ -96,10 +98,10 @@ export const getAllReports = async () => {
  * @returns the report
  */
 export const getReportById = async(id) => {
-  if (isNull(id)) {
+  if (helper.isNull(id)) {
 		throw "ID must be provided";
 	}
-	if (!isOfType(id, "string")) {
+	if (!helper.isOfType(id, "string")) {
 		throw "ID must be of type string";
 	}
 	id = id.trim();
@@ -108,7 +110,7 @@ export const getReportById = async(id) => {
 	}
   const reportsCollection = await reports();
 	const report = await reportsCollection.findOne({ _id: new ObjectId(id) });
-	if (isNull(report)) {
+	if (helper.isNull(report)) {
 		throw "User not found";
 	}
 
@@ -121,10 +123,10 @@ export const getReportById = async(id) => {
  * @returns {boolean} true 
  */
 export const deleteReport = async(id) => {
-  if (isNull(id)) {
+  if (helper.isNull(id)) {
 		throw "ID must be provided";
 	}
-	if (!isOfType(id, "string")) {
+	if (!helper.isOfType(id, "string")) {
 		throw "ID must be of type string";
 	}
 	id = id.trim();
@@ -140,4 +142,24 @@ export const deleteReport = async(id) => {
 	return true;
 };
 
-export default { createReport, getAllReports, getReportById, deleteReport };
+export const deleteAllReports = async(id) => {
+  if (helper.isNull(id)) {
+		throw "ID must be provided";
+	}
+	if (!helper.isOfType(id, "string")) {
+		throw "ID must be of type string";
+	}
+	id = id.trim();
+	if (!ObjectId.isValid(id)) {
+		throw "Invalid ObjectID";
+	}
+  const reportsCollection = await reports();
+  const deleteInfo = await reportsCollection.deleteMany({ postId: new ObjectId(id) });
+	if (deleteInfo.deletedCount === 0) {
+		throw "Could not delete report";
+	}
+
+	return true;
+};
+
+export default { createReport, getAllReports, getReportById, deleteReport, deleteAllReports };

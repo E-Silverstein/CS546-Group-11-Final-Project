@@ -53,13 +53,13 @@ async function main() {
 	const db = await dbConnection();
 	await db.dropDatabase();
 	//create admin user
-	const adminUser = await userData.createAdmin(
-		"Admin",
-		"Password1!",
-		"fillerimage.url",
-		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
-		"Hi, I'm the admin user for this site!"
-	);
+	// const adminUser = await userData.createAdmin(
+	// 	"Admin",
+	// 	"Password1!",
+	// 	"fillerimage.url",
+	// 	Math.floor(Math.random() * (75 - 13 + 1)) + 13,
+	// 	"Hi, I'm the admin user for this site!"
+	// );
 	// Create users
     const user1 = await userData.createUser(
         "EthanSilv",
@@ -1086,7 +1086,12 @@ async function main() {
 	const like50 = await postData.addLike(user27._id.toString(), post20._id.toString());
 	
 	//create report
-	const report = await reportData.createReport(post1._id,"ClassicChic","Profanity in the caption");
+	const report1 = await reportData.createReport(post1._id,"ClassicChic","Profanity in the caption");
+	const report3 = await reportData.createReport(post1._id,"MinimalistMaven","Profanity in the caption");
+	const report2 = await reportData.createReport(post15._id,"MinimalistMaven","This outfit is really ugly");
+	
+	//set admin
+	const admin = await userData.setAdminStatus(user1._id.toString(),true);
 	console.log("Done seeding database");
 	await closeConnection();
 }

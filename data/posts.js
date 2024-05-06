@@ -230,7 +230,7 @@ export const deletePost = async (id) => {
 	}
 
 	const postCollection = await posts();
-	const deleteInfo = await postCollection.deleteOne({ _id: id });
+	const deleteInfo = await postCollection.deleteOne({ _id: new ObjectId(id)});
 	if (deleteInfo.deletedCount === 0) {
 		return 1;
 	}
@@ -286,8 +286,9 @@ export const getPostsByKeyword = async (keyword) => {
 	keyword = keyword.trim();
 
 	const postCollection = await posts();
-	const postList = await postCollection.find({ keywords: keyword }).toArray();
-	return postList;
+	let postList = await postCollection.find({ "keywords": {$elemMatch: {$eq: keyword}}});
+	postList = await postList.toArray();
+	return postList; 
 };
 
 /**

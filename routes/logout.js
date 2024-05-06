@@ -7,7 +7,7 @@ router.route('/')
         req.session.destroy();
         return res.status(200).redirect('/login');
     } catch (e) {
-        return res.status(500).render('error/error', {error: e});
+        return res.status(500).render('error/error', {error: e, layout: 'nonav'});
     }
 });
 

@@ -2,7 +2,7 @@
     <div class="w-2/5">
     {{#each posts}}
         <a href="/posts/{{this.id}}">
-            <div class="bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer hover:bg-icon200 space-y-2">
+            <div class="bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer hover:bg-icon200">
                 <p class="text-lg font-semibold mb-2">{{this.username}}</p>
                 <img src="{{this.image}}" alt="Post Image" class="w-full h-auto mb-3">
                 <p class="mb-1">{{this.description}}</p>
@@ -24,9 +24,6 @@
                 </div>
             </div>
         </a>
-        <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2 report" data-post-id="{{this.id}}" data-reported-user="{{this.username}}">Report Post</button>
     {{/each}}
     </div> 
 </div>
-
-<script src="../../public/js/report.js"></script>
