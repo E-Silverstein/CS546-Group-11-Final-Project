@@ -128,9 +128,11 @@ router
     try {
         let post = await postData.getPostById(req.params.postid);
         let userid = req.session.userid;
+        let posterId = await userData.getUserByUsername(post.username);
         if (post==null) throw "Error: No Posts found with id: "+req.params.postid;;
         //TO-DO: change returns to render when frontend complete
         console.log(post.image);
+
         let comments = [];
         for (let i = 0; i < post.comments.length; i++) {
             let comment = await commentData.getCommentById(post.comments[i].toString());
@@ -159,6 +161,7 @@ router
             comments: comments,
             isAuth: req.session.authenticated,
           });
+
     } catch (e) {
         return res.status(404).render('error/error', {error:e, isAuth: req.session.authenticated});
     }

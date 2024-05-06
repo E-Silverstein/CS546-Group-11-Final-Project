@@ -383,9 +383,7 @@ export const addFollower = async (userId, followerId) => {
 		{ _id: new ObjectId(userId) },
 		{ $addToSet: { followers: new ObjectId(followerId) } }
 	);
-	if (updateInfo.modifiedCount === 0) {
-		throw "Could not update user";
-	}
+	
 
 	const updatedUser = await userCollection.findOne({
 		_id: new ObjectId(userId),
@@ -420,10 +418,6 @@ export const removeFollower = async (userId, followerId) => {
 	const user = await userCollection.findOne({ _id: new ObjectId(userId) });
 	if (isNull(user)) {
 		throw "User not found";
-	}
-
-	if (!user.followers.includes(new ObjectId(followerId))) {
-		throw "User is not following this user";
 	}
 
 	const updateInfo = await userCollection.updateOne(
