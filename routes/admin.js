@@ -57,13 +57,13 @@ router
         //VALIDATION: if report exists
         const reportsCollection = await reports();
         let report = await reportsCollection.find({ _id: new ObjectId(req.body.reportid)});
-        if (!report) throw "Error: user with id: "+req.body.reportid+" does not exist";
+        if (!report) throw "Error: report with id: "+req.body.reportid+" does not exist";
     } catch(e) {
         return res.status(404).render('error/error',{error: e,isAuth: req.session.authenticated});
     }
     try{
         //deletes the report
-        let deleteReport = await reportData.deleteReport(req.body.reportid);
+        let deleteReport = await reportData.deleteAllReports(req.params.postid);
         if (deleteReport==0) throw "Error: Post could not be deleted";
         return res.status(200).render("profiles/admin");
     }catch(e){
@@ -77,10 +77,10 @@ router
 .delete(async (req,res) => {
     try {
         //VALIDATION: userid
-        if (req.params.userid == null) throw "Error: Requires a 'postid' input";
-        if (typeof req.params.userid != 'string') throw "Error: 'postid' must be a string";
-        if (req.params.userid.trim() == '') throw "Error: 'postid' cannot be an empty string";
-        if(!ObjectId.isValid(req.params.userid)) throw "Error: 'postid' is not a valid ObjectId";
+        if (req.params.userid == null) throw "Error: Requires a 'userid' input";
+        if (typeof req.params.userid != 'string') throw "Error: 'userid' must be a string";
+        if (req.params.userid.trim() == '') throw "Error: 'userid' cannot be an empty string";
+        if(!ObjectId.isValid(req.params.userid)) throw "Error: 'userid' is not a valid ObjectId";
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
@@ -97,7 +97,7 @@ router
     try{
         //changes user banned attribute to true
         let deleteRes = await userData.banUser(req.params.userid);
-        if (deleteRes==1) throw "Error: Post could not be deleted";
+        if (deleteRes==1) throw "Error: user could not be deleted";
     }catch(e){
         return res.status(500).render('error/error',{error: e,isAuth: req.session.authenticated});
     }
@@ -105,14 +105,14 @@ router
         //VALIDATION: if report exists
         const reportsCollection = await reports();
         let report = await reportsCollection.find({ _id: new ObjectId(req.body.reportid)});
-        if (!report) throw "Error: user with id: "+req.body.reportid+" does not exist";
+        if (!report) throw "Error: report with id: "+req.body.reportid+" does not exist";
     } catch(e) {
         return res.status(404).render('error/error',{error: e,isAuth: req.session.authenticated});
     }
     try{
         //deletes the report
-        let deleteReport = await reportData.deleteReport(req.body.reportid);
-        if (deleteReport==0) throw "Error: Post could not be deleted";
+        let deleteReport = await reportData.deleteAllReports(req.body.postid);
+        if (deleteReport==0) throw "Error: report could not be deleted";
         return res.status(200).render("profiles/admin");
     }catch(e){
         return res.status(500).render('error/error',{error: e,isAuth: req.session.authenticated});
@@ -126,14 +126,14 @@ router
         //VALIDATION: if report exists
         const reportsCollection = await reports();
         let report = await reportsCollection.find({ _id: new ObjectId(req.params.reportid)});
-        if (!report) throw "Error: user with id: "+req.params.reportid+" does not exist";
+        if (!report) throw "Error: report with id: "+req.params.reportid+" does not exist";
     } catch(e) {
         return res.status(404).render('error/error',{error: e,isAuth: req.session.authenticated});
     }
     try{
         //deletes the report
         let deleteReport = await reportData.deleteReport(req.params.reportid);
-        if (deleteReport==0) throw "Error: Post could not be deleted";
+        if (deleteReport==0) throw "Error: report could not be deleted";
         return res.status(200).render("profiles/admin");
     }catch(e){
         return res.status(500).render('error/error',{error: e,isAuth: req.session.authenticated});
