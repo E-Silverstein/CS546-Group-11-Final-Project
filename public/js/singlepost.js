@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const button = event.target;
             const postId = button.getAttribute('data-id');
             const userId = button.getAttribute('data-userid');
+            console.log("userId:", userId);
+            console.log("postId:", postId);
             fetch(`/posts/addLike/${postId}`, {
                 method: "PATCH",
                 headers: {
