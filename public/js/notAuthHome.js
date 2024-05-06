@@ -16,11 +16,6 @@ function getInformation() {
                     <p class="text-sm text-gray-600 mb-4">Likes: ${cardName.likes}</p>
                 `;
 
-                // Event listener for redirection
-                new_div.addEventListener('click', () => {
-                    window.location.href = `/posts/${cardName.id}`;
-                });
-
                 // Keywords
                 if (cardName.keywords.length > 0) {
                     const keywords_div = document.createElement("div");
