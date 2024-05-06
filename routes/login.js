@@ -51,7 +51,6 @@ router
         req.session.isAdmin = user.isAdmin;
         req.session.authenticated = true && !user.banned;
 
-        console.log(req.session);
         return res.status(200).redirect('/home');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
