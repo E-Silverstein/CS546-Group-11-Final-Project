@@ -54,9 +54,8 @@ router
         //VALIDATION: if user exists
         if (!req.session.authenticated) throw "Error: user must be logged in";
 
-        // const userCollection = await users();
-        // let user = await userCollection.find({ _id: req.session.userid});
-        let user = await userData.getUserById(req.session.userid);
+        const userCollection = await users();
+        let user = await userCollection.find({ _id: req.session.userid});
         if (!user) throw "Error: user with id: "+ req.session.userid+" does not exist";
     } catch(e) {
         res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
@@ -82,9 +81,8 @@ router
         //VALIDATION: if user exists
         if (!req.session.authenticated) throw "Error: user must be logged in";
 
-        // const userCollection = await users();
-        // let user = await userCollection.find({ _id: req.session.userid});
-        let user = await userData.getUserById(req.session.userid);
+        const userCollection = await users();
+        let user = await userCollection.find({ _id: req.session.userid});
         if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
     } catch(e) {
         return res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});

@@ -40,9 +40,8 @@ router
     }
     try {
         //VALIDATION: if post exists
-        // const postCollection = await posts();
-        // let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
-        const post = await postData.getPostById(req.params.postid);
+        const postCollection = await posts();
+        let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
         if (!post) throw "Error: Post with id: "+req.params.postid+" does not exist";
     } catch (e) {
         return res.status(400).render('error/error',{error: e,isAuth: req.session.authenticated});
@@ -90,8 +89,7 @@ router
     try {
         //VALIDATION: if user exists
         const userCollection = await users();
-        // let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
-        const user = await userData.getUserById(req.params.userid);
+        let user = await userCollection.find({ _id: new ObjectId(req.params.userid)});
         if (!user) throw "Error: user with id: "+req.params.userid+" does not exist";
     } catch(e) {
         return res.status(404).render('error/error',{error: e,isAuth: req.session.authenticated});
