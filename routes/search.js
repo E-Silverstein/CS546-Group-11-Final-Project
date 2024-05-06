@@ -13,19 +13,19 @@ router
         const { query } = req.body;
 
         if(!(keywords && query)) {
-            return res.status(400).render("search", { error: "Please provide at least 1 keyword and/or a query." });
+            return res.status(400).render("search", { error: "Please provide at least 1 keyword and/or a query." , isAuth: req.session.authenticated});
         }
 
         if(!Array.isArray(keywords)) {
-            return res.status(400).render("search", { error: "Keywords must be an array of strings." });
+            return res.status(400).render("search", { error: "Keywords must be an array of strings.", isAuth: req.session.authenticated });
         }
         if(typeof query !== 'string') {
-            return res.status(400).render("search", { error: "Query must be a string." });
+            return res.status(400).render("search", { error: "Query must be a string.", isAuth: req.session.authenticated });
         }
 
         keywords.forEach(kw => {
             if(typeof kw !== 'string') {
-                return res.status(400).render("search", { error: "Keywords must be an array of strings." });
+                return res.status(400).render("search", { error: "Keywords must be an array of strings.", isAuth: req.session.authenticated });
             }
         });
 
