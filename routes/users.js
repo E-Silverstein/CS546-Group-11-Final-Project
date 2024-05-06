@@ -18,7 +18,6 @@ router
         if (!req.session.authenticated){
             return res.redirect('/login');
         }
-
         let user = await userData.getUserById(req.session.userid);
         if (!user) throw "Error: Could not get users";
 
@@ -41,6 +40,8 @@ router
     }
     try {
         //VALIDATION: bios
+
+        //console.log(req.body.bio);
         isValidBio(req.body.bio);
         req.body.bio = xss(req.body.bio.trim());
           
@@ -57,7 +58,7 @@ router
             isValidImg(req.file);
             req.body.fileUrl = "/"+req.file.path;
         }
-        console.log(req.body.fileUrl);
+        //console.log(req.body.fileUrl);
     } catch(e) {
         return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     }
@@ -72,9 +73,7 @@ router
         res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
     try {
-        console.log(req.session.userid);
-        console.log(req.body);
-        
+        console.log(req.body.bio)
         let updateRes = await userData.updateUser(
                                     req.session.userid,
                                     req.body.username,
@@ -120,7 +119,7 @@ router
     if (!req.session.authenticated) return res.status(401).render('error/error', {error: "User must be logged in"});
     try {
         let user = await userData.getUserById(req.session.userid);
-        console.log(user);
+        console.log(typeof user.bio);
         return res.status(200).render('profiles/editprofile', {isAuth: req.session.authenticated, isUser: !user.isAdmin, "username": user.username, "bio": user.bio});
     } catch (e) {
         return res.status(404).render('error/error', {isAuth: req.session.authenticated, error: e});
