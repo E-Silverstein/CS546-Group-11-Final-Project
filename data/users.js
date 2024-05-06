@@ -383,6 +383,11 @@ export const addFollower = async (userId, followerId) => {
 		{ _id: new ObjectId(userId) },
 		{ $addToSet: { followers: new ObjectId(followerId) } }
 	);
+
+	const updateInfo2 = await userCollection.updateOne(
+		{ _id: new ObjectId(followerId) },
+		{ $addToSet: { following: new ObjectId(userId) } }
+	);
 	
 
 	const updatedUser = await userCollection.findOne({
@@ -428,6 +433,11 @@ export const removeFollower = async (userId, followerId) => {
 		throw "Could not update user";
 	}
 
+	const updateInfo2 = await userCollection.updateOne(
+		{ _id: new ObjectId(followerId) },
+		{ $pull: { following: new ObjectId(userId) } }
+	);
+	
 	const updatedUser = await userCollection.findOne({
 		_id: new ObjectId(userId),
 	});
