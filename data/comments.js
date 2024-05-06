@@ -105,33 +105,39 @@ export const getCommentById = async (id) => {
  * @param {string} id - The id of the comment to be deleted.
  * @returns {boolean} - Returns true successfully deleted.
  */
-export const deleteComment = async (id) => {
-	if (helper.isNull(id)) {
-		throw "ID must be provided";
+export const deleteComment = async (commentId, postId, userId) => {
+	if (helper.areAllValuesNotNull([commentId, postId, userId])) {
+		throw "All values must be provided";
 	}
 
-	if (!helper.isOfType(id, "string")) {
-		throw "ID must be of type string";
+	if (!helper.areAllValuesOfType([commentId, postId, userId], "string")) {
+		throw "All values must be of type string";
 	}
 
-	id = id.trim();
+	commentId = commentId.trim();
+	postId = postId.trim();
+	userId = userId.trim();
 
-	if (!ObjectId.isValid(id)) {
+	if (
+		!ObjectId.isValid(commentId) ||
+		!ObjectId.isValid(postId) ||
+		!ObjectId.isValid(userId)
+	) {
 		throw "Invalid ObjectID";
 	}
 
+	const _commentId = new ObjectId(commentId);
+
+	// Delete the comment
 	const commentCollection = await comments();
-	const deleteInfo = await commentCollection.deleteOne({ _id: id });
+	const deleteInfo = await commentCollection.deleteOne({ _id: _commentId });
 	if (deleteInfo.deletedCount === 0) {
 		throw "Could not delete comment";
 	}
-
 	// Remove the comment from the post
-	const commentObj = await getCommentById(id);
-	await postData.removeComment(commentObj.post.toString(), id);
-
+	await postData.removeComment(postId, commentId);
 	// Recalculate the engagement score of the post
-	await postData.incrementEngagementScore(commentObj.post.toString(),commentObj.user.toString(), -2);
+	await postData.incrementEngagementScore(postId, userId, -2);
 
 	return true;
 };
