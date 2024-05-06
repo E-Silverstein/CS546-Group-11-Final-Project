@@ -154,18 +154,21 @@ router
     }
     try {
         //VALIDATION: if post exists
-        const postCollection = await posts();
-        let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
+        // const postCollection = await posts();
+        // let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
+        const post = await postData.getPostById(req.params.postid);
         if (!post) throw "Error: Post with postid: "+req.params.postid+" does not exist"
     } catch(e) {
         res.status(404).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: if user owns post
-        const postCollection = await posts();
-        let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
+        // const postCollection = await posts();
+        // let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
+        const post = await postData.getPostById(req.params.postid);
+        const usernameId = await userData.getUserById(req.session.userid)._id.toString();
 
-        if (req.session.user.username != post.user) throw "Error: You do not own this post"
+        if (req.session.userId != post.username) throw "Error: You do not own this post"
 
     } catch(e) {
         res.status(403).render('error/error', {error:e, isAuth: req.session.authenticated});
@@ -237,8 +240,9 @@ router
     }
     try {
         //VALIDATION: if post exists
-        const postCollection = await posts();
-        let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
+        // const postCollection = await posts();
+        // let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
+        const post = await postData.getPostById(req.params.postid);
         if (!post) throw "Error: Post with id: "+req.params.postid+" does not exist"
     } catch(e) {
         res.status(404).render('error/error', {error:e, isAuth: req.session.authenticated});
@@ -247,9 +251,12 @@ router
         //VALIDATION: if user owns post
         const postCollection = await posts();
         let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
-        //TO-DO: initialize session state
+        //TODO: initialize session state
 
-        if (req.session.user.username != post.user) throw "Error: You do not own this post"
+        const post = await postData.getPostById(req.params.postid);
+        const usernameId = await userData.getUserById(req.session.userid)._id.toString();
+
+        if (req.session.userId != post.username) throw "Error: You do not own this post"
     } catch(e) {
         res.status(403).render('error/error', {error:e, isAuth: req.session.authenticated});
     }

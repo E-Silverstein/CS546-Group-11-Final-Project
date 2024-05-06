@@ -24,8 +24,9 @@ router
         isValidUsername(req.body.username);
         req.body.username = req.body.username.trim().toLowerCase();
 
-        const userCollection = await users();
-        let user = await userCollection.findOne({username: {$eq: req.body.username}});
+        // const userCollection = await users();
+        // let user = await userCollection.findOne({username: {$eq: req.body.username}});
+        let user = await userData.getUserByUsername(req.body.username);
         if (user) throw "Error: Username "+req.body.username+" already exists";
 
     } catch(e) {
