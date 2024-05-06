@@ -1,8 +1,8 @@
 /*
     ROUTES ARE NOT TESTED YET
 */
-
-import { users } from '../config/mongoCollections.js';
+import { userData } from "../data/index.js";
+// import { users } from '../config/mongoCollections.js';
 import express from 'express';
 import bcrypt from 'bcrypt';
 import { isValidPassword, isValidUsername } from '../helpers.js';
@@ -40,8 +40,9 @@ router
     }
     try {
         
-        const userCollection = await users();
-        let user = await userCollection.findOne({username: req.body.username});
+        // const userCollection = await users();
+        // let user = await userCollection.findOne({username: req.body.username});
+        let user = await userData.getUserByUsername(req.body.username);
         if (!user) throw "Username or Password is invalid.";
         let compare = await bcrypt.compare(req.body.password, user.password);
         if (!compare) throw "Username or password is invalid."; 
