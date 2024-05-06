@@ -1,13 +1,16 @@
 <div class="flex justify-center">
     <div class="pt-12 w-3/5 space-y-2">
         <p class="font-bold">{{{username}}}</p>
+        <img src="profilePicture">
         <p>{{{bio}}}</p>
-        {{#if isUser}}
-            <a href="/users/editUser" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Edit Profile</a>
-            <a href="/logout" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Logout</a>
-        {{else}}
-            <a class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Follow</a>
-        {{/if}}
+        <div>
+            {{#if isUser}}
+                <a href="/users/editUser" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Edit Profile</a>
+                <a href="/logout" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Logout</a>
+            {{else}}
+                <a class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Follow</a>
+            {{/if}}
+        </div>
         <div>
             {{#each posts}}
                 <div>
