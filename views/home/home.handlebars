@@ -1,32 +1,6 @@
-<div class="flex justify-center mt-8">
-    <div class="w-2/5">
-    {{#each posts}}
-        <a href="/posts/{{this.id}}">
-            <div class="bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer hover:bg-icon200 space-y-2">
-                <p class="text-lg font-semibold mb-2">{{this.username}}</p>
-                <img src="{{this.image}}" alt="Post Image" class="w-full h-auto mb-3">
-                <p class="mb-1">{{this.description}}</p>
-                <p class="text-sm text-gray-600 mb-4">Likes: {{this.likes}}</p>
-                <div class="flex">
-                    {{#each this.keywords}}
-                        <p class="bg-icon200 text-icon900 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded w-fit">{{this}}</p>
-                    {{/each}}
-                </div>
-                <div class="space-x-2">
-                    <p>Comments</p>
-                    {{#if this.comments}}
-                        {{#each this.comments}}
-                            <p>{{this.user}}: {{this.text}}</p>
-                        {{/each}}
-                    {{else}}
-                        <p>No comments</p>
-                    {{/if}}
-                </div>
-            </div>
-        </a>
-        <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2 report" data-post-id="{{this.id}}" data-reported-user="{{this.username}}">Report Post</button>
-    {{/each}}
-    </div> 
-</div>
-
-<script src="../../public/js/report.js"></script>
+<div id="content-before-loading"></div> 
+{{#if isAuth}}
+    <script src="../public/js/home.js"></script>
+{{else}}
+    <script src="../public/js/notAuthHome.js"></script>
+{{/if}}

@@ -155,6 +155,7 @@ export const getRecommendedPosts = async (userId) => {
 			});
 		}
 		let outPost = {
+			id: recommendedPosts[i]._id.toString(),
 			username: recommendedPosts[i].username,
 			image: recommendedPosts[i].image,
 			clothingLinks: recommendedPosts[i].clothingLinks,
@@ -166,7 +167,12 @@ export const getRecommendedPosts = async (userId) => {
 		out.push(outPost);
 	}
 	console.log("out", out);
-	return out;
+	if(out <5) {
+		return getRandomPosts();
+	} else {
+		return out;
+	
+	}
 };
 
 export const calculateEngagementScore = async (userObj, postObj) => {

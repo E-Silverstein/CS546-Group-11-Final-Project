@@ -312,12 +312,12 @@ export const searchUserByUsername = async (username) => {
 	username = username.trim();
 
 	const userCollection = await users();
-	const users = await userCollection.find({ $text: { $search: username } }).toArray();
-	if (isNull(users)) {
+	let user = await userCollection.find({ $text: { $search: username } }).toArray();
+	if (isNull(user)) {
 		throw "Users not found";
 	}
 
-	return users;
+	return user;
 }
 
 /**
@@ -497,7 +497,7 @@ export const updateUser = async (
 		throw "User not found";
 	}
 
-	const updateInfo = await userCollection.updateOne(
+	const updateInfo = await userCollection.findOneAndUpdate(
 		{ _id: new ObjectId(id) },
 		{
 			$set: {
@@ -507,6 +507,7 @@ export const updateUser = async (
 			},
 		}
 	);
+	console.log(updateInfo);
 	if (updateInfo.modifiedCount === 0) {
 		throw "Could not update user";
 	}

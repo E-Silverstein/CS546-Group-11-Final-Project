@@ -286,8 +286,9 @@ export const getPostsByKeyword = async (keyword) => {
 	keyword = keyword.trim();
 
 	const postCollection = await posts();
-	const postList = await postCollection.find({ keywords: keyword }).toArray();
-	return postList;
+	let postList = await postCollection.find({ "keywords": {$elemMatch: {$eq: keyword}}});
+	postList = await postList.toArray();
+	return postList; 
 };
 
 /**
@@ -386,24 +387,6 @@ export const addLike = async (user, post) => {
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
 
-	// Add the liked keywords to the user's liked keywords
-	const userCollection = await users();
-	const userObj = await userCollection.findOne({ _id: new ObjectId(user) });
-	if (helper.isNull(userObj)) {
-		throw "User does not exist";
-	}
-
-	const likedKeywords = postObj.keywords;
-	for (let i = 0; i < likedKeywords.length; i++) {
-		const userUpdate = await userCollection.updateOne(
-			{ _id: new ObjectId(user) },
-			{ $addToSet: { likedKeywords: likedKeywords[i].toLowerCase().trim() } }
-		);
-		if (userUpdate.modifiedCount === 0) {
-			throw "Could not add liked keywords to user";
-		}
-	}
-
 	// Recalculate the engagement score of the post
 	await incrementEngagementScore(post, user, 3);
 
@@ -442,7 +425,7 @@ export const removeLike = async (user, post) => {
 	}
 	const postObj = await postCollection.findOne({ _id: new ObjectId(post) });
 	await incrementEngagementScore(post, user, -3);
-	return postObj.likes.length;
+	return postObj;
 };
 
 /**
