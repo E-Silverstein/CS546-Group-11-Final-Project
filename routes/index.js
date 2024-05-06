@@ -7,6 +7,7 @@ import searchRoutes from './search.js';
 import adminRoutes from './admin.js';
 import logoutRoutes from './logout.js';
 import reportRoutes from './reports.js';
+import commentRoutes from "./comments.js";
 
 const constructorMethod = app => {    
   app.use('/home', homeRoutes);
@@ -18,9 +19,13 @@ const constructorMethod = app => {
   app.use("/search", searchRoutes);
   app.use("/logout", logoutRoutes);
   app.use("/reports", reportRoutes);
+  app.use("/comments", commentRoutes);
 
   // app.use("/error",  )
 
+  app.use("/error", (req, res) => {
+    return res.status(400).render('error/error', {error: req.query.error})
+  })
 
   app.use("*", (req, res) => {
     return res.status(404).render('error/error', {error: "Not found", isAuth:req.session.authenticated});

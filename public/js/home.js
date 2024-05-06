@@ -8,12 +8,15 @@ function getInformation() {
         data.forEach((cardName) => {
             const new_div = document.createElement("div");
             new_div.className = "bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer";
+            console.log(cardName.posterId);
             new_div.innerHTML = `
-                <h3 class="text-lg font-semibold mb-2">${cardName.username}</h3>
+                <a href="/users/${cardName.posterId}" class="text-lg font-semibold mb-2">${cardName.username}</a>
                 <img src="${cardName.image}" alt="Post Image" class="w-full h-auto mb-3">
                 <p class="mb-1">${cardName.description}</p>
                 <p class="text-sm text-gray-600 mb-2">Clothing Links: ${cardName.clothingLinks}</p>
                 <button class="like-button" data-id="${cardName.id}" data-userid="${cardName.userid}">Likes: ${cardName.likes}</button>
+                <br>
+                <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2 report" data-post-id=${cardName.id} data-reported-user=${cardName.username}>Report Post</button>
                 <br>
             `;
 
@@ -71,7 +74,9 @@ function getInformation() {
         });
         c++;
     })
-    .catch((error) => console.error("Error:", error));
+
+    //change?
+    .catch((error) =>  window.location.href = "/error?error=Internal+Server+Error");
 }
 
 before_loading.addEventListener('click', function(event) {
@@ -92,7 +97,7 @@ before_loading.addEventListener('click', function(event) {
             button.textContent = `Dislike: ${data.likes.length}`;
             button.classList.replace('like-button', 'dislike-button');
         })
-        .catch((error) => console.error("Error:", error));
+        .catch((error) => window.location.href = "/error?error=Internal+Server+Error");
     } else if (event.target.classList.contains('dislike-button')) {
         const button = event.target;
         const postId = button.getAttribute('data-id');
@@ -109,7 +114,7 @@ before_loading.addEventListener('click', function(event) {
             button.textContent = `Likes: ${data.likes.length}`;
             button.classList.replace('dislike-button', 'like-button');
         })
-        .catch((error) => console.error("Error:", error));
+        .catch((error) =>  window.location.href = "/error?error=Internal+Server+Error");
     }
 });
 
@@ -120,3 +125,84 @@ window.addEventListener("scroll", () => {
 });
 
 getInformation();
+
+$(document).ready(() => {
+    let hold = '';
+    let user = '';
+    let activeReport = null;
+    $(document).on("click", ".report",function(event) {
+        event.preventDefault();
+        if (activeReport !== null) {
+            $(activeReport).siblings(".report-reason").remove();
+            $(activeReport).siblings(".submit-report").remove();
+            $(activeReport).show();
+        }
+
+        const postId = $(this).data("post-id");
+        hold = postId;
+        const username = $(this).data("reported-user");
+        user = username;
+        activeReport = this;
+
+        $(this).after('<input type="text" class="report-reason" id="report-' + postId + '"  placeholder="Enter reason for reporting...">');
+        $(this).after('<button class="submit-report" data-report-reason="{{report-reason}}">Submit</button>');
+        $(this).hide();
+    });
+
+    $(document).on("click",".submit-report",function(event) {
+        event.preventDefault();
+        $("#error").remove();
+        const postId = hold;
+        const username = user;
+        const reportReason = document.getElementById("report-" + postId).value;
+        let errors = [];
+
+        if(reportReason.length ==0){
+            errors.push("Cannot submit empty reason");
+        }
+
+        if(typeof reportReason != 'string'){
+            errors.push("Reason has to be a string");
+        }
+
+        if (!reportReason.match(/^[0-9a-zA-Z\s]+$/)) {
+            errors.push("Reason can only be alphanumeric and contain spaces");
+        }  
+
+        if (errors.length) {
+            event.preventDefault();
+            $(this).append(`<p id='error'>Invalid Inputs: ${errors.join(", ")}</p>`);
+            $('#error').reset();
+        }
+
+        $.ajax({
+            type: "POST", 
+            url: "/reports", 
+            data: {
+                postId: postId,
+                username: username,
+                reason: reportReason
+            },
+            success: function(response) {
+                console.log("Report submitted successfully");
+                // Remove the text input and submit button
+                // $(this).prev(".report-reason").remove();
+                // $(this).remove();
+                // $(this).closest(".report").find(".report-button").show();
+            },
+            error: function(xhr, status, error) {
+                // Handle errors if any
+                console.error("Error submitting report:", error);
+            }
+        });
+        // Remove the text input and submit button
+        $("#report-" + postId).remove();
+        $(this).remove();
+        // Show the report button again
+        $(".report[data-post-id='" + postId + "']").show();
+
+        activeReport = null;
+    });
+
+
+});

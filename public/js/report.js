@@ -37,14 +37,14 @@ $(document).ready(() => {
             errors.push("Reason has to be a string");
         }
 
-        if(!reportReason.match(/^[0-9a-zA-Z]+$/)){
-            errors.push("Reason can only be alphanumeric");
-        }
+        if (!reportReason.match(/^[0-9a-zA-Z\s]+$/)) {
+            errors.push("Reason can only be alphanumeric and contain spaces");
+        }        
 
         if (errors.length) {
             event.preventDefault();
             $(this).append(`<p id='error'>Invalid Inputs: ${errors.join(", ")}</p>`);
-            $(this).reset();
+            errors =[];
         }
 
         $.ajax({

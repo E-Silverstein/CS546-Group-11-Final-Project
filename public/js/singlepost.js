@@ -39,4 +39,25 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error("Error:", error));
         }
     });
+
+    $("#delete-comment").on("click", function() {
+        const ids = $(this).attr("data-id");
+        const postId = ids.split(":")[0];
+        const commentId = ids.split(":")[1];
+
+        fetch(`/comments/${postId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ commentid: commentId }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = `/posts/${postId}`;
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
 });

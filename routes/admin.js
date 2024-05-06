@@ -65,7 +65,7 @@ router
         //deletes the report
         let deleteReport = await reportData.deleteAllReports(req.params.postid);
         if (deleteReport==0) throw "Error: Post could not be deleted";
-        return res.status(200).render("profiles/admin");
+        return res.status(200).render("profiles/admin", {isAuth: req.session.authenticated});
     }catch(e){
         return res.status(500).render('error/error',{error: e,isAuth: req.session.authenticated});
     }
@@ -113,7 +113,7 @@ router
         //deletes the report
         let deleteReport = await reportData.deleteAllReports(req.body.postid);
         if (deleteReport==0) throw "Error: report could not be deleted";
-        return res.status(200).render("profiles/admin");
+        return res.status(200).render("profiles/admin", {isAuth: req.session.authenticated});
     }catch(e){
         return res.status(500).render('error/error',{error: e,isAuth: req.session.authenticated});
     }
@@ -134,7 +134,7 @@ router
         //deletes the report
         let deleteReport = await reportData.deleteReport(req.params.reportid);
         if (deleteReport==0) throw "Error: report could not be deleted";
-        return res.status(200).render("profiles/admin");
+        return res.status(200).render("profiles/admin", {isAuth: req.session.authenticated});
     }catch(e){
         return res.status(500).render('error/error',{error: e,isAuth: req.session.authenticated});
     }
