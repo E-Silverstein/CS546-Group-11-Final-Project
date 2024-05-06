@@ -238,37 +238,19 @@ router
     }
     try {
         //VALIDATION: if post exists
-<<<<<<< HEAD
-        // const postCollection = await posts();
-        // let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
-        let post = await postData.getPostById(req.params.postid);
-=======
         const postCollection = await posts();
         let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
->>>>>>> parent of 68bdc74 (Merge pull request #147 from E-Silverstein/145-make-sure-all-routes-do-not-directly-query-mongo)
         if (!post) throw "Error: Post with id: "+req.params.postid+" does not exist"
     } catch(e) {
         res.status(404).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: if user owns post
-<<<<<<< HEAD
-        // const postCollection = await posts();
-        // let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
-        //TODO: initialize session state
-
-        let post = await postData.getPostById(req.params.postid);
-        if (!post) throw "Error: Post with id: "+req.params.postid+" does not exist";
-        const usernameId = await userData.getUserById(req.session.userid)._id.toString();
-
-        if (req.session.userId != post.username) throw "Error: You do not own this post"
-=======
         const postCollection = await posts();
         let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
         //TO-DO: initialize session state
 
         if (req.session.user.username != post.user) throw "Error: You do not own this post"
->>>>>>> parent of 68bdc74 (Merge pull request #147 from E-Silverstein/145-make-sure-all-routes-do-not-directly-query-mongo)
     } catch(e) {
         res.status(403).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
