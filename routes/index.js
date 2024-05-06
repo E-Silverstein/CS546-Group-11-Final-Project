@@ -7,6 +7,7 @@ import searchRoutes from './search.js';
 import adminRoutes from './admin.js';
 import logoutRoutes from './logout.js';
 import reportRoutes from './reports.js';
+import commentRoutes from "./comments.js";
 
 const constructorMethod = app => {    
   app.use('/home', homeRoutes);
@@ -18,6 +19,7 @@ const constructorMethod = app => {
   app.use("/search", searchRoutes);
   app.use("/logout", logoutRoutes);
   app.use("/reports", reportRoutes);
+  app.use("/comments", commentRoutes);
 
   // app.use("/error",  )
 
