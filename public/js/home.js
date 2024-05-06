@@ -1,5 +1,5 @@
-let before_loading = document.getElementById("content-before-loading");
-let c = 0;
+var before_loading = document.getElementById("content-before-loading");
+var c = 0;
 function getInformation() {
 	fetch(`/home/getReccomendedPosts`)
     .then((response) => response.json())
