@@ -23,7 +23,7 @@ router
         //TO-DO: change returns to render when frontend complete
         return res.status(200).json(posts);
     } catch (e) {
-        return res.status(500).render('error/error', {error:e});
+        return res.status(500).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
 })
 // upload.single('name') takes in the name of the INPUT ELEMENT that the file is being inputted to
@@ -38,7 +38,7 @@ router
        isValidImg(req.file);
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     } 
     try {
         //VALIDATION: clothingLinks
@@ -50,7 +50,7 @@ router
         }
 
      } catch(e) {
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     } 
     try {
         //VALIDATION: keywords
@@ -63,7 +63,7 @@ router
             req.body.keywords[i] = keyword.trim();
         }
     } catch(e) {
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     } 
     try {
          //VALIDATION: description
@@ -71,7 +71,7 @@ router
         req.body.description = req.body.description.trim();
 
     } catch(e) {
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     }
     try {
         let newPost = await postData.createPost(
@@ -88,7 +88,7 @@ router
         return res.status(200).redirect(`/posts/${newPost._id.toString()}`)
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(500).render('error/error', {error:e});
+        return res.status(500).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
 });
 
@@ -127,16 +127,16 @@ router
         isValidId(req.params.postid);
         req.params.postid = req.params.postid.trim();
     } catch (e) {
-        return res.status(400).render('error/error', {error:e});
+        return res.status(400).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
     try {
         let post = await postData.getPostById(req.params.postid);
         if (post==null) throw "Error: No Posts found with id: "+req.params.postid;;
         //TO-DO: change returns to render when frontend complete
         console.log(post.image);
-        return res.status(200).render('posts/singlepost', {username: post.username, image: post.image, clothingLinks: post.clothingLinks, description: post.description});
+        return res.status(200).render('posts/singlepost', {username: post.username, image: post.image, clothingLinks: post.clothingLinks, description: post.description, isAuth: req.session.authenticated});
     } catch (e) {
-        return res.status(404).render('error/error', {error:e});
+        return res.status(404).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
 })
 .patch(upload.single('post-image'), async (req, res) => {
@@ -147,7 +147,7 @@ router
         isValidId(req.params.postid)
         req.params.postid = req.params.postid.trim();
     } catch (e) {
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: if post exists
@@ -155,7 +155,7 @@ router
         let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
         if (!post) throw "Error: Post with postid: "+req.params.postid+" does not exist"
     } catch(e) {
-        res.status(404).render('error/error', {error:e});
+        res.status(404).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: if user owns post
@@ -165,7 +165,7 @@ router
         if (req.session.user.username != post.user) throw "Error: You do not own this post"
 
     } catch(e) {
-        res.status(403).render('error/error', {error:e});
+        res.status(403).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: image 
@@ -173,7 +173,7 @@ router
         if (!req.file.mimetype.includes('image/')) throw "Error: 'image' input is incorrect file type";
         
     } catch(e) {
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     } 
     try {
         //VALIDATION: clothingLinks
@@ -186,7 +186,7 @@ router
         }
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     } 
     try {
         //VALIDATION: keywords
@@ -201,14 +201,14 @@ router
         }
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     } 
     try {
         //VALIDATION: description
        isValidString(req.body.description, 0, 256);
         req.body.description = req.body.description.trim();
    } catch(e) {
-       return res.status(400).render('error/error',{error:e});
+       return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
    }
     try {
        let updateRes = await postData.updatePost(req.params.postid, req.file.path, req.body.clothingLinks, req.body.keywords);
@@ -219,7 +219,7 @@ router
 
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(500).render('error/error', {error:e});
+        return res.status(500).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
 })
 .delete(async (req, res) => {
@@ -230,7 +230,7 @@ router
         req.params.postid = req.params.postid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).render('error/error', {error:e});
+        return res.status(400).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: if post exists
@@ -238,7 +238,7 @@ router
         let post = await postCollection.find({ _id: new ObjectId(req.params.postid)});
         if (!post) throw "Error: Post with id: "+req.params.postid+" does not exist"
     } catch(e) {
-        res.status(404).render('error/error', {error:e});
+        res.status(404).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
     try {
         //VALIDATION: if user owns post
@@ -248,7 +248,7 @@ router
 
         if (req.session.user.username != post.user) throw "Error: You do not own this post"
     } catch(e) {
-        res.status(403).render('error/error', {error:e});
+        res.status(403).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
     try {
         let deleteRes = await postData.deletePost(req.params.postid);
@@ -257,7 +257,7 @@ router
         return res.status(200).send("Delete Successful");
 
     } catch(e) {
-        return res.status(500).render('error/error', {error:e});
+        return res.status(500).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
 });
 

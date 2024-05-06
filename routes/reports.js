@@ -9,7 +9,7 @@ const router = express.Router();
 router
 .route('/') 
     .get(async (req, res) => {
-        res.status(200).render("report submission page");
+        res.status(200).render("report submission page",{isAuth:req.session.authenticated});
     })
     .post(async (req, res) => {
         try{
@@ -20,7 +20,7 @@ router
                 throw "Error: Value are not of correct type";
             }
         }catch(e){
-            return res.status(400).json(e);
+            return res.status(400).render("error/error",{error:e,isAuth:req.session.authenticated});
         }
         try{
             if (!ObjectId.isValid(req.postId)) {
@@ -36,12 +36,12 @@ router
 		        throw "Invalid ObjectID";
 	        }
         } catch (e) {
-            return res.status(400).json(e);
+            return res.status(400).render("error/error",{error:e,isAuth:req.session.authenticated});
         }
         try {
-            return res.status(200).render("reportsubmissionpage");
+            return res.status(200).render("reportsubmissionpage",{isAuth:req.session.authenticated});
         } catch (e) {
-            return res.status(400).json(e);          
+            return res.status(400).render("error/error",{error:e,isAuth:req.session.authenticated});          
         }
     });
 

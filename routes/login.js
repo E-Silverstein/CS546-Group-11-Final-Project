@@ -22,7 +22,7 @@ router
         isValidUsername(req.body.username);
         req.body.username = req.body.username.trim().toLowerCase();
     } catch(e) {
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, layout: 'nonav'});
     }
     try {
         /*VALIDATION: password
@@ -35,7 +35,7 @@ router
         isValidPassword(req.body.password);
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, layout: 'nonav'});
     }
     try {
         
@@ -53,7 +53,7 @@ router
         return res.status(200).redirect('/home');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
-        return res.status(400).render('error/error',{error:e});
+        return res.status(400).render('error/error',{error:e, layout: 'nonav'});
     }
 });
 
