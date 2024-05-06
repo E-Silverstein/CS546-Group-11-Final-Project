@@ -7,7 +7,9 @@
         {{#each this.clothingLinks}}
             <p class="text-sm text-gray-600 mb-2">{{this}}</p>
         {{/each}}
-        <p class="text-sm text-gray-600 mb-4">Likes: {{likes}}</p>
+        <div class="flex justify-between items-center">
+            <button class="like-button" data-id="{{id}}" data-userid="{{userid}}">Likes: {{likes}}</button>
+        </div>
         <div class="flex">
             {{#each keywords}}
                 <p class="bg-icon200 text-icon900 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded w-fit">{{this}}</p>
@@ -25,3 +27,4 @@
         </div>
     </div>
 </div>
+<script src="../public/js/singlepost.js"></script>

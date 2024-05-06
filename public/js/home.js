@@ -14,7 +14,17 @@ function getInformation() {
                 <p class="mb-1">${cardName.description}</p>
                 <p class="text-sm text-gray-600 mb-2">Clothing Links: ${cardName.clothingLinks}</p>
                 <button class="like-button" data-id="${cardName.id}" data-userid="${cardName.userid}">Likes: ${cardName.likes}</button>
+                <br>
             `;
+
+            const button = document.createElement("button");
+            button.textContent = "View Post";
+            button.className = "view-post-button";
+            button.addEventListener("click", () => {
+                const postId = cardName.id;
+                window.location.href = `/posts/${postId}`;
+            });
+            new_div.appendChild(button);
 
              // Keywords
              if (cardName.keywords.length > 0) {
