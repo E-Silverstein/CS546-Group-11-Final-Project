@@ -3,9 +3,13 @@ $(document).ready(function() {
     let clothingLinks = [];
     let keywordsArr = [];
     let keywordCounter = 0;
+   
 
     $('#addClothingLink').on('click', (event) => {
         event.preventDefault();
+        if($('#keywordsContainer').find('#warning')){
+            $('#keywordsContainer').find('#warning').remove();
+        }
         const link = $('#clothingLinks').val().trim();
         if($('#clothingLinksContainer').find('#cwarning1')){
             $('#clothingLinksContainer').find('#cwarning1').remove();
@@ -32,7 +36,7 @@ $(document).ready(function() {
         }
         if(clothingCounter == 8){
             $("#clothingLinksContainer").append(`
-                <p class="text-center" id="cwarning2">Max 8 links</p>
+                <p class="text-center" id="cwarning2">Clothing links limit reached</p>
             `);
             $('#clothingLinks').val('');
         }
@@ -53,6 +57,9 @@ $(document).ready(function() {
     $('#addKeyword').on('click', (event)=>{
         event.preventDefault();
         const key = $('#keywordsInput').val().trim();
+        if($('#keywordsContainer').find('#warning')){
+            $('#keywordsContainer').find('#warning').remove();
+        }
         if($('#keywordsContainer').find('#kwarning1')){
             $('#keywordsContainer').find('#kwarning1').remove();
         }
@@ -78,7 +85,7 @@ $(document).ready(function() {
         }
         if(keywordCounter == 5){
             $("#keywordsContainer").append(`
-                <p class="text-center" id="kwarning2">Max 5 keywords</p>
+                <p class="text-center" id="kwarning2">Keywords limit reached</p>
             `);
             $('#keywordsInput').val('');
         }
@@ -96,4 +103,15 @@ $(document).ready(function() {
         parent.parentElement.remove();
     });
     
+    $('#createPost').on('click', (event) => {
+        event.preventDefault();
+        if($('#keywordsContainer').find('#warning')){
+            $('#keywordsContainer').find('#warning').remove();
+        }
+        if(clothingLinks.length == 0 || keywordsArr.length == 0){
+            $('#keywordsContainer').append(`
+                <p class="text-center" id="warning">Clothing links and keywords require input</p>
+            `);
+        }
+    });
 });
