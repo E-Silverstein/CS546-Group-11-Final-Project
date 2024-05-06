@@ -17,7 +17,7 @@ router
 });
 
 router
-.route('/getReccomendedPosts')
+.route('/getRecomendedPosts')
 .get(async (req, res) => {
     /* Route will get all posts that are recommended for the user */
     try {
