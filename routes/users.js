@@ -26,9 +26,9 @@ router
         //TO-DO: change returns to render when frontend complete
         return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
-})
+}) // kevinthuhstink says good job :3 | :3
 .patch(upload.single('profile-picture'), async (req, res) => {
-    try {
+    try                                                                                                {
         //VALIDATION: username        
         isValidUsername(req.body.username);
         req.body.username = xss(req.body.username.trim().toLowerCase());
@@ -141,6 +141,6 @@ router
         //TO-DO: change returns to render when frontend complete
         return res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
-})
+});
 
 export default router
