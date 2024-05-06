@@ -1,56 +1,57 @@
 import { postData, userData } from "../data/index.js";
-import express, { Router } from 'express';
-const router = express.Router();
+import { Router } from 'express';
+import xss from "xss";
+const router = Router();
 
 router
 .route('/')
     .get(async (req, res) => {
-        // TODO: Change, when search page is made, to actual location
-        return res.render("search");
-    })
-    .post(async (req, res) => {
-        const { keywords } = req.body;
-        const { query } = req.body;
+        // TODO: Change, when search/search page is made, to actual location
+        let { keywords, query } = req.query;
 
-        if(!(keywords && query)) {
-            return res.status(400).render("search", { error: "Please provide at least 1 keyword and/or a query." , isAuth: req.session.authenticated});
+        if(!(keywords || query)) {
+            return res.status(400).render("error/error", { error: "Please provide at least 1 keyword and/or a query." , isAuth: req.session.authenticated});
         }
 
-        if(!Array.isArray(keywords)) {
-            return res.status(400).render("search", { error: "Keywords must be an array of strings.", isAuth: req.session.authenticated });
-        }
-        if(typeof query !== 'string') {
-            return res.status(400).render("search", { error: "Query must be a string.", isAuth: req.session.authenticated });
+        if(!(typeof keywords === 'string' || query === 'string')) {
+            return res.status(400).render("error/error", { error: "Keywords and query must both be strings." , isAuth: req.session.authenticated});
         }
 
+        if(keywords === '') keywords = [];
+        else keywords = keywords.split(',');
         keywords.forEach(kw => {
             if(typeof kw !== 'string') {
-                return res.status(400).render("search", { error: "Keywords must be an array of strings.", isAuth: req.session.authenticated });
+                return res.status(400).render("error/error", { error: "Keywords must be an array of strings.", isAuth: req.session.authenticated });
             }
         });
-
-        keywords = keywords.map(kw => { 
-            kw.trim(); 
-            kw.toLowerCase(); 
-        });
+        keywords = keywords.map(kw => xss(kw));
+        keywords = keywords.map(kw => kw.trim().toLowerCase());
+        query = xss(query);
         query = query.trim();
-
+        
         let renderData = {};
         try {
             let posts = [];
-            keywords.forEach(async kw => posts.push(await postData.getPostsByKeyword(kw)));
+            for(let i = 0; i < keywords.length; i++) {
+                let post = await postData.getPostsByKeyword(keywords[i]);
+                posts = posts.concat(post);
+            }
             renderData.posts = posts;
         } catch(e) {
             renderData.posts = [];
+            console.log(e);
         }
         try {
             let users = await userData.searchUserByUsername(query);
             renderData.users = users;
         } catch(e) {
             renderData.users = null;
+            console.log(e);
         }
         
-        return res.render("search", renderData);
+        console.log(renderData);
+ 
+        return res.status(200).render("search/search", { isAuth: req.session.authenticated, users: renderData.users, posts: renderData.posts});
     });
-
+    
 export default router;

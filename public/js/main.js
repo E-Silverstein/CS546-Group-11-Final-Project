@@ -11,4 +11,38 @@ $(document).ready(function() {
         else scriptName = scriptName[1];
     }
     $("<script>").attr("src", "/public/js/" + scriptName + ".js").appendTo("head");
+
+    let keywords = [];
+    // Handle the Search Bar
+    $('#search').on('input', (event) => {
+        // Add keyword when user inputs a comma
+        const search = $('#search').val();
+        if (search.includes(',')) {
+            const keyword = search.substring(0, search.indexOf(',')).trim();
+            if(keyword.length >= 3 && keyword.length <= 16 && !keywords.includes(keyword) && keywords.length < 5) {
+                keywords.push(keyword);
+                $('#keywords').append(
+                    `<span class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+                        <p>${keyword}<p>
+                        <button type="button" class="removeKeyword">x</button>
+                    </span>`);
+                $('#search').val('');
+            }
+        }
+    });
+
+    $('#keywords').on('click', '.removeKeyword', (event) => {
+        // Remove keyword when user clicks the x button
+        event.preventDefault();
+        let parent = event.target.parentElement;
+        keywords.splice(keywords.indexOf(parent.firstChild.innerText), 1);
+        parent.parentElement.remove();
+    });
+
+    $('#searchbar').on('submit', (event) => {
+        // submit the search request
+        event.preventDefault();
+        const search = $('#search').val();
+        window.location.href = '/search?keywords=' + keywords.join(',') + '&query=' + search;
+    });
 });

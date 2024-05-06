@@ -64,6 +64,10 @@ app.use('/home',function(req,res,next){
   next();
 });
 
+app.use("/search", function(req,res,next){
+  next();
+});
+
 /*const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   if (req.body && req.body._method) {
     req.method = req.body._method;
