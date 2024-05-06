@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { algoData } from "../data/index.js";
+import { algoData, postData } from "../data/index.js";
 let router = Router();
 
 router
@@ -48,5 +48,6 @@ router
         return res.status(500).render('error/error', {error:e,isAuth: req.session.authenticated});
     }
 });
+
 
 export default router;
