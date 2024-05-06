@@ -115,6 +115,5 @@ export function isValidImg(input) {
 
 export function isValidKeyword(input) {
     isValidString(input, 3, 16);
-    return true;
 }
 

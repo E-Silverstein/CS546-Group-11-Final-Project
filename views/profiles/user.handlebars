@@ -19,41 +19,14 @@
                         Follow
                     {{/if}}
                 </button>
-<div class="mt-24">
-    <div class="flex flex-col text-center space-y-2">
-        <p class="font-bold">{{{username}}}</p>
-        <p>{{{bio}}}</p>
-        {{#if isUser}}
-            <div class="flex flex-col items-center">
-                <div class="pb-2">
-                {{#if profilePicture}}      
-                    <img src={{profilePicture}} class="profile-picture">
-                {{/if}}
-                </div>
-                <div class="pt-2">
-                    <a href="/users/editUser" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Edit Profile</a>
-                    <a href="/logout" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Logout</a>
-                </div>
-            </div>
-        {{else}}
-            <div class="flex justify-center">
-            {{#if profilePicture}}       
-                <img src={{profilePicture}} class="profile-picture">
             {{/if}}
-                <a class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold max-w-min rounded-md p-2">Follow</a>
-            </div>
-        {{/if}}
-    </div>
-    <div class="flex justify-center mt-4">
-        <div class="grid grid-cols-3 gap-4 w-4/5">
+        </div>
+        <div>
             {{#each posts}}
-                <a href="../posts/{{this._id}}">
-                    <div class="bg-white p-4 mb-4 rounded-lg cursor-pointer hover:bg-icon200">
+                <div>
                     <img src="{{this.image}}">
-                    </div>
-                </a>
+                </div>
             {{/each}}
         </div>
     </div>
-    
 </div>

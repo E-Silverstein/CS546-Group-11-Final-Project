@@ -11,8 +11,9 @@ router
         }
         return res.render('home/home', {isAuth: false});
     } catch(e){
-        return res.render('error/error', {error: e, isAuth: req.session.authenticated});
+        return res.render('error/error', {error: e});
     }
+    
 });
 
 router
@@ -27,9 +28,9 @@ router
         if (!posts) throw "Error: Could not get posts";
         
         //TO-DO: change returns to render when frontend complete
-        return res.json(posts);
+        return res.status(200).json(posts);
     } catch (e) {
-        return res.status(500).json({error: "internal server error"})
+        return res.status(500).render('error/error', {error:e});
     }
 });
 
@@ -40,9 +41,9 @@ router
     try {
         const posts = await algoData.getRandomPosts();
         if (!posts) throw "Error: Could not get posts";
-        return res.json(posts);
+        return res.status(200).json(posts);
     } catch (e) {
-        return res.status(500).json({error: "internal server error"})
+        return res.status(500).render('error/error', {error:e});
     }
 });
 
