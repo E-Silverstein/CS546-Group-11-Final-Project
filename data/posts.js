@@ -230,7 +230,7 @@ export const deletePost = async (id) => {
 	}
 
 	const postCollection = await posts();
-	const deleteInfo = await postCollection.deleteOne({ _id: id });
+	const deleteInfo = await postCollection.deleteOne({ _id: new ObjectId(id)});
 	if (deleteInfo.deletedCount === 0) {
 		return 1;
 	}
