@@ -8,9 +8,7 @@ body{
     justify-content: center;
 }
 
-
-.profile-picture{
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
+.profile-picture {
+    width: 200px;
+    height: 200px;
 }

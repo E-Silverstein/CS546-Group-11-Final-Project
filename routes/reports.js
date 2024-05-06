@@ -3,8 +3,7 @@ import express, { Router } from 'express';
 import { getUserByUsername } from "../data/users.js";
 import { getPostById } from "../data/posts.js";
 import { ObjectId } from "mongodb";
-import * as helper from "../helpers.js";
-import xss from 'xss';
+import * as helper from "../helpers.js"
 const router = express.Router();
 
 router
@@ -18,7 +17,7 @@ router
                 throw "Error: Value are not of correct type";
             }
         }catch(e){
-            return res.render('home/home', {isAuth: false});
+            return res.status(400).render("error/error",{error:e,isAuth:req.session.authenticated});
         }
         try{
             req.body.postId = xss(req.body.postId.trim());
@@ -35,18 +34,16 @@ router
 		        throw "Invalid ObjectID";
 	        }
         } catch (e) {
-            return res.render('home/home', {isAuth: false});
-
+            return res.status(400).render("error/error",{error:e,isAuth:req.session.authenticated});
         }
         try {
             req.body.username = xss(req.body.username.trim());
             req.body.reason = xss(req.body.reason.trim());
             const report = await reportData.createReport(req.body.postId,req.body.username,req.body.reason);
             if(!report) throw "Error: no report created";
-            //return res.status(200)
+            return res.status(200)
         } catch (e) {
-            return res.render('home/home', {isAuth: false});
-         
+            return res.status(400).render("error/error",{error:e,isAuth:req.session.authenticated});          
         }
     });
 

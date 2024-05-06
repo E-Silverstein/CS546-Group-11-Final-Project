@@ -11,7 +11,7 @@ form.on("submit", function(event) {
             password.match(/[0-9]/) === null || password.match(/[A-Z]/) === null || password.match(/[-’\/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/) === null) {
         event.preventDefault();
         form.append("<p id='error'>Username or Password is invalid.</p>");
-        // form[0].reset();
+        form[0].reset();
     }
     
 });

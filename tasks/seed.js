@@ -1092,18 +1092,6 @@ async function main() {
 	
 	//set admin
 	const admin = await userData.setAdminStatus(user1._id.toString(),true);
-
-	//set followers
-	const follower1 = await userData.addFollower(user1._id.toString(),user2._id.toString());
-	const follower2 = await userData.addFollower(user19._id.toString(),user26._id.toString());
-	const follower3 = await userData.addFollower(user13._id.toString(),user2._id.toString());
-	const follower4 = await userData.addFollower(user30._id.toString(),user2._id.toString());
-	const follower5 = await userData.addFollower(user5._id.toString(),user1._id.toString());
-	const follower6 = await userData.addFollower(user22._id.toString(),user6._id.toString());
-	const follower7 = await userData.addFollower(user1._id.toString(),user8._id.toString());
-	const follower8 = await userData.addFollower(user9._id.toString(),user2._id.toString());
-	const follower9 = await userData.addFollower(user44._id.toString(),user21._id.toString());
-	const follower10 = await userData.addFollower(user1._id.toString(),user27._id.toString());
 	console.log("Done seeding database");
 	await closeConnection();
 }

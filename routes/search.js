@@ -20,19 +20,11 @@ router
 
         if(keywords === '') keywords = [];
         else keywords = keywords.split(',');
-        try {
-            keywords.forEach(kw => {
-                isValidKeyword(kw);
-            });
-        } catch(e) {
-            return res
-            .status(400)
-            .render("error/error", {
-              error:
-                "Keywords must be an array of strings, each of length 3-16 inclusive.",
-              isAuth: req.session.authenticated,
-            });
-        };
+        keywords.forEach(kw => {
+            if(!isValidKeyword(kw)) {
+                return res.status(400).render("error/error", { error: "Keywords must be an array of strings, each of length 3-16 inclusive.", isAuth: req.session.authenticated });
+            }
+        });
         keywords = keywords.map(kw => xss(kw));
         keywords = keywords.map(kw => kw.trim().toLowerCase());
         query = xss(query);

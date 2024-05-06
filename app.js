@@ -16,14 +16,12 @@ app.use(session({
 }))
 
 app.use('/', function(req,res,next){
-  req.session.isAdmin = false;
     if (req.session.userid === undefined) {
         req.session.authenticated = false;
     } else {
         req.session.authenticated = true;
     }
 
-    
   console.log(req.method + " "+ req.originalUrl + " " + req.session.authenticated);
   if (req.path == "/") {
     req.method = 'GET';
@@ -32,39 +30,25 @@ app.use('/', function(req,res,next){
   next();
 });
 
-
-
 /*admin page to be added eventually to review all the reports made by the users*/
 app.use('/admin', function(req,res,next) {
-  console.log(req.session.isAdmin);
-
   if(!req.session.authenticated){
     return res.status(200).redirect('/login');
   }
-
-  else if (req.session.authenticated && !req.session.isAdmin) {
-    return res.status(401).render('error/error', {error: "You do not have permission to view the page.",});
+  else if (req.session.authenticated && !req.session.user.isAdmin) {
+    return res.status(403).render('error', {error: "You do not have permission to view the page.",});
   }
   next();
 });
 
-app.use('/posts/createPost', function (req,res,next) {
-  if (!req.session.authenticated) {
-    return res.status(200).redirect('/login');
-  }
-  next();
-})
-
+//works
 app.use('/users', function(req,res,next){
-  if (!req.session.authenticated) {
-    return res.status(200).redirect('/login');
-  }
   next();
 });
 
 app.use('/login', function(req,res,next) {
   if (req.method == 'GET' && req.session.authenticated) {
-    return res.status(200).redirect('/home');
+    return res.status(200).redirect('/users');
   }
   next();
 });
@@ -76,23 +60,14 @@ app.use('/signup', function(req,res,next) {
   next();
 });
 
-app.use('/logout', function(req,res,next) {
-  if (!req.session.authenticated) {
-    return res.status(200).redirect('/home');
-  }
+app.use('/home',function(req,res,next){
   next();
-})
+});
 
-app.use('/comment', function(req,res,next) {
-  if (!req.session.authenticated) {
-    return res.status(401).render('error/error', {e: "Must be logged in to comment"})
-  }
+app.use("/search", function(req,res,next){
   next();
-})
+});
 
-app.use('/home', function(req,res,next){
-  next();
-})
 /*const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   if (req.body && req.body._method) {
     req.method = req.body._method;
