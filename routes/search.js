@@ -1,6 +1,7 @@
 import { postData, userData } from "../data/index.js";
 import { Router } from 'express';
 import xss from "xss";
+import { isValidKeyword } from "../helpers.js";
 const router = Router();
 
 router
@@ -20,8 +21,8 @@ router
         if(keywords === '') keywords = [];
         else keywords = keywords.split(',');
         keywords.forEach(kw => {
-            if(typeof kw !== 'string') {
-                return res.status(400).render("error/error", { error: "Keywords must be an array of strings.", isAuth: req.session.authenticated });
+            if(!isValidKeyword(kw)) {
+                return res.status(400).render("error/error", { error: "Keywords must be an array of strings, each of length 3-16 inclusive.", isAuth: req.session.authenticated });
             }
         });
         keywords = keywords.map(kw => xss(kw));

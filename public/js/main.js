@@ -16,7 +16,7 @@ $(document).ready(function() {
     // Handle the Search Bar
     $('#search').on('input', (event) => {
         // Add keyword when user inputs a comma
-        const search = $('#search').val();
+        const search = $('#search').val().trim();
         if (search.includes(',')) {
             const keyword = search.substring(0, search.indexOf(',')).trim();
             if(keyword.length >= 3 && keyword.length <= 16 && !keywords.includes(keyword) && keywords.length < 5) {
@@ -42,7 +42,7 @@ $(document).ready(function() {
     $('#searchbar').on('submit', (event) => {
         // submit the search request
         event.preventDefault();
-        const search = $('#search').val();
+        const search = $('#search').val().trim();
         window.location.href = '/search?keywords=' + keywords.join(',') + '&query=' + search;
     });
 });
