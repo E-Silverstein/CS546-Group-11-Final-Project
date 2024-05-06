@@ -33,7 +33,6 @@ form.on("submit", function(event) {
     if (errors.length) {
         event.preventDefault();
         form.append(`<p id='error'>Invalid Inputs: ${errors.join(", ")}</p>`);
-        form[0].reset();
     }
-    
+    // form[0].reset();
 });
