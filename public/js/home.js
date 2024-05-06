@@ -44,7 +44,7 @@ function getInformation() {
 
             // Comments
             if (cardName.comments.length > 0) {
-                cardName.comments.forEach((comment) => {
+                cardName.comments.slice(0, 3).forEach((comment) => {
                     const comment_div = document.createElement("div");
                     comment_div.className = "border-t border-gray-200 pt-2 mt-2";
                     comment_div.innerHTML = `
@@ -53,12 +53,19 @@ function getInformation() {
                     `;
                     new_div.appendChild(comment_div);
                 });
+                if (cardName.comments.length > 3) {
+                    const more_comments_div = document.createElement("div");
+                    more_comments_div.className = "text-sm text-gray-500 italic mt-2";
+                    more_comments_div.innerHTML = "More comments";
+                    new_div.appendChild(more_comments_div);
+                }
             } else {
                 const no_comments_div = document.createElement("div");
                 no_comments_div.className = "text-sm text-gray-500 italic mt-2";
                 no_comments_div.innerHTML = "No comments";
                 new_div.appendChild(no_comments_div);
             }
+
 
             before_loading.appendChild(new_div);
         });
