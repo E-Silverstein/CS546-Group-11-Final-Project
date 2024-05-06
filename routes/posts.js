@@ -147,10 +147,11 @@ router
                   : null,
             });
         }
-        console.log(comments);
+        console.log(posterId);
         return res
           .status(200)
           .render("posts/singlepost", {
+            posterId: posterId,
             postid: post._id,
             username: post.username,
             image: post.image,
