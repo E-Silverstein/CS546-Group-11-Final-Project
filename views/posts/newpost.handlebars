@@ -1,4 +1,5 @@
 <div class="form-container">
+    <script src="/public/js/newposts.js"></script>
     <form class="flex flex-col space-y-2 w-1/4" method="post" enctype="multipart/form-data" action="/posts/{{postid}}">
 
         <label for="post-image">Select Image</label>
@@ -7,13 +8,13 @@
         <label for="description">Description</label>
         <input type="text" id="description" name="description" class="h-10 w-full rounded-md p-2">
         <span id="clothingLinksContainer" class="flex flex-col space-y-1 w-full">
-            <label for="clothingLinks[]">Clothing Links</label>
-            <input type="text" id="clothingLinks" name="clothingLinks[]" class="h-10 w-full rounded-md p-2">
+            <label for="clothingLinks">Clothing Links</label>
+            <input type="text" id="clothingLinks" name="clothingLinks" class="h-10 w-full rounded-md p-2">
             <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2" type="button" id="addClothingLink">+</button>
         </span>
         <span id="keywordsContainer" class="flex flex-col space-y-1 w-full">
-            <label for="keywords">Keywords</label>
-            <input type="text" id="keywords" name="keywords" class="h-10 w-full rounded-md p-2">
+            <label for="keywordsInput">Keywords</label>
+            <input type="text" id="keywordsInput" name="keywordsInput" class="h-10 w-full rounded-md p-2">
             <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2" type="button" id="addKeyword">+</button>
         </span>
         <button type="submit" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Create Post</button>
