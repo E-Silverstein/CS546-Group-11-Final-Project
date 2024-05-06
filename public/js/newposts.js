@@ -7,16 +7,10 @@ $(document).ready(function() {
 
     $('#addClothingLink').on('click', (event) => {
         event.preventDefault();
-        if($('#keywordsContainer').find('#warning')){
-            $('#keywordsContainer').find('#warning').remove();
-        }
         const link = $('#clothingLinks').val().trim();
-        if($('#clothingLinksContainer').find('#cwarning1')){
-            $('#clothingLinksContainer').find('#cwarning1').remove();
-        }
-        if($('#clothingLinksContainer').find('#cwarning2')){
-            $('#clothingLinksContainer').find('#cwarning2').remove();
-        }
+        $('#keywordsContainer').find('#warning').remove();
+        $('#clothingLinksContainer').find('#cwarning1').remove();
+        $('#clothingLinksContainer').find('#cwarning2').remove();
         if(clothingCounter < 8 && typeof link == 'string' && link.match(/^https?:\/\/(?:www\.)?\w{0,64}\.(?:com|co\.\w{2})/) != null) {
             clothingLinks.push(link);
             $("#clothingLinksContainer").append(`
@@ -57,15 +51,10 @@ $(document).ready(function() {
     $('#addKeyword').on('click', (event)=>{
         event.preventDefault();
         const key = $('#keywordsInput').val().trim();
-        if($('#keywordsContainer').find('#warning')){
-            $('#keywordsContainer').find('#warning').remove();
-        }
-        if($('#keywordsContainer').find('#kwarning1')){
-            $('#keywordsContainer').find('#kwarning1').remove();
-        }
-        if($('#keywordsContainer').find('#kwarning2')){
-            $('#keywordsContainer').find('#kwarning2').remove();
-        }
+        $('#keywordsContainer').find('#warning').remove();
+        $('#keywordsContainer').find('#kwarning1').remove();
+        $('#keywordsContainer').find('#kwarning2').remove();
+        
         if(typeof key != 'string' || key.length < 3 || key.length > 16 || keywordsArr.includes(key) || key ==""){
             $('#keywordsContainer').append(`
                 <p class="text-center" id="kwarning1">Invalid keyword</p>
@@ -105,12 +94,15 @@ $(document).ready(function() {
     
     $('#createPost').on('click', (event) => {
         event.preventDefault();
-        if($('#keywordsContainer').find('#warning')){
-            $('#keywordsContainer').find('#warning').remove();
-        }
-        if(clothingLinks.length == 0 || keywordsArr.length == 0){
+        $('#keywordsContainer').find('#warning').remove();
+        $('#clothingLinksContainer').find('#cwarning1').remove();
+        $('#clothingLinksContainer').find('#cwarning2').remove();
+        $('#keywordsContainer').find('#kwarning1').remove();
+        $('#keywordsContainer').find('#kwarning2').remove();
+        const desc = $('#description').val().trim();
+        if(clothingLinks.length == 0 || keywordsArr.length == 0 || desc == "" || !desc){
             $('#keywordsContainer').append(`
-                <p class="text-center" id="warning">Clothing links and keywords require input</p>
+                <p class="text-center" id="warning">All fields require input</p>
             `);
         }
     });
