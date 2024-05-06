@@ -497,7 +497,7 @@ export const updateUser = async (
 		throw "User not found";
 	}
 
-	const updateInfo = await userCollection.updateOne(
+	const updateInfo = await userCollection.findOneAndUpdate(
 		{ _id: new ObjectId(id) },
 		{
 			$set: {
@@ -507,6 +507,7 @@ export const updateUser = async (
 			},
 		}
 	);
+	console.log(updateInfo);
 	if (updateInfo.modifiedCount === 0) {
 		throw "Could not update user";
 	}

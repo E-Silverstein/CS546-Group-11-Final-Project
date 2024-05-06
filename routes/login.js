@@ -6,6 +6,7 @@ import { users } from '../config/mongoCollections.js';
 import express from 'express';
 import bcrypt from 'bcrypt';
 import { isValidPassword, isValidUsername } from '../helpers.js';
+import xss from 'xss';
 const router = express.Router();
 
 router
