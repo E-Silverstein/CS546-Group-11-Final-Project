@@ -37,7 +37,7 @@ router
         req.body.password = xss(req.body.password.trim());
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
-        return res.status(400).render('error/error',{error:e, layout: 'nonav'});
+        return res.status(400).render('error/error',{error: "Username or password is invalid", layout: 'nonav'});
     }
     try {
         
@@ -55,7 +55,7 @@ router
         return res.status(200).redirect('/home');
     } catch (e) {
          //TO-DO: change returns to render when frontend complete
-        return res.status(400).render('error/error',{error:e, layout: 'nonav'});
+        return res.status(400).render('error/error',{error: "Username or password is invalid", layout: 'nonav'});
     }
 });
 

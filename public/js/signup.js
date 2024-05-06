@@ -1,5 +1,7 @@
 let form = $("#signupForm");
+let message = $("message");
 
+if (message) console.log(message);
 form.on("submit", function(event) {
     $("#error").remove();
 
@@ -8,6 +10,7 @@ form.on("submit", function(event) {
     let password = $("#password").val().trim();
     let confirmPassword = $("#confirmPassword").val().trim();
     birthdate = new Date(birthdate);
+
     let errors = [];
 
     if(username === "" || username.match(/^[-\w\.]{5,32}$/) === null) {
