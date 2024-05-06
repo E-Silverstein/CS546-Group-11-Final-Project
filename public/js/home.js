@@ -71,7 +71,9 @@ function getInformation() {
         });
         c++;
     })
-    .catch((error) => console.error("Error:", error));
+
+    //change?
+    .catch((error) =>  window.location.href = "/error?error=Internal+Server+Error");
 }
 
 before_loading.addEventListener('click', function(event) {
@@ -92,7 +94,7 @@ before_loading.addEventListener('click', function(event) {
             button.textContent = `Dislike: ${data.likes.length}`;
             button.classList.replace('like-button', 'dislike-button');
         })
-        .catch((error) => console.error("Error:", error));
+        .catch((error) => window.location.href = "/error?error=Internal+Server+Error");
     } else if (event.target.classList.contains('dislike-button')) {
         const button = event.target;
         const postId = button.getAttribute('data-id');
@@ -109,7 +111,7 @@ before_loading.addEventListener('click', function(event) {
             button.textContent = `Likes: ${data.likes.length}`;
             button.classList.replace('dislike-button', 'like-button');
         })
-        .catch((error) => console.error("Error:", error));
+        .catch((error) =>  window.location.href = "/error?error=Internal+Server+Error");
     }
 });
 
