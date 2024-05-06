@@ -16,7 +16,7 @@ router
         if(!reports) throw "Error: Could not retrieve reports";
         //page should display reports for admin to review, with a button to delete
         //and a button to ban user
-        return res.status(200).render('profiles/admin', {username: req.session.user});
+        return res.status(200).render('profiles/admin', {report: reports});
     }catch(e)
     {
         return res.status(500).send(e);
@@ -25,7 +25,7 @@ router
 
 //deletes the post if admin chooses to
 router
-.route('/:postid')
+.route('/remove/:postid')
 .delete(async (req,res) => {
     try{
         //TODO get post using post id and then delete it
@@ -50,16 +50,30 @@ router
         //deleting the post
         let deleteRes = await postData.deletePost(req.params.postid);
         if (deleteRes==1) throw "Error: Post could not be deleted";
-        return res.status(200).send("Delete Successful");
-        //return res.status(200).send("profiles/admin");
     } catch (e) {
+        return res.status(500).render('error/error',{error: e});
+    }
+    try {
+        //VALIDATION: if report exists
+        const reportsCollection = await reports();
+        let report = await reportsCollection.find({ _id: new ObjectId(req.body.reportid)});
+        if (!report) throw "Error: user with id: "+req.body.reportid+" does not exist";
+    } catch(e) {
+        return res.status(404).render('error/error',{error: e});
+    }
+    try{
+        //deletes the report
+        let deleteReport = await reportData.deleteReport(req.body.reportid);
+        if (deleteReport==0) throw "Error: Post could not be deleted";
+        return res.status(200).render("profiles/admin");
+    }catch(e){
         return res.status(500).render('error/error',{error: e});
     }
 });
 
 //bans (deletes) the user if the admin wants to
 router
-.route('/:userid')
+.route('/ban/:userid')
 .delete(async (req,res) => {
     try {
         //VALIDATION: userid
@@ -81,18 +95,32 @@ router
         return res.status(404).render('error/error',{error: e});
     }
     try{
-        //deletes the user
-        let deleteRes = await userData.deleteUser(req.params.userid);
+        //changes user banned attribute to true
+        let deleteRes = await userData.banUser(req.params.userid);
         if (deleteRes==1) throw "Error: Post could not be deleted";
-        return res.status(200).send("Delete Successful");
-        //return res.status(200).render("profiles/admin");
+    }catch(e){
+        return res.status(500).render('error/error',{error: e});
+    }
+    try {
+        //VALIDATION: if report exists
+        const reportsCollection = await reports();
+        let report = await reportsCollection.find({ _id: new ObjectId(req.body.reportid)});
+        if (!report) throw "Error: user with id: "+req.body.reportid+" does not exist";
+    } catch(e) {
+        return res.status(404).render('error/error',{error: e});
+    }
+    try{
+        //deletes the report
+        let deleteReport = await reportData.deleteReport(req.body.reportid);
+        if (deleteReport==0) throw "Error: Post could not be deleted";
+        return res.status(200).render("profiles/admin");
     }catch(e){
         return res.status(500).render('error/error',{error: e});
     }
 });
 
 router
-.route('/approve')
+.route('/dismiss/:reportid')
 .delete(async (req,res) => {
     try {
         //VALIDATION: if report exists
@@ -105,7 +133,7 @@ router
     try{
         //deletes the report
         let deleteReport = await reportData.deleteReport(req.params.reportid);
-        if (deleteReport==1) throw "Error: Post could not be deleted";
+        if (deleteReport==0) throw "Error: Post could not be deleted";
         return res.status(200).render("profiles/admin");
     }catch(e){
         return res.status(500).render('error/error',{error: e});
