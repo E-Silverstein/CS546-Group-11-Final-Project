@@ -8,9 +8,8 @@ function getInformation() {
         data.forEach((cardName) => {
             const new_div = document.createElement("div");
             new_div.className = "bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer";
-            console.log(cardName.posterId);
             new_div.innerHTML = `
-                <a href="/users/${cardName.posterId}" class="text-lg font-semibold mb-2">${cardName.username}</a>
+                <h3 class="text-lg font-semibold mb-2">${cardName.username}</h3>
                 <img src="${cardName.image}" alt="Post Image" class="w-full h-auto mb-3">
                 <p class="mb-1">${cardName.description}</p>
                 <p class="text-sm text-gray-600 mb-2">Clothing Links: ${cardName.clothingLinks}</p>
