@@ -1,4 +1,6 @@
-<div class="mt-24 flex justify-center">
+<script src="/public/js/newposts.js"></script>
+
+<div class="form-container">
     <form class="flex flex-col space-y-2 w-1/4" method="post" enctype="multipart/form-data" action="/posts/{{postid}}">
 
         <label for="post-image">Select Image</label>
@@ -11,7 +13,7 @@
             <input type="text" id="clothingLinks" name="clothingLinks[]" class="h-10 w-full rounded-md p-2">
             <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2" type="button" id="addClothingLink">+</button>
         </span>
-        <span>
+        <span id="keywordsContainer" class="flex flex-col space-y-1 w-full">
             <label for="keywords">Keywords</label>
             <input type="text" id="keywords" name="keywords" class="h-10 w-full rounded-md p-2">
             <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2" type="button" id="addKeyword">+</button>

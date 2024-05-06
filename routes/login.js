@@ -5,6 +5,7 @@
 import { users } from '../config/mongoCollections.js';
 import express from 'express';
 import bcrypt from 'bcrypt';
+import xss from 'xss';
 import { isValidPassword, isValidUsername } from '../helpers.js';
 const router = express.Router();
 
@@ -20,7 +21,7 @@ router
             - 5-20 characters long
         */
         isValidUsername(req.body.username);
-        req.body.username = req.body.username.trim().toLowerCase();
+        req.body.username = xss(req.body.username.trim().toLowerCase());
     } catch(e) {
         return res.status(400).render('error/error',{error:e, layout: 'nonav'});
     }
@@ -33,6 +34,7 @@ router
             - at least one special character
         */
         isValidPassword(req.body.password);
+        req.body.password = xss(req.body.password.trim());
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(400).render('error/error',{error:e, layout: 'nonav'});

@@ -5,6 +5,7 @@ import { userData } from '../data/index.js';
 import { users } from '../config/mongoCollections.js';
 import express from 'express';
 import { isValidId, isValidUsername, isValidPassword } from '../helpers.js';
+import xss from 'xss';
 const router = express.Router();
 
 router
@@ -22,7 +23,7 @@ router
         */
         
         isValidUsername(req.body.username);
-        req.body.username = req.body.username.trim().toLowerCase();
+        req.body.username = xss(req.body.username.trim().toLowerCase());
 
         const userCollection = await users();
         let user = await userCollection.findOne({username: {$eq: req.body.username}});
@@ -41,12 +42,15 @@ router
         */
 
         isValidPassword(req.body.password);
+        req.body.password = xss(req.body.password.trim());
+        req.body.confirmPassword = xss(req.body.confirmPassword.trim());
         if (req.body.password != req.body.confirmPassword) throw "Error: Passwords do not match";
         
     } catch(e) {
         return res.status(400).render('error/error',{error:e,layout: 'nonav'});
     }
     try {
+        req.body.birthdate = xss(req.body.birthdate.trim());
         let birthYear = parseInt(req.body.birthdate.substring(0,4));
         let currYear = new Date().getFullYear();
         if (currYear - birthYear < 13) throw "Error: must be at least 13 years old";
@@ -63,7 +67,7 @@ router
                                 req.body.password,
                                 "/uploads/default-pfp.png",
                                 age,
-                                "bio:"     
+                                ""     
                             );
                                 
         if (!user) throw "Error: user could not be created";

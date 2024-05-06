@@ -1,10 +1,14 @@
 <div>
+    {{#if users}}
     <div>
         {{#each users}}
             <a class="bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer hover:bg-icon200 space-y-2">{{this.username}}</a>
         {{/each}}
     </div>
+    {{/if}}
+    {{#if posts}}
     <div>
+        {{log posts}}
         {{#each posts}}
             <div class="bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer hover:bg-icon200 space-y-2">
                 <p class="text-lg font-semibold mb-2">{{this.username}}</p>
@@ -29,4 +33,5 @@
             </div>
         {{/each}}
     </div>
+    {{/if}}
 </div>
