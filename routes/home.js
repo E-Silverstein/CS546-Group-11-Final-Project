@@ -11,7 +11,7 @@ router
         }
         return res.render('home/home', {isAuth: false});
     } catch(e){
-        return res.render('error/error', {error: e});
+        return res.render('error/error', {error: e, isAuth: req.session.authenticated});
     }
     
 });
@@ -30,7 +30,7 @@ router
         //TO-DO: change returns to render when frontend complete
         return res.status(200).json(posts);
     } catch (e) {
-        return res.status(500).render('error/error', {error:e});
+        return res.status(500).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
 });
 
@@ -43,7 +43,7 @@ router
         if (!posts) throw "Error: Could not get posts";
         return res.status(200).json(posts);
     } catch (e) {
-        return res.status(500).render('error/error', {error:e});
+        return res.status(500).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
 });
 
