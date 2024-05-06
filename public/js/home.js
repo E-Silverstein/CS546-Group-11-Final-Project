@@ -1,5 +1,7 @@
 var before_loading = document.getElementById("content-before-loading");
 var c = 0;
+
+
 function getInformation() {
 	fetch(`/home/getRecomendedPosts`)
     .then((response) => response.json())
@@ -12,12 +14,28 @@ function getInformation() {
                 <img src="${cardName.image}" alt="Post Image" class="w-full h-auto mb-3">
                 <p class="mb-1">${cardName.description}</p>
                 <p class="text-sm text-gray-600 mb-2">Clothing Links: ${cardName.clothingLinks}</p>
-                <p class="text-sm text-gray-600 mb-4">Likes: ${cardName.likes}</p>
+                <button id="likeButton">Likes: ${cardName.likes}</button>
             `;
 
+            // Event listener for like button
             new_div.addEventListener('click', () => {
-                window.location.href = `/posts/${cardName.id}`;
+                fetch(`/posts/addLike/${cardName.id}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ userid: cardName.userid }),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    document.getElementById("likeButton").textContent = `Likes: ${data.likes.length}`;
+                })
+                .catch((error) => console.error("Error:", error));
             });
+
+            // new_div.addEventListener('click', () => {
+            //     window.location.href = `/posts/${cardName.id}`;
+            // });
 
             // Keywords
             if (cardName.keywords.length > 0) {
