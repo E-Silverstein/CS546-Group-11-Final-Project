@@ -1,7 +1,21 @@
 $(document).ready(() => {
+    let hold = '';
+    let user = '';
+    let activeReport = null;
     $(document).on("click", ".report",function(event) {
         event.preventDefault();
+        if (activeReport !== null) {
+            $(activeReport).siblings(".report-reason").remove();
+            $(activeReport).siblings(".submit-report").remove();
+            $(activeReport).show();
+        }
+
         const postId = $(this).data("post-id");
+        hold = postId;
+        const username = $(this).data("reported-user");
+        user = username;
+        activeReport = this;
+
         $(this).after('<input type="text" class="report-reason" id="report-' + postId + '"  placeholder="Enter reason for reporting...">');
         $(this).after('<button class="submit-report" data-report-reason="{{report-reason}}">Submit</button>');
         $(this).hide();
@@ -10,10 +24,9 @@ $(document).ready(() => {
     $(document).on("click",".submit-report",function(event) {
         event.preventDefault();
         $("#error").remove();
-        const postId = $('.report').data("post-id");
-        const username = $('.report').data("reported-user");
+        const postId = hold;
+        const username = user;
         const reportReason = document.getElementById("report-" + postId).value;
-        //TODO: Not working for posts other than first one, fix this
         let errors = [];
 
         if(reportReason.length ==0){
@@ -43,12 +56,10 @@ $(document).ready(() => {
                 reason: reportReason
             },
             success: function(response) {
-                // Optionally, do something after successful report handling
                 console.log("Report submitted successfully");
                 // Remove the text input and submit button
                 // $(this).prev(".report-reason").remove();
                 // $(this).remove();
-                // // Show the report button again
                 // $(this).closest(".report").find(".report-button").show();
             },
             error: function(xhr, status, error) {
@@ -61,6 +72,8 @@ $(document).ready(() => {
         $(this).remove();
         // Show the report button again
         $(".report[data-post-id='" + postId + "']").show();
+
+        activeReport = null;
     });
 
 
