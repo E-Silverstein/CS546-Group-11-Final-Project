@@ -22,7 +22,8 @@ import bcrypt from 'bcrypt';
   "posts": ["ObjectId (Posts)"],
   "bio": "string", 
   "likedKeywords": ["ObjectId (Keywords)"],
-  "isAdmin": "boolean"
+  "isAdmin": "boolean",
+  "banned": "false"
   ]
 }
 */
@@ -628,4 +629,33 @@ export const createAdmin = async (username, password, profilePicURL, age, bio) =
 	return insertedUser;
 };
 
-export default { createUser, getUserById, deleteUser, getUserByUsername, getAllUsers, setAdminStatus, addFollower, removeFollower, updateUser };
+export const banUser = async(userId) => {
+	if(isNull(userId)) {
+		throw "No user id provided";
+	}
+
+	if (!ObjectId.isValid(userId)) {
+		throw "Invalid ObjectID";
+	}
+
+	const userCollection = await users();
+	const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+	if (isNull(user)) {
+		throw "User not found";
+	}
+
+	const updateInfo = await userCollection.updateOne(
+		{ _id: new ObjectId(userId) },
+		{$set: {banned:true}}
+	);
+	if (updateInfo.modifiedCount === 0) {
+		throw "Could not update user";
+	}
+	const updatedUser = await userCollection.findOne({ _id: new ObjectId(userId) });
+	if(updatedUser === null) {
+		throw "Error: could not find user";
+	}
+	return updatedUser;
+}
+
+export default { createUser, getUserById, deleteUser, getUserByUsername, getAllUsers, setAdminStatus, addFollower, removeFollower, updateUser, createAdmin, banUser };

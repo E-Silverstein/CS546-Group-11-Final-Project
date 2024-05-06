@@ -64,6 +64,8 @@ export const createReport = async(postId,reportedBy,reason) => {
     reportedBy: reportedById,
     reportedUser: reportedUserId,
     reason:reason,
+    postImg: post.image,
+    postCaption: post.description,
     createdAt: new Date(),
     status:"Pending"
   };
@@ -96,10 +98,10 @@ export const getAllReports = async () => {
  * @returns the report
  */
 export const getReportById = async(id) => {
-  if (isNull(id)) {
+  if (helper.isNull(id)) {
 		throw "ID must be provided";
 	}
-	if (!isOfType(id, "string")) {
+	if (!helper.isOfType(id, "string")) {
 		throw "ID must be of type string";
 	}
 	id = id.trim();
@@ -108,7 +110,7 @@ export const getReportById = async(id) => {
 	}
   const reportsCollection = await reports();
 	const report = await reportsCollection.findOne({ _id: new ObjectId(id) });
-	if (isNull(report)) {
+	if (helper.isNull(report)) {
 		throw "User not found";
 	}
 
@@ -121,10 +123,10 @@ export const getReportById = async(id) => {
  * @returns {boolean} true 
  */
 export const deleteReport = async(id) => {
-  if (isNull(id)) {
+  if (helper.isNull(id)) {
 		throw "ID must be provided";
 	}
-	if (!isOfType(id, "string")) {
+	if (!helper.isOfType(id, "string")) {
 		throw "ID must be of type string";
 	}
 	id = id.trim();
