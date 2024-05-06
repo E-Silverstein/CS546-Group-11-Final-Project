@@ -1,12 +1,10 @@
-/*
-    ROUTES ARE NOT TESTED YET
-*/
 import { userData } from "../data/index.js";
 import { upload } from '../middleware.js';
 import { users } from '../config/mongoCollections.js';
 import express from 'express';
 import { ObjectId } from 'mongodb';
 import { isValidId, isValidImg, isValidString, isValidUsername } from "../helpers.js";
+import xss from 'xss';
 
 const router = express.Router();
 
@@ -28,12 +26,12 @@ router
         //TO-DO: change returns to render when frontend complete
         return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
-})
+}) // kevinthuhstink says good job :3 | :3
 .patch(upload.single('profile-picture'), async (req, res) => {
-    try {
+    try                                                                                                {
         //VALIDATION: username        
         isValidUsername(req.body.username);
-        req.body.username = req.body.username.trim().toLowerCase();
+        req.body.username = xss(req.body.username.trim().toLowerCase());
 
     } catch(e) {
         return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
@@ -41,7 +39,7 @@ router
     try {
         //VALIDATION: bios
         isValidString(req.body.bio, 0, 256);
-        req.body.bio = req.body.bio.trim();
+        req.body.bio = xss(req.body.bio.trim());
           
     } catch(e) {
         return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
@@ -141,6 +139,6 @@ router
         //TO-DO: change returns to render when frontend complete
         return res.status(404).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
-})
+});
 
 export default router

@@ -60,7 +60,7 @@ export const createReport = async(postId,reportedBy,reason) => {
   reason = reason.trim();
 
   const newReport = {
-    postId:postId,
+    postId:new ObjectId(postId),
     reportedBy: reportedById,
     reportedUser: reportedUserId,
     reason:reason,
@@ -142,4 +142,24 @@ export const deleteReport = async(id) => {
 	return true;
 };
 
-export default { createReport, getAllReports, getReportById, deleteReport };
+export const deleteAllReports = async(id) => {
+  if (helper.isNull(id)) {
+		throw "ID must be provided";
+	}
+	if (!helper.isOfType(id, "string")) {
+		throw "ID must be of type string";
+	}
+	id = id.trim();
+	if (!ObjectId.isValid(id)) {
+		throw "Invalid ObjectID";
+	}
+  const reportsCollection = await reports();
+  const deleteInfo = await reportsCollection.deleteMany({ postId: new ObjectId(id) });
+	if (deleteInfo.deletedCount === 0) {
+		throw "Could not delete report";
+	}
+
+	return true;
+};
+
+export default { createReport, getAllReports, getReportById, deleteReport, deleteAllReports };
