@@ -1,3 +1,24 @@
+<script src="/public/js/profile.js"></script>
+
+<div class="flex justify-center">
+    <div class="pt-12 w-3/5 space-y-2">
+        <p class="font-bold">{{{username}}}</p>
+        <img src="/uploads/{{profilePicture}}" class="profile-picture">
+        <p>{{{bio}}}</p>
+        <p data-id="follower-count">Follower Count: {{followerCount}}</p>
+        <p data-id="following-count">Following Count: {{followingCount}}</p>
+        <div>
+            {{#if isUser}}
+                <a href="/users/editUser" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Edit Profile</a>
+                <a href="/logout" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Logout</a>
+            {{else}}
+                <button class="follow-button" data-userid="{{userid}}" data-profileusername="{{username}}" >
+                    {{#if isFollowing}}
+                        Unfollow
+                    {{else}}
+                        Follow
+                    {{/if}}
+                </button>
 <div class="mt-24">
     <div class="flex flex-col text-center space-y-2">
         <p class="font-bold">{{{username}}}</p>
