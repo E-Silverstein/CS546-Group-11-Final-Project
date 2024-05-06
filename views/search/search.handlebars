@@ -1,0 +1,32 @@
+<div>
+    <div>
+        {{#each users}}
+            <a class="bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer hover:bg-icon200 space-y-2">{{this.username}}</a>
+        {{/each}}
+    </div>
+    <div>
+        {{#each posts}}
+            <div class="bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer hover:bg-icon200 space-y-2">
+                <p class="text-lg font-semibold mb-2">{{this.username}}</p>
+                <img src="{{this.image}}" alt="Post Image" class="w-full h-auto mb-3">
+                <p class="mb-1">{{this.description}}</p>
+                <p class="text-sm text-gray-600 mb-4">Likes: {{this.likes}}</p>
+                <div class="flex">
+                    {{#each this.keywords}}
+                        <p class="bg-icon200 text-icon900 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded w-fit">{{this}}</p>
+                    {{/each}}
+                </div>
+                <div class="space-x-2">
+                    <p>Comments</p>
+                    {{#if this.comments}}
+                        {{#each this.comments}}
+                            <p>{{this.user}}: {{this.text}}</p>
+                        {{/each}}
+                    {{else}}
+                        <p>No comments</p>
+                    {{/if}}
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>
