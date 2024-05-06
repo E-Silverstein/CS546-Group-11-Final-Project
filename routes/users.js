@@ -22,8 +22,9 @@ router
         let user = await userData.getUserById(req.session.userid);
         if (!user) throw "Error: Could not get users";
 
+        console.log(user)
         //TO-DO: change returns to render when frontend complete
-        return res.status(200).render('profiles/user', {userid:req.session.userid, username: user.username, bio: user.bio, isAuth: true, isUser: true});
+        return res.status(200).render('profiles/user', {userid:req.session.userid, username: user.username, bio: user.bio, isAuth: true, isUser: true, profilePicture: user.profilePicture});
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(500).render('error/error', {error: e, isAuth: req.session.authenticated});
@@ -54,7 +55,7 @@ router
             req.body.fileUrl = user.profilePicture;
         } else {
             isValidImg(req.file);
-            req.body.fileUrl = req.file.path;
+            req.body.fileUrl = "/"+req.file.path;
         }
         console.log(req.body.fileUrl);
     } catch(e) {
@@ -81,7 +82,7 @@ router
                                     req.body.bio,
                                     );
         if (!updateRes) throw "Error: user could not be updated";  
-        return res.redirect(303,`/users`);
+        return res.redirect(303, `/users`);
 
     } catch(e) {
         console.log(e);
@@ -119,6 +120,7 @@ router
     if (!req.session.authenticated) return res.status(401).render('error/error', {error: "User must be logged in"});
     try {
         let user = await userData.getUserById(req.session.userid);
+        console.log(user);
         return res.status(200).render('profiles/editprofile', {isAuth: req.session.authenticated, isUser: !user.isAdmin, "username": user.username, "bio": user.bio});
     } catch (e) {
         return res.status(404).render('error/error', {isAuth: req.session.authenticated, error: e});

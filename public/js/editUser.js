@@ -1,7 +1,14 @@
 $(document).ready(function() {
+
+
     console.log("edit user has been loaded")
     $("#edit-user-form").on("submit", (event) => {
+
+
         event.preventDefault();
+
+
+        
         let username = $('#username');
         let bio = $('#bio');
         let pfp = $('#profile-picture');
