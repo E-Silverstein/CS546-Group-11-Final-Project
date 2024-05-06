@@ -20,6 +20,7 @@ router
             return res.status(400).render("error/error",{error:e,isAuth:req.session.authenticated});
         }
         try{
+            req.body.postId = xss(req.body.postId.trim());
             if (!ObjectId.isValid(req.body.postId)) {
                 throw "Invalid ObjectID";
             }
@@ -36,6 +37,8 @@ router
             return res.status(400).render("error/error",{error:e,isAuth:req.session.authenticated});
         }
         try {
+            req.body.username = xss(req.body.username.trim());
+            req.body.reason = xss(req.body.reason.trim());
             const report = await reportData.createReport(req.body.postId,req.body.username,req.body.reason);
             if(!report) throw "Error: no report created";
             return res.status(200)

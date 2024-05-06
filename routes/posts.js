@@ -10,6 +10,7 @@ import express from 'express';
 import {ObjectId} from 'mongodb';
 import {upload} from '../middleware.js';
 import { isValidImg, isValidKeyword, isValidLink, isValidString, isValidId } from "../helpers.js";
+import xss from "xss";
 
 const router = express.Router();
 
@@ -46,7 +47,7 @@ router
         for (let i = 0; i < req.body.clothingLinks.length ; i++) {
             let link = req.body.clothingLinks[i];
             isValidLink(link);
-            req.body.clothingLinks[i] = link.trim();
+            req.body.clothingLinks[i] = xss(link.trim());
         }
 
      } catch(e) {
@@ -60,7 +61,7 @@ router
             let keyword = req.body.keywords[i];
             console.log(keyword.length)
             isValidKeyword(keyword);
-            req.body.keywords[i] = keyword.trim();
+            req.body.keywords[i] = xss(keyword.trim());
         }
     } catch(e) {
         return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
@@ -68,7 +69,7 @@ router
     try {
          //VALIDATION: description
         isValidString(req.body.description, 5, 256);
-        req.body.description = req.body.description.trim();
+        req.body.description = xss(req.body.description.trim());
 
     } catch(e) {
         return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
@@ -185,7 +186,7 @@ router
         for (let i = 0; i < req.body.clothingLinks.length ; i++) {
             let link = req.body.clothingLinks[i];
             isValidLink(link);
-            req.body.clothingLinks[i] = link.trim();
+            req.body.clothingLinks[i] = xss(link.trim());
         }
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
@@ -200,7 +201,7 @@ router
         for (let i = 0; i < req.body.keywords.length ; i++) {
             let keyword = req.body.keywords[i];
             isValidKeyword(keyword);
-            req.body.keywords[i] = keyword.trim();
+            req.body.keywords[i] = xss(keyword.trim());
         }
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
@@ -209,7 +210,7 @@ router
     try {
         //VALIDATION: description
        isValidString(req.body.description, 0, 256);
-        req.body.description = req.body.description.trim();
+        req.body.description = xss(req.body.description.trim());
    } catch(e) {
        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
    }
