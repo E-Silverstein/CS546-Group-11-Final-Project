@@ -95,12 +95,6 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 		throw "Password cannot contain spaces";
 	}
 
-	//TODO: Fix alphanumeric for password
-  // Make sure the password is only contains alphanumeric characters
-	// if (!password.match(/^[0-9a-zA-Z]+$/)) {
-	// 	throw "Password can only contain alphanumeric characters";
-	// }
-
 	// Hash the password
 	password = await bcrypt.hash(password, 12);
 
@@ -112,11 +106,6 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 	}
 
 	const createdAt = new Date();
-
-	// TODO check valid profilePicURL
-	// if (!isValidImg(profilePicURL)) {
-	// 	throw "Invalid image URL";
-	// }
 
 	const newUser = {
 		username: username,
@@ -201,7 +190,7 @@ export const deleteUser = async (id) => {
 
 	const userCollection = await users();
 
-	// TODO delete user from all posts, comments, reports, followers and following lists, and delete their posts
+	// delete user from all posts, comments, reports, followers and following lists, and delete their posts
 	const user = await userCollection.findOne({ _id: new ObjectId(id) });
 	if (isNull(user)) {
 		throw "User not found";
@@ -251,14 +240,6 @@ export const deleteUser = async (id) => {
 			throw "Could not delete comment";
 		}
 	}
-
-	// TODO update this once the reporting funcitonality is implemented
-	// Delete user from all reports 
-	// const reportCollection = await reports();
-	// const updateReports = await reportCollection.updateMany(
-	// 	{ _id: { $in: user.reports } },
-	// 	{ $pull: { author: new ObjectId(id) } }
-	// );
 
 	// Delete user
 	const deleteInfo = await userCollection.deleteOne({ _id: new ObjectId(id) });
@@ -577,12 +558,6 @@ export const createAdmin = async (username, password, profilePicURL, age, bio) =
 		throw "Password cannot contain spaces";
 	}
 
-	//TODO: Fix alphanumeric for password
-  // Make sure the password is only contains alphanumeric characters
-	// if (!password.match(/^[0-9a-zA-Z]+$/)) {
-	// 	throw "Password can only contain alphanumeric characters";
-	// }
-
 	// Hash the password
 	password = await bcrypt.hash(password, 12);
 
@@ -594,11 +569,6 @@ export const createAdmin = async (username, password, profilePicURL, age, bio) =
 	}
 
 	const createdAt = new Date();
-
-	// TODO check valid profilePicURL
-	// if (!isValidImg(profilePicURL)) {
-	// 	throw "Invalid image URL";
-	// }
 
 	const newUser = {
 		username: username,

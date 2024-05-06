@@ -73,11 +73,6 @@ export const createPost = async (
 		throw "Description is too long";
 	}
 
-	//TODO: Allow the post to have punctuation, but no naughty strings, so check for it
-	// if (!description.match(/^[a-zA-Z0-9 ]+$/)) {
-	// 	throw "Description can only contain alphanumeric characters and spaces";
-	// }
-
 	if (!ObjectId.isValid(userId)) {
 		throw "Invalid ObjectID";
 	}
@@ -116,11 +111,6 @@ export const createPost = async (
 			}
 		}
 	}
-
-	// TODO Check that the image URLs are valid
-	// if (!helper.isValidImg(image)) {
-	// 	throw "Image URL is not valid";
-	// }
 
 	// Check that clothing URL is valid using a regex
 	for (let i = 0; i < clothingLinks.length; i++) {
@@ -171,10 +161,6 @@ export const createPost = async (
 			{ keyword: keywords[i].trim().toLowerCase() },
 			{ $addToSet: { posts: postObj._id } }
 		);
-		// TODO Check if this is necessary
-		// if (keywordUpdate.modifiedCount === 0) {
-		// 	throw "Could not add post to keyword";
-		// }
 	}
 
 	const insertedObject = await postCollection.findOne({
@@ -531,8 +517,6 @@ export const updatePost = async (
 	if (!ObjectId.isValid(id)) {
 		throw "Invalid ObjectID";
 	}
-
-	// TODO Check that the image URLs are valid
 
 	// Check that clothing URL is valid using a regex
 	for (let i = 0; i < clothingLinks.length; i++) {
