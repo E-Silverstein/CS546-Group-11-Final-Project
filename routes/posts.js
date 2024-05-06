@@ -147,6 +147,15 @@ router
                   : null,
             });
         }
+
+        // Check if user liked the post
+        let isLiked = false;
+        for(let i = 0; i < post.likes.length; i++) {
+            if(post.likes[i].toString() === userid) {
+                isLiked = true;
+                break;
+            }
+        }
         console.log(posterId);
         return res
           .status(200)
@@ -161,6 +170,7 @@ router
             likes: post.likes.length,
             comments: comments,
             isAuth: req.session.authenticated,
+            isLiked: isLiked,
           });
 
     } catch (e) {

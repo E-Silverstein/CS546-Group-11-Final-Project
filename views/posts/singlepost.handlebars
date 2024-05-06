@@ -9,7 +9,11 @@
             <p class="text-sm text-gray-600">{{this}}</p>
         {{/each}}
         <div class="flex justify-between items-center">
-            <button class="like-button" data-id="{{postid}}" data-userid="{{posterId}}">Likes: {{likes}}</button>
+            <button class="{{#if isLiked}}dislike-button{{else}}like-button{{/if}}" data-id="{{postid}}" data-userid="{{posterId}}">
+                {{#if isLiked}} Dislike: {{likes}}
+                {{else}}Like: {{likes}}
+                {{/if}}
+            </button>
         </div>
         <div class="flex space-x-2">
             {{#each keywords}}
