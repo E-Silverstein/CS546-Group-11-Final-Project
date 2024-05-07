@@ -21,6 +21,8 @@ router
 })
 // upload.single('name') takes in the name of the INPUT ELEMENT that the file is being inputted to
 .post(upload.single('post-image'), async (req, res) => {
+
+
     try {
         //VALIDATION: image 
         /*multer will send file information to req.file
@@ -28,7 +30,7 @@ router
             - fieldname: input element name
             - mimetype: type of file
         */
-       isValidImg(req.file);
+       if (!isValidImg(req.file)) throw "Error: invalid image";
     } catch(e) {
         //TO-DO: change returns to render when frontend complete
         return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
@@ -36,31 +38,49 @@ router
     try {
         //VALIDATION: clothingLinks
         if (!req.body.clothingLinks) throw "Error: Requires a list of 'clothing link' input";
-        for (let i = 0; i < req.body.clothingLinks.length ; i++) {
-            let link = req.body.clothingLinks[i];
-            isValidLink(link);
-            req.body.clothingLinks[i] = xss(link.trim());
+
+        if (typeof req.body.clothingLinks == 'string') {
+            if (!isValidLink(req.body.clothingLinks)) throw "Error: invalid link";
+            req.body.clothingLinks = [xss(req.body.clothingLinks.trim())];
+        }
+        else {
+            for (let i = 0; i < req.body.clothingLinks.length ; i++) {
+                let link = req.body.clothingLinks[i];
+                if (!isValidLink(link)) throw "Error: invalid link";
+                req.body.clothingLinks[i] = xss(link.trim());
+            }
         }
 
      } catch(e) {
+        console.log(e)
         return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     } 
     try {
         //VALIDATION: keywords
         if (!req.body.keywords) throw "Error: Requires a list of 'keywords' input";
         
-        for (let i = 0; i < req.body.keywords.length ; i++) {
-            let keyword = req.body.keywords[i];
-            console.log(keyword.length)
-            isValidKeyword(keyword);
-            req.body.keywords[i] = xss(keyword.trim());
+        if (typeof req.body.keywords == 'string') {
+            if (!isValidKeyword(req.body.keywords)) {
+                throw "Error: Invalid Keyword"
+            }
+            req.body.keywords = [xss(req.body.keywords .trim())];
+        }
+        else {
+            for (let i = 0; i < req.body.keywords.length ; i++) {
+                let keyword = req.body.keywords[i];
+               
+                if(!isValidKeyword(keyword)) throw "Error: Invalid keyword"
+                req.body.keywords[i] = xss(keyword.trim());
+            }
         }
     } catch(e) {
+        console.log(e)
+
         return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
     } 
     try {
          //VALIDATION: description
-        isValidString(req.body.description, 5, 256);
+        if(!isValidString(req.body.description, 5, 256)) throw "Error: invalid description"
         req.body.description = xss(req.body.description.trim());
 
     } catch(e) {
@@ -69,7 +89,7 @@ router
     try {
         let newPost = await postData.createPost(
                                 req.session.userid,
-                                '../'+req.file.path,
+                                '/'+req.file.path,
                                 req.body.clothingLinks,
                                 req.body.keywords,
                                 req.body.description
@@ -80,6 +100,8 @@ router
         // will redirect to the newly created post
         return res.status(200).redirect(`/posts/${newPost._id.toString()}`)
     } catch(e) {
+        console.log(e)
+
         //TO-DO: change returns to render when frontend complete
         return res.status(500).render('error/error', {error:e, isAuth: req.session.authenticated});
     }
@@ -101,7 +123,7 @@ router
     try {
         //VALIDATION: postid
         if(!req.session.authenticated) throw "Error: You must be logged in to edit a post";
-        isValidId(req.params.postid)
+        if(!isValidId(req.params.postid)) throw "Error: invalid id"
         req.params.postid = req.params.postid.trim();
         let post = await postData.getPostById(req.params.postid);
         if(!post) throw "Error: Post does not exist";
@@ -120,7 +142,7 @@ router
     /* Route will get an individual post given a postid */
     try {
         //VALIDATION: postid
-        isValidId(req.params.postid);
+        if (!isValidId(req.params.postid)) throw "Error: invalid id"
         req.params.postid = req.params.postid.trim();
     } catch (e) {
         return res.status(400).render('error/error', {error:e, isAuth: req.session.authenticated});
@@ -157,6 +179,10 @@ router
             }
         }
         console.log(posterId);
+        let canEdit = false;
+        if(posterId == req.session.userid){
+            canEdit = true;
+        }
         return res
           .status(200)
           .render("posts/singlepost", {
@@ -171,6 +197,7 @@ router
             comments: comments,
             isAuth: req.session.authenticated,
             isLiked: isLiked,
+            canEdit: canEdit
           });
 
     } catch (e) {
@@ -182,7 +209,7 @@ router
     
     try {
         //VALIDATION: postid
-        isValidId(req.params.postid)
+        if (!isValidId(req.params.postid)) throw "Error: invalid id"
         req.params.postid = req.params.postid.trim();
     } catch (e) {
         return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
@@ -219,7 +246,7 @@ router
         //may be unnecessary: if (req.body.clothingLinks.length == 0) throw "Error: List of clothing links is empty"
         for (let i = 0; i < req.body.clothingLinks.length ; i++) {
             let link = req.body.clothingLinks[i];
-            isValidLink(link);
+            if (!isValidLink(link)) throw "Error: invalid link"
             req.body.clothingLinks[i] = xss(link.trim());
         }
     } catch(e) {
@@ -234,7 +261,7 @@ router
         //may be unnecessary: if (req.body.keywords.length == 0) throw "Error: List of keywords is empty"
         for (let i = 0; i < req.body.keywords.length ; i++) {
             let keyword = req.body.keywords[i];
-            isValidKeyword(keyword);
+            if(!isValidKeyword(keyword)) throw "Error: invalid keyword"
             req.body.keywords[i] = xss(keyword.trim());
         }
     } catch(e) {
@@ -243,7 +270,7 @@ router
     } 
     try {
         //VALIDATION: description
-       isValidString(req.body.description, 0, 256);
+       if(!isValidString(req.body.description, 0, 256)) throw 'Error: invalid description';
         req.body.description = xss(req.body.description.trim());
    } catch(e) {
        return res.status(400).render('error/error',{error:e, isAuth: req.session.authenticated});
@@ -264,7 +291,7 @@ router
     /* will delete pre-existing post */
     try {
         //VALIDATION: postid
-        isValidId(req.params.postid);
+        if(!isValidId(req.params.postid)) throw "Error: invalid id";
         req.params.postid = req.params.postid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete

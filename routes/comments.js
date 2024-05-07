@@ -13,9 +13,9 @@ router
     const { commentText } = req.body;
 
     try {
-        isValidString(postid);
-        isValidString(userid);
-        isValidString(commentText);
+        if(!isValidString(postid)) throw "Error: invalid postid"
+        if(!isValidString(userid)) throw "Error: invalid userid";
+        if (!isValidString(commentText)) throw "error invalid comment text";
     } catch (e) {
         return res.status(400).render('error/error', {error: e, isAuth: req.session.authenticated});
     }
@@ -33,9 +33,9 @@ router
     const { commentid } = req.body;
 
     try {
-        isValidString(postid);
-        isValidString(userid);
-        isValidString(commentid);
+        if(!isValidString(postid)) throw "Error: invalid postid"
+        if(!isValidString(userid)) throw "Error: invalid userid";
+        if (!isValidString(commentid)) throw "error invalid comment text";
     } catch (e) {
         return res.status(400).json({error: e});
     }

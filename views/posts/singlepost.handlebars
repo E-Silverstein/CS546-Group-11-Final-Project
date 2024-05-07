@@ -15,6 +15,12 @@
                 {{/if}}
             </button>
         </div>
+        {{#if canEdit}}
+        <div>
+            <a href="/posts/editPost/{{postid}}">Edit Post</a>
+            <a href="/posts/delete">Delete Post</a>
+        </div>
+        {{/if}}
         <div class="flex space-x-2">
             {{#each keywords}}
                 <p class="bg-icon200 text-icon900 text-sm font-semibold px-2.5 py-0.5 rounded w-fit">{{this}}</p>
@@ -44,4 +50,4 @@
         </div>
     </div>
 </div>
-<script src="../public/js/singlepost.js"></script>
+<script src="/public/js/singlepost.js"></script>
