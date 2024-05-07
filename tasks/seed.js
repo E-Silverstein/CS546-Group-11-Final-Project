@@ -4,7 +4,6 @@ Populate data and test
 
 import { dbConnection, closeConnection } from ".././config/mongoConnections.js";
 import { userData, postData, commentData, reportData, keywordData, algoData } from "../data/index.js";
-import { getRecommendedPosts } from "../data/algo.js";
 
 function generatePassword() {
     const length = Math.floor(Math.random() * (20 - 8 + 1)) + 8;
@@ -56,7 +55,7 @@ async function main() {
 	// const adminUser = await userData.createAdmin(
 	// 	"Admin",
 	// 	"Password1!",
-	// 	"fillerimage.url",
+	// 	"pfp.jpg",
 	// 	Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 	// 	"Hi, I'm the admin user for this site!"
 	// );
@@ -64,350 +63,350 @@ async function main() {
     const user1 = await userData.createUser(
         "EthanSilv",
         "Password1!",
-        "fillerimage.url",
+        "pfp.jpg",
         Math.floor(Math.random() * (75 - 13 + 1)) + 13,
         "Hi, I love fashion and posting my outfits!"
     );
     const user2 = await userData.createUser(
 		"Fashionista123",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Fashion enthusiast with a passion for style and trends!"
 	);
 	const user3 = await userData.createUser(
 		"StyleGuru24",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Sharing my love for fashion and inspiring others to find their own unique style."
 	);
 	const user4 = await userData.createUser(
 		"VintageVibes77",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Obsessed with all things vintage and retro!"
 	);
 	const user5 = await userData.createUser(
 		"StreetwearStar",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Bringing streetwear to the forefront of fashion."
 	);
 	const user6 = await userData.createUser(
 		"MinimalistMaven",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Less is more. Embracing the beauty of minimalism in fashion and life."
 	);
 	const user7 = await userData.createUser(
 		"BohemianBeauty",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Free-spirited and eclectic, with a love for bohemian fashion."
 	);
 	const user8 = await userData.createUser(
 		"ClassicChic",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Timeless elegance and sophistication are my style staples."
 	);
 	const user9 = await userData.createUser(
 		"AthleisureAddict",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Living in athleisure and loving it! Comfort and style combined."
 	);
 	const user10 = await userData.createUser(
 		"SustainableStyle",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Promoting sustainable and ethical fashion choices."
 	);
     const user11 = await userData.createUser(
 		"GlamourGirl",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Adding a touch of glamour to every outfit."
 	);
     const user12 = await userData.createUser(
 		"PreppyPrincess",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Embracing the preppy aesthetic with classic and polished looks."
 	);
     const user13 = await userData.createUser(
 		"RockerEdge",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Adding a rocker edge to my wardrobe with leather jackets and band tees."
 	);
     const user14 = await userData.createUser(
 		"GirlyGlam",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"All about girly and glamorous fashion choices."
 	);
     const user15 = await userData.createUser(
 		"TomboyTrend",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Mixing tomboy style with trendy pieces for a unique look."
 	);
     const user16 = await userData.createUser(
 		"ArtsyAttire",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Expressing myself through my artsy and creative fashion choices."
 	);
     const user17 = await userData.createUser(
 		"EdgyEnsembles",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Pushing the boundaries with edgy and daring ensembles."
 	);
     const user18 = await userData.createUser(
 		"ComfyCasual",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Keeping it comfy and casual with my everyday outfits."
 	);
     const user19 = await userData.createUser(
 		"ChicAndSophistic",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Aiming for chic and sophisticated style in all my looks."
 	);
     const user20 = await userData.createUser(
 		"TrendsetExtr0",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Setting trends and inspiring others with my bold fashion choices."
 	);
     const user21 = await userData.createUser(
 		"VintageVogue",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Mixing vintage finds with modern pieces for a unique and stylish look."
 	);
     const user22 = await userData.createUser(
 		"StreetStylSav",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Mastering the art of street style with effortless cool."
 	);
     const user23 = await userData.createUser(
 		"MinimalistM8",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Keeping it simple and stylish with a minimalist approach to fashion."
 	);
     const user24 = await userData.createUser(
 		"BohoBabe",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Embracing the boho lifestyle with flowy fabrics and earthy tones."
 	);
     const user25 = await userData.createUser(
 		"ClassicCouture",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Investing in classic pieces that never go out of style."
 	);
     const user26 = await userData.createUser(
 		"SportySpice",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Mixing sporty and stylish pieces for a comfortable and chic look."
 	);
     const user27 = await userData.createUser(
 		"EcoFashionista",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Making sustainable fashion choices that are good for the planet and my wardrobe."
 	);
     const user28 = await userData.createUser(
 		"HollywoodGlam",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Channeling old Hollywood glamour with elegant and sophisticated looks."
 	);
     const user29 = await userData.createUser(
 		"PreppyPerfect",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Perfecting the preppy look with classic pieces and bold colors."
 	);
     const user30 = await userData.createUser(
 		"RockstarStyle",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Rocking out in style with edgy and rebellious fashion choices."
 	);
     const user31 = await userData.createUser(
 		"GirlyGirl",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Embracing my feminine side with girly and glamorous outfits."
 	);
     const user32 = await userData.createUser(
 		"TomboyChic",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Mixing tomboy style with chic pieces for a cool and effortless look."
 	);
     const user33 = await userData.createUser(
 		"CreativeCouture",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Expressing my creativity through my unique and artistic fashion choices."
 	);
     const user34 = await userData.createUser(
 		"DaringDresser",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Taking fashion risks and experimenting with bold and daring looks."
 	);
     const user35 = await userData.createUser(
 		"CasualCool",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Keeping it casual and cool with my everyday style."
 	);
     const user36 = await userData.createUser(
 		"SophistStyl",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Elevating my wardrobe with sophisticated and timeless pieces."
 	);
     const user37 = await userData.createUser(
 		"FashionForward",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Staying ahead of the trends and embracing fashion-forward looks."
 	);
     const user38 = await userData.createUser(
 		"RetroRevival",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Bringing back retro styles with a modern twist."
 	);
     const user39 = await userData.createUser(
 		"UrbanEdge",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Adding an urban edge to my outfits with streetwear-inspired pieces."
 	);
     const user40 = await userData.createUser(
 		"SimpleAndChic",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Keeping it simple and chic with my minimalist wardrobe."
 	);
     const user41 = await userData.createUser(
 		"BohemianSpirit",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Expressing my bohemian spirit through my free-flowing and eclectic style."
 	);
     const user42 = await userData.createUser(
 		"TimelessTaste",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Investing in timeless pieces that will last for years to come."
 	);
     const user43 = await userData.createUser(
 		"ActivaterBobby",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Staying active and stylish with my athleisure-inspired looks."
 	);
     const user44 = await userData.createUser(
 		"Lilyann",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Making conscious fashion choices that are good for the environment and the people who make my clothes."
 	);
     const user45 = await userData.createUser(
 		"GlamGoddess",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Adding a touch of glam to my everyday outfits."
 	);
     const user46 = await userData.createUser(
 		"GeorgeHarr",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Keeping it polished and preppy with my classic and timeless style."
 	);
     const user47 = await userData.createUser(
 		"RebelWithStyle",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Adding a rebellious edge to my outfits with rocker-inspired pieces."
 	);
     const user48 = await userData.createUser(
 		"FeminineFashion",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Embracing my femininity with girly and glamorous fashion choices."
 	);
     const user49 = await userData.createUser(
 		"CoolAndCasual",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Keeping it cool and casual with my effortless style."
 	);
     const user50 = await userData.createUser(
 		"ArtsyAndUnique",
 		generatePassword(),
-		"fillerimage.url",
+		"pfp.jpg",
 		Math.floor(Math.random() * (75 - 13 + 1)) + 13,
 		"Expressing my artistic side through my unique and creative fashion choices."
 	);

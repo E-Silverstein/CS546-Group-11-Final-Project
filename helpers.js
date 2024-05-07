@@ -88,12 +88,12 @@ export function isValidId(input) {
 }
 
 export function isValidUsername(input) {
+    console.log(input);
     if(!isValidString(input, 5, 32)) return false;
     input = input.trim();
 
     if (input.match(/[^\w.-]/) != null) return false;
     else return true;
-
 }
 
 export function isValidPassword(input) {

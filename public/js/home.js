@@ -8,12 +8,15 @@ function getInformation() {
         data.forEach((cardName) => {
             const new_div = document.createElement("div");
             new_div.className = "bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer";
+            // console.log(cardName.posterId);
             new_div.innerHTML = `
                 <h3 class="text-lg font-semibold mb-2">${cardName.username}</h3>
                 <img src="${cardName.image}" alt="Post Image" class="w-full h-auto mb-3">
                 <p class="mb-1">${cardName.description}</p>
                 <p class="text-sm text-gray-600 mb-2">Clothing Links: ${cardName.clothingLinks}</p>
-                <button class="like-button" data-id="${cardName.id}" data-userid="${cardName.userid}">Likes: ${cardName.likes}</button>
+                <button class="${cardName.isLiked ? 'dislike-button' : 'like-button'}" data-id="${cardName.id}" data-userid="${cardName.userid}">
+                    ${cardName.isLiked ? 'Dislike' : 'Like'}: ${cardName.likes}
+                </button>
                 <br>
                 <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2 report" data-post-id=${cardName.id} data-reported-user=${cardName.username}>Report Post</button>
                 <br>
