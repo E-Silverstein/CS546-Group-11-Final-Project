@@ -179,6 +179,10 @@ router
             }
         }
         console.log(posterId);
+        let canEdit = false;
+        if(posterId == req.session.userid){
+            canEdit = true;
+        }
         return res
           .status(200)
           .render("posts/singlepost", {
@@ -193,6 +197,7 @@ router
             comments: comments,
             isAuth: req.session.authenticated,
             isLiked: isLiked,
+            canEdit: canEdit
           });
 
     } catch (e) {

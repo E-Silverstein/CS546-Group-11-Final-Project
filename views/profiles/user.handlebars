@@ -38,9 +38,9 @@
             {{#each posts}}
                 <div class="profile-post">
                     <img src="{{this.image}}" class="profile-postimg">
-                    <a href="/posts/{{this._id}}">{{this.description}} </a>
+                    <p>{{this.description}}</p>
+                    <a href="/posts/{{this._id}}" class="profile-buttons">View</a>
                 </div>
-                
             {{/each}}
         </div>
     </div>
