@@ -16,7 +16,6 @@ app.use(session({
 }))
 
 app.use('/', function(req,res,next){
-  req.session.isAdmin = false;
     if (req.session.userid === undefined) {
         req.session.authenticated = false;
     } else {
@@ -36,13 +35,11 @@ app.use('/', function(req,res,next){
 
 /*admin page to be added eventually to review all the reports made by the users*/
 app.use('/admin', function(req,res,next) {
-  console.log(req.session.isAdmin);
-
   if(!req.session.authenticated){
     return res.status(200).redirect('/login');
   }
 
-  else if (req.session.authenticated && !req.session.isAdmin) {
+  else if (req.session.authenticated && !req.session?.isAdmin) {
     return res.status(401).render('error/error', {error: "You do not have permission to view the page.",});
   }
   next();

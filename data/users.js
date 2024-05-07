@@ -45,7 +45,7 @@ export const createUser = async (username, password, profilePicURL, age, bio) =>
 		throw "All values must be of type string";
 	}
 
-	username = username.trim();
+	username = username.toLowerCase().trim();
 	password = password.trim();
 	profilePicURL = profilePicURL.trim();
 	bio = bio.trim();
