@@ -25,7 +25,7 @@ router
             - no special characters
         */
         
-        isValidUsername(req.body.username);
+        if(!isValidUsername(req.body.username)) throw "Error: invalid username";
         req.body.username = xss(req.body.username.trim().toLowerCase());
 
         const userCollection = await users();
@@ -44,7 +44,7 @@ router
             - at least one special character
         */
 
-        isValidPassword(req.body.password);
+        if(!isValidPassword(req.body.password)) throw "error: invalid password";
         req.body.password = xss(req.body.password.trim());
         req.body.confirmPassword = xss(req.body.confirmPassword.trim());
         if (req.body.password != req.body.confirmPassword) throw "Error: Passwords do not match";
