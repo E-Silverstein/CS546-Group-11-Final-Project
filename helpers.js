@@ -102,7 +102,8 @@ export function isValidPassword(input) {
     if (input.match(/[0-9]/g) == null) return false;
     if (input.match(/[A-Z]/g) == null) return false;
     if (input.match(/[^\w]/g) == null) return false;
-    if (input.match(' ') != null) return true;
+    if (input.match(' ') != null) return false;
+    return true;
 }
 
 export function isValidLink(input) {
