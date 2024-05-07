@@ -8,9 +8,68 @@ body{
     justify-content: center;
 }
 
-
 .profile-picture{
     width: 150px;
     height: 150px;
     border-radius: 50%;
+}
+
+.profile-buttons {
+    background-color: #A4AEA3;
+    color: #33322E;
+    font-weight: 600;
+    border-radius:0.375rem;
+    padding: 0.5rem;
+
+}
+
+.profile-buttons:hover {
+    transition: 0.3s;
+    background-color: #567765;
+    color: #E1E0DE;
+}
+
+.follow-button{
+    width: 200px;
+    background-color: #A4AEA3;
+    color: #33322E;
+    font-weight: 600;
+    border-radius:0.375rem;
+    padding: 0.5rem;
+}
+
+.follow-button:hover{
+    transition: 0.3s;
+    background-color: #567765;
+    color: #E1E0DE;
+}
+
+.profile-post{
+    background-color: white;
+    border-radius:0.375rem;
+    width: fit-content;
+    padding: 1rem;
+    justify-content: center;
+    text-align: center;
+}
+
+.profile-postimg{
+    width: 400px;
+    height: 400px;
+    object-fit: cover;
+    padding-bottom: 10px;
+}
+
+.profile-post:hover{
+    transition: 0.3s;
+    background-color: #A4AEA3;
+}
+
+.underlined-link{
+    color: #33322E;
+    text-decoration: underline;
+}
+
+.underlined-link:hover{
+    color: #567765;
 }

@@ -14,8 +14,11 @@
         {{#if isUser}}
             <div class="flex flex-col items-center">
                 <div class="pt-2">
-                    <a href="/users/editUser" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Edit Profile</a>
-                    <a href="/logout" class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md p-2">Logout</a>
+                    <a href="/users/editUser" class="profile-buttons">Edit Profile</a>
+                    <a href="/logout" class="profile-buttons">Logout</a>
+                    {{#if isAdmin}}
+                    <a href="/admin">Admin Dashboard</a>
+                    {{/if}}
                 </div>
             </div>
         {{else}}
@@ -33,7 +36,11 @@
     <div class="flex justify-center mt-4">
         <div class="grid grid-cols-3 gap-4 w-4/5">
             {{#each posts}}
-                <a href="/posts/{{this._id}}">{{this.description}} </a>
+                <div class="profile-post">
+                    <img src="{{this.image}}" class="profile-postimg">
+                    <a href="/posts/{{this._id}}">{{this.description}} </a>
+                </div>
+                
             {{/each}}
         </div>
     </div>
