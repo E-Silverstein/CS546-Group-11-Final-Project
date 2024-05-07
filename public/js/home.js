@@ -18,7 +18,7 @@ function getInformation() {
                     ${cardName.isLiked ? 'Dislike' : 'Like'}: ${cardName.likes}
                 </button>
                 <br>
-                <button class="bg-icon200 transition hover:bg-icon500 hover:text-icon100 font-semibold rounded-md py-2 my-2 report" data-post-id=${cardName.id} data-reported-user=${cardName.username}>Report Post</button>
+                <button class="red-button" data-post-id=${cardName.id} data-reported-user=${cardName.username}>Report Post</button>
                 <br>
             `;
 
@@ -35,11 +35,11 @@ function getInformation() {
              if (cardName.keywords.length > 0) {
                 const keywords_div = document.createElement("div");
                 keywords_div.className = "mb-4";
-                keywords_div.innerHTML = "<h4 class='font-semibold mb-2'>Keywords:</h4>";
+                keywords_div.innerHTML = "<h4 class='font-semibold text-sm mt-2'>Keywords:</h4>";
 
                 cardName.keywords.forEach((keyword) => {
                     const keyword_span = document.createElement("span");
-                    keyword_span.className = "bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded";
+                    keyword_span.className = "bg-icon200 text-icon900 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded";
                     keyword_span.textContent = keyword;
                     keywords_div.appendChild(keyword_span);
                 });

@@ -3,9 +3,9 @@
 <div class="mt-24">
     <div class="flex flex-col text-center space-y-2">
         <div class="flex flex-col items-center">
-                {{#if profilePicture}}      
-                    <img src={{profilePicture}} class="profile-picture">
-                {{/if}}
+            {{#if profilePicture}}      
+                <img src={{profilePicture}} class="profile-picture">
+            {{/if}}
         </div>
         <p class="font-bold">{{{username}}}</p>
         <p>{{{bio}}}</p>
@@ -39,7 +39,10 @@
                 <div class="profile-post">
                     <img src="{{this.image}}" class="profile-postimg">
                     <p>{{this.description}}</p>
-                    <a href="/posts/{{this._id}}" class="profile-buttons">View</a>
+                    <div class="mt-2">
+                        <a href="/posts/{{this._id}}" class="profile-buttons">View Post</a>
+                    </div>
+                    
                 </div>
             {{/each}}
         </div>
