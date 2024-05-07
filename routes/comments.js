@@ -35,7 +35,7 @@ router
     try {
         if(!isValidString(postid)) throw "Error: invalid postid"
         if(!isValidString(userid)) throw "Error: invalid userid";
-        if (!isValidString(commentText)) throw "error invalid comment text";
+        if (!isValidString(commentid)) throw "error invalid comment text";
     } catch (e) {
         return res.status(400).json({error: e});
     }
