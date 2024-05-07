@@ -46,7 +46,7 @@ export const createReport = async(postId,reportedBy,reason) => {
 		throw "Invalid ObjectID";
 	}
   //check if reportedBy is a valid user
-  const reportedById = await getUserByUsername(reportedBy.trim());
+  const reportedById = await getUserByUsername(reportedBy.trim().toLowerCase());
   if (!ObjectId.isValid(reportedById)) {
 		throw "Invalid ObjectID";
 	}

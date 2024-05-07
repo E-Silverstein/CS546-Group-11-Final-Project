@@ -14,7 +14,13 @@
                 <p class="text-lg font-semibold mb-2">{{this.username}}</p>
                 <img src="{{this.image}}" alt="Post Image" class="w-full h-auto mb-3">
                 <p class="mb-1">{{this.description}}</p>
-                <p class="text-sm text-gray-600 mb-4">Likes: {{this.likes}}</p>
+                <button onclick="handleLike('{{this._id}}')" class="likeButton" class="z-10 text-sm text-gray-600 mb-4" data-id="{{this._id}}" data-liked="{{this.liked}}">
+                    {{#if this.liked}}
+                        Dislike: {{this.likes}}
+                    {{else}}
+                        Like: {{this.likes}}
+                    {{/if}}
+                </button>
                 <div class="flex">
                     {{#each this.keywords}}
                         <p class="bg-icon200 text-icon900 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded w-fit">{{this}}</p>
@@ -23,8 +29,9 @@
                 <div class="space-x-2">
                     <p>Comments</p>
                     {{#if this.comments}}
+                        {{log this.comments}}
                         {{#each this.comments}}
-                            <p>{{this.user}}: {{this.text}}</p>
+                            <p>{{this.username}}: {{this.text}}</p>
                         {{/each}}
                     {{else}}
                         <p>No comments</p>
@@ -35,3 +42,4 @@
     </div>
     {{/if}}
 </div>
+<script src="/public/js/search.js"></script>

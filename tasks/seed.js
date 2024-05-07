@@ -1085,9 +1085,9 @@ async function main() {
 	const like50 = await postData.addLike(user27._id.toString(), post20._id.toString());
 	
 	//create report
-	const report1 = await reportData.createReport(post1._id,"ClassicChic","Profanity in the caption");
-	const report3 = await reportData.createReport(post1._id,"MinimalistMaven","Profanity in the caption");
-	const report2 = await reportData.createReport(post15._id,"MinimalistMaven","This outfit is really ugly");
+	const report1 = await reportData.createReport(post1._id.toString(),"ClassicChic","Profanity in the caption");
+	const report3 = await reportData.createReport(post1._id.toString(),"MinimalistMaven","Profanity in the caption");
+	const report2 = await reportData.createReport(post15._id.toString(),"MinimalistMaven","This outfit is really ugly");
 	
 	//set admin
 	const admin = await userData.setAdminStatus(user1._id.toString(),true);

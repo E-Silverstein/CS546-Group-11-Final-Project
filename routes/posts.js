@@ -336,17 +336,12 @@ router
         if (!req.session.userid) throw "Error: User ID not found";
         if (!req.params.postId) throw "Error: Post ID not found";
         const postId = req.params.postId;
-        try {
         const like = await postData.addLike(req.session.userid, postId);
-        console.log(like);
         if (!like) throw "Error: Could not add like";
         return res.status(200).json(like);
-        } catch (e) {
-            console.log(e);
-        }
     } catch (e) {
         console.log(e); 
-        return res.status(500).render('error/error', {error:e,isAuth: req.session.authenticated});
+        return res.status(400).json({error: e})
     }
 });
 
