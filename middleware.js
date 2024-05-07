@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
         cb(null, './uploads');
     },
     filename: function (req, file, cb) {
-        cb(null, Math.floor(Math.random()* 10000) + "-" + file.originalname);
+        cb(null, Math.floor(Math.random()* 10000) + "-" + file.originalname.toLowerCase());
     }
 })
 
