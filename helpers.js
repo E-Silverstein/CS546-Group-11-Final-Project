@@ -84,6 +84,7 @@ export function isValidId(input) {
     if (!isValidString(input)) return false;
     input = input.trim();
     if (!ObjectId.isValid(input)) return false;
+    else return true;
 }
 
 export function isValidUsername(input) {
@@ -91,6 +92,8 @@ export function isValidUsername(input) {
     input = input.trim();
 
     if (input.match(/[^\w.-]/) != null) return false;
+    else return true;
+
 }
 
 export function isValidPassword(input) {
@@ -99,7 +102,8 @@ export function isValidPassword(input) {
     if (input.match(/[0-9]/g) == null) return false;
     if (input.match(/[A-Z]/g) == null) return false;
     if (input.match(/[^\w]/g) == null) return false;
-    if (input.match(' ') != null) return true;
+    if (input.match(' ') != null) return false;
+    return true;
 }
 
 export function isValidLink(input) {

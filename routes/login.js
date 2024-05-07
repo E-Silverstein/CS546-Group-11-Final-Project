@@ -14,8 +14,14 @@ router
 .get(async (req, res) => {
     return res.status(200).render('auth/signin', {layout: 'nonav'});
 })
+
+
+
 .post(async (req, res) => {
+    console.log(req.body);
     try {
+
+        
         /*VALIDATION: username
             constraints:
             - 5-20 characters long
@@ -33,6 +39,7 @@ router
             - at least one number
             - at least one special character
         */
+       console.log(!isValidPassword(req.body.password));
         if (!isValidPassword(req.body.password)) throw "Error: invalid password"
         req.body.password = xss(req.body.password.trim());
     } catch(e) {
@@ -46,7 +53,7 @@ router
         if (!user) throw "Username or Password is invalid.";
         let compare = await bcrypt.compare(req.body.password, user.password);
         if (!compare) throw "Username or password is invalid."; 
-
+        console.log(user);
         req.session.userid = user._id;
         req.session.isAdmin = user.isAdmin;
         req.session.authenticated = true && !user.banned;
