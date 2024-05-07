@@ -42,6 +42,7 @@ $(document).ready(function() {
 
     $("#delete-user-form").on("submit", (event) => {
         event.preventDefault();
+        $("#error").remove();
 
         $.ajax({
             type: "DELETE",
