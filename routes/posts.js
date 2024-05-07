@@ -21,6 +21,10 @@ router
 })
 // upload.single('name') takes in the name of the INPUT ELEMENT that the file is being inputted to
 .post(upload.single('post-image'), async (req, res) => {
+
+    console.log("POSTS");
+    console.log(req.file);
+    console.log(req.body);
     try {
         //VALIDATION: image 
         /*multer will send file information to req.file
@@ -35,11 +39,11 @@ router
     } 
     try {
         //VALIDATION: clothingLinks
-        if (!req.body.clothingLinks) throw "Error: Requires a list of 'clothing link' input";
-        for (let i = 0; i < req.body.clothingLinks.length ; i++) {
-            let link = req.body.clothingLinks[i];
+        if (!req.body["clothingLinks[]"]) throw "Error: Requires a list of 'clothing link' input";
+        for (let i = 0; i < req.body.req.body["clothingLinks[]"].length ; i++) {
+            let link = req.body.req.body["clothingLinks[]"][i];
             isValidLink(link);
-            req.body.clothingLinks[i] = xss(link.trim());
+            req.body.req.body["clothingLinks[]"][i] = xss(link.trim());
         }
 
      } catch(e) {
@@ -69,7 +73,7 @@ router
     try {
         let newPost = await postData.createPost(
                                 req.session.userid,
-                                '../'+req.file.path,
+                                '/'+req.file.path,
                                 req.body.clothingLinks,
                                 req.body.keywords,
                                 req.body.description

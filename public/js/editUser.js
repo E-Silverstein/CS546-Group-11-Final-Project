@@ -16,12 +16,12 @@ $(document).ready(function() {
         console.log("username: " + username.val());
         console.log("bio: " + bio.val());
         console.log("pfp: " + pfp[0].files[0]);
+
         formData.append('username', username.val());
         formData.append('bio', bio.val());
         if(pfp[0].files[0] != undefined)
             formData.append('profile-picture', pfp[0].files[0]);
          
-    
         $.ajax({
             type: "PATCH",
             url: "/users",
