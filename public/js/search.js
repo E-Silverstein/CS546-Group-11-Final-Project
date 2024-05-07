@@ -1,6 +1,5 @@
-const likeButton = $(".likeButton");
-likeButton.on("click", function() {
-    const postId = likeButton.data("id");
+function handleLike(postId) {
+    const likeButton = $(`.likeButton[data-id=${postId}]`);
     const liked = likeButton.data("liked");
 
     if (liked) {
@@ -14,7 +13,7 @@ likeButton.on("click", function() {
         .then((data) => {
             if (data.error) throw data.error;
           likeButton.text(`Likes: ${data.likes.length}`);
-          likeButton.data("liked", "false");
+          likeButton.data("liked", false);
         })
         .catch(
           (error) =>
@@ -31,11 +30,11 @@ likeButton.on("click", function() {
             .then((data) => {
                 if (data.error) throw data.error;
             likeButton.text(`Dislike: ${data.likes.length}`);
-            likeButton.data("liked", "true");
+            likeButton.data("liked", true);
             })
             .catch(
             (error) =>
                 (window.location.href = "/error?error=" + error)
             );
     }
-});
+}

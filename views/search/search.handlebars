@@ -14,7 +14,7 @@
                 <p class="text-lg font-semibold mb-2">{{this.username}}</p>
                 <img src="{{this.image}}" alt="Post Image" class="w-full h-auto mb-3">
                 <p class="mb-1">{{this.description}}</p>
-                <button class="likeButton" class="z-10 text-sm text-gray-600 mb-4" data-id="{{this._id}}" data-liked="{{this.liked}}">
+                <button onclick="handleLike('{{this._id}}')" class="likeButton" class="z-10 text-sm text-gray-600 mb-4" data-id="{{this._id}}" data-liked="{{this.liked}}">
                     {{#if this.liked}}
                         Dislike: {{this.likes}}
                     {{else}}
