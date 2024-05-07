@@ -13,7 +13,7 @@ function getInformation() {
                 <h3 class="text-lg font-semibold mb-2">${cardName.username}</h3>
                 <img src="${cardName.image}" alt="Post Image" class="w-full h-auto mb-3">
                 <p class="mb-1">${cardName.description}</p>
-                <p class="text-sm text-gray-600 mb-2">Clothing Links: ${cardName.clothingLinks}</p>
+                <p class="text-sm text-gray-600 mb-2 truncate">Clothing Links: ${cardName.clothingLinks}</p>
                 <button class="${cardName.isLiked ? 'dislike-button' : 'like-button'}" data-id="${cardName.id}" data-userid="${cardName.userid}">
                     ${cardName.isLiked ? 'Dislike' : 'Like'}: ${cardName.likes}
                 </button>

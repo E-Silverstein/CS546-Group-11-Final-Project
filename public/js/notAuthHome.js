@@ -7,12 +7,12 @@ function getInformation() {
         .then((data) => {
             data.forEach((cardName) => {
                 const new_div = document.createElement("div");
-                new_div.className = "bg-white hover:bg-gray-200 shadow-lg p-4 mb-4 rounded-lg cursor-pointer transition duration-300 ease-in-out"; 
+                new_div.className = "bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer "; 
                 new_div.innerHTML = `
                     <h3 class="text-lg font-semibold mb-2">${cardName.username}</h3>
                     <img src="${cardName.image}" alt="Post Image" class="w-full h-auto mb-3">
                     <p class="mb-1">${cardName.description}</p>
-                    <p class="text-sm text-gray-600 mb-2">Clothing Links: ${cardName.clothingLinks}</p>
+                    <p class="text-sm text-gray-600 mb-2 truncate">Clothing Links: ${cardName.clothingLinks}</p>
                     <p class="text-sm text-gray-600 mb-4">Likes: ${cardName.likes}</p>
                 `;
 
@@ -24,7 +24,7 @@ function getInformation() {
 
                     cardName.keywords.forEach((keyword) => {
                         const keyword_span = document.createElement("span");
-                        keyword_span.className = "bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded";
+                        keyword_span.className = "bg-icon200 text-icon900 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded";
                         keyword_span.textContent = keyword;
                         keywords_div.appendChild(keyword_span);
                     });
