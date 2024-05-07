@@ -44,7 +44,7 @@ let keywords = [];
         parent.parentElement.remove();
     });
 
-    $('#search').on('submit', (event) => {
+    $('#searchbar').on('submit', (event) => {
         // submit the search request
         event.preventDefault();
         const search = $('#search').val().trim();
