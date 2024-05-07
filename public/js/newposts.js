@@ -19,10 +19,10 @@ $(document).ready(function() {
           !clothingLinks.includes(link)
         ) {
           clothingLinks.push(link);
-          console.log(link);
+         
           $("#clothingLinksContainer").append(`
             <span class="bg-icon200 text-icon900 text-sm max-w-min font-semibold mr-2 px-2.5 py-0.5 rounded flex space-x-2">
-                <p>${link}<p>
+                <p class="truncate">${link}<p>
                 <button type="button" class="removeClothingLink">x</button>
             </span>`);
           $("#clothingLinks").val("");
@@ -121,41 +121,46 @@ $(document).ready(function() {
         $('#keywordsContainer').find('#kwarning1').remove();
         $('#keywordsContainer').find('#kwarning2').remove();
 
-        let post_image =  $('#post-image')[0].files[0];
-        let description = $('#description');
-
-        let formData = new FormData();
-
-        formData.append("description", description.val());
-        formData.append('post-image', post_image);        
-
-        clothingLinks.forEach((link) => { 
-            console.log(link);
-            formData.append("clothingLinks[]", link);
-            
-        });
-       
         
-        keywordsArr.forEach((keyword) => { 
-            formData.append("keywords[]", keyword); });
+        let formData = new FormData();
+        let description = $('#description').val();
+        let post_image =  $('#post-image')[0].files[0];
+        formData.append("description", description);
+        formData.append('post-image', post_image);
+    
+        // Append clothing links
+        clothingLinks.forEach((link) => {
+            formData.append("clothingLinks", link);
+        });
+    
+        // Append keywords
+        keywordsArr.forEach((keyword) => {
+            formData.append("keywords", keyword);
+        });
+        
 
-        //console.log(formData);
-
+        console.log(formData);
+        // Send the AJAX request
         $.ajax({
             type: "POST",
             url: "/posts", 
             data: formData,
+            processData: false,
+            contentType: false,
             success: function(response) {
                 console.log("SUCCESS:" +response);
+                window.location.href = "/users";
                 
             },
             error: function(xhr, status, error) {
                 console.log("ERROR:" +error);
-                $('#keywordsContainer').append(`
-                    <p class="text-center" id="warning">All fields require input</p>
-                `);
+                // $('#keywordsContainer').append(`
+                //     <p class="text-center" id="warning">All fields require input</p>
+                // `);
             }
         });
+
+        
     });
 
 

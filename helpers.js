@@ -64,57 +64,62 @@ export function isValidURL(string) {
 }
 
 export function isValidBio(input) {
-    if (input == null) throw "Error: No string input";
-    if (typeof input != 'string') throw "Error: Input is not a string";
+    if (input == null) return false;
+    if (typeof input != 'string') return false;
 
-    if (input.length > 256) throw "Error: Input does not fit length constraints";
+    if (input.length > 256) return false;
+    else return true;
 }
 
 
 export function isValidString(input, min_len=0, max_len=Number.MAX_VALUE) {
-    if (input == null) throw "Error: No string input";
-    if (typeof input != 'string') throw "Error: Input is not a string";
-    if (input.trim() == '') throw "Error: String input cannot be empty";
-
-    if (input.length < min_len || input.length > max_len) throw "Error: Input does not fit length constraints";
+    if (input == null) return false;
+    if (typeof input != 'string') return false;
+    if (input.trim() == '') return false;
+    if (input.length < min_len || input.length > max_len) return false;
+    else return true;
 }
 
 export function isValidId(input) {
-    isValidString(input);
+    if (!isValidString(input)) return false;
     input = input.trim();
-    if (!ObjectId.isValid(input)) throw "Error: Input is not a valid id"
+    if (!ObjectId.isValid(input)) return false;
 }
 
 export function isValidUsername(input) {
-    isValidString(input, 5, 32);
+    if(!isValidString(input, 5, 32)) return false;
     input = input.trim();
 
-    if (input.match(/[^\w.-]/) != null) throw "Error: Username can only contain numbers, letters, '-', '_', and '.'";
+    if (input.match(/[^\w.-]/) != null) return false;
 }
 
 export function isValidPassword(input) {
-    isValidString(input, 8, 32);
+    if(!isValidString(input, 8, 32)) return false;
     input = input.trim();
-    if (input.match(/[0-9]/g) == null) throw "Error: Password must contain at least one number";
-    if (input.match(/[A-Z]/g) == null) throw "Error: Password must contain at least one uppercase character";
-    if (input.match(/[^\w]/g) == null) throw "Error: Password must contain at least one special character";
-    if (input.match(' ') != null) throw "Error: Password cannot contain spaces"
+    if (input.match(/[0-9]/g) == null) return false;
+    if (input.match(/[A-Z]/g) == null) return false;
+    if (input.match(/[^\w]/g) == null) return false;
+    if (input.match(' ') != null) return true;
 }
 
 export function isValidLink(input) {
-    isValidString(input);
+    if(!isValidString(input)) return false;
     input = input.trim();
-    if (input.match(/^https?:\/\/(?:www\.)?\w{0,64}\.(?:com|co\.\w{2})/) == null) throw "Error: Invalid link";
+    if (input.match(/^https?:\/\/(?:www\.)?\w{0,64}\.(?:com|co\.\w{2})/) == null) return false;
+    else return true;
 
 }
 
 export function isValidImg(input) {
-    if (!input) throw "Error: No file input";
-    if (!input.mimetype.includes('image/')) throw "Error: file must be an image input";
+    if (!input) return false;
+    if (!input.mimetype.includes('image/'))return false;
+    else return true;
 }
 
 export function isValidKeyword(input) {
-    isValidString(input, 3, 16);
-    return true;
+    if(!isValidString(input, 3, 16))
+    return false;
+    else return true;
+
 }
 

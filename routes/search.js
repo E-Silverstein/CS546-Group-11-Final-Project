@@ -22,7 +22,7 @@ router
         else keywords = keywords.split(',');
         try {
             keywords.forEach(kw => {
-                isValidKeyword(kw);
+                if(!isValidKeyword(kw)) throw "Error: invalid keyword"
             });
         } catch(e) {
             return res

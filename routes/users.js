@@ -32,7 +32,7 @@ router
 .patch(upload.single('profile-picture'), async (req, res) => {
     try                                                                                                {
         //VALIDATION: username        
-        isValidUsername(req.body.username);
+        if(!isValidUsername(req.body.username)) throw "Error: invalid username";
         req.body.username = xss(req.body.username.trim().toLowerCase());
 
     } catch(e) {
@@ -42,7 +42,7 @@ router
         //VALIDATION: bios
 
         //console.log(req.body.bio);
-        isValidBio(req.body.bio);
+        if(!isValidBio(req.body.bio)) throw "Error: invalid bio"
         req.body.bio = xss(req.body.bio.trim());
           
     } catch(e) {
@@ -55,7 +55,7 @@ router
             if(!user) throw "Error: user does not exist";
             req.body.fileUrl = user.profilePicture;
         } else {
-            isValidImg(req.file);
+            if(!isValidImg(req.file)) throw "Error: invalid image"
             req.body.fileUrl = "/"+req.file.path;
         }
         //console.log(req.body.fileUrl);
@@ -135,7 +135,7 @@ router
     /* Route will get an individual user given a userid */
     try {
         //VALIDATION: userid
-        isValidId(req.params.userid);
+        if(!isValidId(req.params.userid)) throw "Error: invalid id"
         req.params.userid = req.params.userid.trim();
     } catch (e) {
         //TO-DO: change returns to render when frontend complete
