@@ -4,7 +4,6 @@ Populate data and test
 
 import { dbConnection, closeConnection } from ".././config/mongoConnections.js";
 import { userData, postData, commentData, reportData, keywordData, algoData } from "../data/index.js";
-import { getRecommendedPosts } from "../data/algo.js";
 
 function generatePassword() {
     const length = Math.floor(Math.random() * (20 - 8 + 1)) + 8;

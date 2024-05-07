@@ -84,13 +84,16 @@ export function isValidId(input) {
     if (!isValidString(input)) return false;
     input = input.trim();
     if (!ObjectId.isValid(input)) return false;
+    else return true;
 }
 
 export function isValidUsername(input) {
+    console.log(input);
     if(!isValidString(input, 5, 32)) return false;
     input = input.trim();
 
     if (input.match(/[^\w.-]/) != null) return false;
+    else return true;
 }
 
 export function isValidPassword(input) {
