@@ -360,7 +360,7 @@ export const addLike = async (user, post) => {
 	const existingPost = await postCollection.findOne({
 		_id: new ObjectId(post),
 	});
-	if (existingPost.likes.includes(user)) {
+	if (existingPost.likes.map((like) => like.toString()).includes(user)) {
 		throw "User has already liked the post";
 	}
 

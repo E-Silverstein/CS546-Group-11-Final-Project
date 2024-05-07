@@ -1,4 +1,5 @@
-import { postData, userData } from "../data/index.js";
+import { postData, userData, commentData } from "../data/index.js";
+import { ObjectId } from "mongodb";
 import { Router } from 'express';
 import xss from "xss";
 import { isValidKeyword } from "../helpers.js";
@@ -40,12 +41,25 @@ router
         
         let renderData = {};
         try {
-            let posts = [];
+            let getAllPosts = [];
             for(let i = 0; i < keywords.length; i++) {
-                let post = await postData.getPostsByKeyword(keywords[i]);
-                posts = posts.concat(post);
+                let posts = await postData.getPostsByKeyword(keywords[i]);
+                for(let j = 0; j < posts.length; j++) {
+                    let post = posts[j];
+                    let commentids = post.comments;
+                    let comments = [];
+                    for(let k = 0; k < commentids.length; k++) {
+                        let comment = await commentData.getCommentById(commentids[k].toString());
+                        let user = await userData.getUserById(comment.user.toString());
+                        comments.push({"username": user.username, "text": comment.text});
+                    }
+                    post.comments = comments;
+                    post.liked = post.likes.map(like => like.toString()).includes(req.session.userid);
+                    post.likes = post.likes.length;
+                    getAllPosts = getAllPosts.concat(post);
+                }
             }
-            renderData.posts = posts;
+            renderData.posts = getAllPosts;
         } catch(e) {
             renderData.posts = [];
             console.log(e);
