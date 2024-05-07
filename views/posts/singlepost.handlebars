@@ -1,8 +1,8 @@
 <div class="mt-24 flex justify-center">
-    <div class="bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer hover:bg-icon200">
+    <div class="bg-white shadow-lg p-4 mb-4 rounded-lg cursor-pointer">
         <a href="/users/{{posterId}}" class="text-lg font-semibold mb-2">{{username}}</a>
 
-        <img src="{{image}}" alt="Post Image" class="w-full h-auto mb-3">
+        <img src="{{image}}" alt="Post Image" class="post-img">
         <p class="mb-1">{{description}}</p>
         <p class="text-sm text-gray-600">Clothing Links:</p>
         {{#each this.clothingLinks}}
@@ -16,12 +16,12 @@
             </button>
         </div>
         {{#if canEdit}}
-        <div>
-            <a href="/posts/editPost/{{postid}}">Edit Post</a>
-            <a href="/posts/delete">Delete Post</a>
+        <div class="my-2">
+            <a href="/posts/delete" class="red-button">Delete Post</a>
         </div>
         {{/if}}
         <div class="flex space-x-2">
+            <p>Keywords</p>
             {{#each keywords}}
                 <p class="bg-icon200 text-icon900 text-sm font-semibold px-2.5 py-0.5 rounded w-fit">{{this}}</p>
             {{/each}}
@@ -30,7 +30,7 @@
         {{#if isAuth}}
             <form action="/comments/{{postid}}" method="POST" class="flex space-x-2">
                 <input class="border" type="text" name="commentText" placeholder="Add comment...">
-                <button>Post</button>
+                <button class="profile-buttons">Post</button>
             </form>
         {{/if}}
         <div class="overflow-scroll max-h-16 space-y-2">
@@ -45,7 +45,7 @@
                     </span>
                 {{/each}}
             {{else}}
-                <p>No comments</p>
+                <p class="no-comments">No comments</p>
             {{/if}}
         </div>
     </div>
