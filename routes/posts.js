@@ -229,7 +229,7 @@ router
         //TO-DO: initialize session state
 
         let user = await getUserByUsername(post.username);
-        if (req.session.userid != user.userid.toString()) throw "Error: You do not own this post"
+        if (req.session.userid != user.toString()) throw "Error: You do not own this post"
     } catch(e) {
         return res.status(403).render('error/error', {error:e, isAuth: req.session.authenticated});
     }

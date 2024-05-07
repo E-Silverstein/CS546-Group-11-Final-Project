@@ -215,7 +215,19 @@ export const deletePost = async (id) => {
 		return 1;
 	}
 
+	// Go into users and delete the post from their posts
 	const postCollection = await posts();
+	const userCollection = await users();
+
+	const post = await postCollection.findOne({ _id: new ObjectId(id) });
+	const user = await userCollection.findOne({ username: post.username });
+	const updateInfo = await userCollection.updateOne(
+		{ username: post.username },
+		{ $pull: { posts: { _id: new ObjectId(id) } } }
+	);
+	if (updateInfo.modifiedCount === 0) {
+		return 1;
+	}
 	const deleteInfo = await postCollection.deleteOne({ _id: new ObjectId(id)});
 	if (deleteInfo.deletedCount === 0) {
 		return 1;
