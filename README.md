@@ -50,6 +50,7 @@ npm start
 
 * Viewing a single post shows attributes such as clothing links, keywords, likes, along with the user profile.
 * Allows users to like and share posts, only available to logged in users.
+* Logged in users can delete their posts when in the expanded post view.
 
 ### Search
 * Entering a search term and submitting will search for a user.
